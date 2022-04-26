@@ -1,0 +1,4 @@
+Bundle-Name: healthcheck-commerce-wrapper
+Bundle-SymbolicName: healthcheck.commerce.wrapper
+Bundle-Version: 1.0.0
+Export-Package: healthcheck.commerce.wrapper.constants

@@ -1,0 +1,7 @@
+dependencies {
+	compileOnly group: "com.liferay.portal", name: "release.dxp.api"
+	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations"
+
+	compileOnly project(":modules:healthcheck:healthcheck-api")
+	compileOnly project(":modules:demo-checklist-web")
+}
