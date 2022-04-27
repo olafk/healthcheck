@@ -19,7 +19,6 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.health.api.HealthcheckItemImpl;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.LoggingTimer;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.SystemProperties;
 import com.liferay.portal.util.PropsUtil;
@@ -127,11 +126,9 @@ public class VerifyProperties {
 	}
 
 	protected void verifyDocumentLibrary() {
-		try (LoggingTimer loggingTimer = new LoggingTimer()) {
-			StoreFactory storeFactory = StoreFactory.getInstance();
+		StoreFactory storeFactory = StoreFactory.getInstance();
 
-			storeFactory.checkProperties();
-		}
+		storeFactory.checkProperties();
 	}
 
 	protected void verifyMigratedPortalProperty(
@@ -203,35 +200,33 @@ public class VerifyProperties {
 	}
 
 	protected void verifyPortalProperties() throws Exception {
-		try (LoggingTimer loggingTimer = new LoggingTimer()) {
-			Properties portalProperties = loadPortalProperties();
+		Properties portalProperties = loadPortalProperties();
 
-			for (String[] keys : _MIGRATED_PORTAL_KEYS) {
-				String oldKey = keys[0];
-				String newKey = keys[1];
+		for (String[] keys : _MIGRATED_PORTAL_KEYS) {
+			String oldKey = keys[0];
+			String newKey = keys[1];
 
-				verifyMigratedPortalProperty(portalProperties, oldKey, newKey);
-			}
+			verifyMigratedPortalProperty(portalProperties, oldKey, newKey);
+		}
 
-			for (String[] keys : _RENAMED_PORTAL_KEYS) {
-				String oldKey = keys[0];
-				String newKey = keys[1];
+		for (String[] keys : _RENAMED_PORTAL_KEYS) {
+			String oldKey = keys[0];
+			String newKey = keys[1];
 
-				verifyRenamedPortalProperty(portalProperties, oldKey, newKey);
-			}
+			verifyRenamedPortalProperty(portalProperties, oldKey, newKey);
+		}
 
-			for (String key : _OBSOLETE_PORTAL_KEYS) {
-				verifyObsoletePortalProperty(portalProperties, key);
-			}
+		for (String key : _OBSOLETE_PORTAL_KEYS) {
+			verifyObsoletePortalProperty(portalProperties, key);
+		}
 
-			for (String[] keys : _MODULARIZED_PORTAL_KEYS) {
-				String oldKey = keys[0];
-				String newKey = keys[1];
-				String moduleName = keys[2];
+		for (String[] keys : _MODULARIZED_PORTAL_KEYS) {
+			String oldKey = keys[0];
+			String newKey = keys[1];
+			String moduleName = keys[2];
 
-				verifyModularizedPortalProperty(
-					portalProperties, oldKey, newKey, moduleName);
-			}
+			verifyModularizedPortalProperty(
+				portalProperties, oldKey, newKey, moduleName);
 		}
 	}
 
@@ -261,35 +256,33 @@ public class VerifyProperties {
 	}
 
 	protected void verifySystemProperties() throws Exception {
-		try (LoggingTimer loggingTimer = new LoggingTimer()) {
-			for (String[] keys : _MIGRATED_SYSTEM_KEYS) {
-				String oldKey = keys[0];
-				String newKey = keys[1];
+		for (String[] keys : _MIGRATED_SYSTEM_KEYS) {
+			String oldKey = keys[0];
+			String newKey = keys[1];
 
-				verifyMigratedSystemProperty(oldKey, newKey);
-			}
+			verifyMigratedSystemProperty(oldKey, newKey);
+		}
 
-			for (String[] keys : _RENAMED_SYSTEM_KEYS) {
-				String oldKey = keys[0];
-				String newKey = keys[1];
+		for (String[] keys : _RENAMED_SYSTEM_KEYS) {
+			String oldKey = keys[0];
+			String newKey = keys[1];
 
-				verifyRenamedSystemProperty(oldKey, newKey);
-			}
+			verifyRenamedSystemProperty(oldKey, newKey);
+		}
 
-			for (String key : _OBSOLETE_SYSTEM_KEYS) {
-				verifyObsoleteSystemProperty(key);
-			}
+		for (String key : _OBSOLETE_SYSTEM_KEYS) {
+			verifyObsoleteSystemProperty(key);
+		}
 
-			Properties systemProperties = SystemProperties.getProperties();
+		Properties systemProperties = SystemProperties.getProperties();
 
-			for (String[] keys : _MODULARIZED_SYSTEM_KEYS) {
-				String oldKey = keys[0];
-				String newKey = keys[1];
-				String moduleName = keys[2];
+		for (String[] keys : _MODULARIZED_SYSTEM_KEYS) {
+			String oldKey = keys[0];
+			String newKey = keys[1];
+			String moduleName = keys[2];
 
-				verifyModularizedSystemProperty(
-					systemProperties, oldKey, newKey, moduleName);
-			}
+			verifyModularizedSystemProperty(
+				systemProperties, oldKey, newKey, moduleName);
 		}
 	}
 
