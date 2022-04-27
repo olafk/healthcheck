@@ -44,11 +44,22 @@ public class CommerceHealthcheckWrapperInitializer {
 		    unbind = "doUnRegister" 
 	)
 	void doRegister(CommerceHealthHttpStatus commerceHealthHttpStatus) {
-		log.info("doRegister on " + commerceHealthHttpStatus.getClass().getName());
-		CommerceHealthcheckWrapper service = new CommerceHealthcheckWrapper(commerceHealthHttpStatus);
+		// TODO: Reimplement with ServiceTracker to get rid of this conditional:
 
-		unregisteredServices.add(service);
-		registerServices();
+		// At the time of writing this class, WishListContentCommerceHealthHttpStatus is not enabled, but
+		// I don't know how to programmatically figure this out - as calling isFixed causes a very noisy 
+		// stacktrace, for now I'm deactivating this check in a stupid and hardcoded way
+		if(! commerceHealthHttpStatus.getClass().getName().equals(
+				"com.liferay.commerce.wish.list.web.internal.health.status.WishListContentCommerceHealthHttpStatus")) {
+			
+			log.info("doRegister on " + commerceHealthHttpStatus.getClass().getName());
+			CommerceHealthcheckWrapper service = new CommerceHealthcheckWrapper(commerceHealthHttpStatus);
+
+			unregisteredServices.add(service);
+			registerServices();
+		} else {
+			log.warn("ignored " + commerceHealthHttpStatus.getClass().getName());
+		}
 	}
 
 	void doUnRegister(CommerceHealthHttpStatus commerceHealthHttpStatus) {

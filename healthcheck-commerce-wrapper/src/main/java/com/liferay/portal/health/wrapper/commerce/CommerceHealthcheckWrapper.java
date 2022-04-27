@@ -48,11 +48,7 @@ public class CommerceHealthcheckWrapper extends HealthcheckBaseImpl {
 		boolean resolved = false;
 		String exception = "";
 		try {
-			// At the time of writing this class, WishListContentCommerceHealthHttpStatus is not enabled, but
-			// I don't know how to programmatically figure this out - as calling isFixed causes a very noisy 
-			// stacktrace, for now I'm deactivating this check in a stupid and hardcoded way
-			if(! status.getClass().getName().equals("com.liferay.commerce.wish.list.web.internal.health.status.WishListContentCommerceHealthHttpStatus"))
-				resolved = status.isFixed(companyId, channel.getCommerceChannelId());
+			resolved = status.isFixed(companyId, channel.getCommerceChannelId());
 		} catch (Exception e) {
 			exception = e.getClass().getName() + " " + e.getMessage();
 		}
