@@ -8,8 +8,7 @@
 
 <ul>
 <% List<HealthcheckItem> checks = (List<HealthcheckItem>) renderRequest.getAttribute("checks");
-
-
+	
 	for(HealthcheckItem check: checks) {
 		String style = check.isResolved()? "" : " style=\"font-weight:bold;\"";
 %>

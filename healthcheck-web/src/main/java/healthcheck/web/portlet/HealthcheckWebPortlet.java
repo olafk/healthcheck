@@ -1,13 +1,14 @@
 package healthcheck.web.portlet;
 
 import com.liferay.portal.health.api.Healthcheck;
+import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -48,8 +49,24 @@ public class HealthcheckWebPortlet extends MVCPortlet {
 			throws IOException, PortletException {
 		ThemeDisplay themeDisplay = (ThemeDisplay) renderRequest.getAttribute(WebKeys.THEME_DISPLAY);
 		List<HealthcheckItem> checks = new LinkedList<HealthcheckItem>();
-		for (Healthcheck healthcheck : healthchecks) {
-			checks.addAll(healthcheck.check(themeDisplay));
+		if(themeDisplay.getPermissionChecker().isCompanyAdmin(themeDisplay.getCompanyId())) {
+			for (Healthcheck healthcheck : healthchecks) {
+				checks.addAll(healthcheck.check(themeDisplay));
+			}
+		} else {
+			Healthcheck dummy = new HealthcheckBaseImpl() {
+				
+				@Override
+				public String getCategory() {
+					return "healthcheck-category-generic";
+				}
+				
+				@Override
+				public Collection<HealthcheckItem> check(ThemeDisplay themeDisplay) {
+					return wrap(create(false, themeDisplay.getLocale(), "/", "healthcheck-need-to-be-company-administrator"));
+				}
+			};
+			checks.addAll(dummy.check(themeDisplay));
 		}
 		renderRequest.setAttribute("checks", checks);
 		super.doView(renderRequest, renderResponse);
