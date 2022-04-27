@@ -5,6 +5,9 @@
 <p>
 	<b><liferay-ui:message key="healthcheckweb.caption"/></b>
 </p>
+<p>
+	<liferay-ui:message key="healthcheckweb.cta"/>
+</p>
 
 <ul>
 <% List<HealthcheckItem> checks = (List<HealthcheckItem>) renderRequest.getAttribute("checks");
