@@ -1,0 +1,3 @@
+Bundle-Name: healthcheck-best-practice
+Bundle-SymbolicName: com.liferay.portal.health.bestpractice
+Bundle-Version: 1.0.0

@@ -1,0 +1,3 @@
+Bundle-Name: healthcheck-operation
+Bundle-SymbolicName: healthcheck.operation
+Bundle-Version: 1.0.0
