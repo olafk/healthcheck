@@ -6,9 +6,11 @@ import com.liferay.sales.checklist.api.ChecklistItem;
 public class DemoHealthcheckItemWrapper implements HealthcheckItem {
 
 	private ChecklistItem item;
+	private String category;
 
-	public DemoHealthcheckItemWrapper(ChecklistItem result) {
+	public DemoHealthcheckItemWrapper(ChecklistItem result, String category) {
 		this.item = result;
+		this.category = category;
 	}
 
 	@Override
@@ -28,7 +30,6 @@ public class DemoHealthcheckItemWrapper implements HealthcheckItem {
 
 	@Override
 	public String getCategory() {
-		return "demo";
+		return category;
 	}
-
 }

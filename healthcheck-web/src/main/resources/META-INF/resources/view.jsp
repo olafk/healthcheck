@@ -11,9 +11,18 @@
 
 
 	for(HealthcheckItem check: checks) {
+		String style = check.isResolved()? "" : " style=\"font-weight:bold;\"";
 %>
-<li>
-<%=check.isResolved() %>, <%=check.getMessage() %>
+<li <%=style %>>
+<%=check.isResolved() %>, <%=check.getCategory() %>, <%=check.getMessage() %>
+<%
+	if(check.getLink() != null) {
+		out.write(" (<a href=\"" + check.getLink() + "\">hint</a>)");
+	} else {
+		out.write(" (no hint)");
+	}
+
+%>
 </li>
 <%		
 	}

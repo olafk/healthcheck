@@ -22,3 +22,8 @@ Created with `liferay.workspace.product=dxp-7.4-u18`
 ## Reference
 
 * [LPS-151937](https://issues.liferay.com/browse/LPS-151937)
+
+## Limitations
+
+* No permission checking (Commerce Health Checks implement this, for example in CommerceHealthStatusDisplayContext)
+* UI is veeeeery barebones right now 

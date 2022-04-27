@@ -20,6 +20,7 @@ import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.health.api.HealthcheckItemImpl;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LoggingTimer;
+import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.SystemProperties;
 import com.liferay.portal.util.PropsUtil;
 import com.liferay.portlet.documentlibrary.store.StoreFactory;
@@ -32,7 +33,9 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Properties;
+import java.util.ResourceBundle;
 
 /**
  * Copied on 26. April 2022 from Liferay Source code revision 3e9ef5532c105d05a155709c7fbcef6f5697db04, 
@@ -43,6 +46,10 @@ import java.util.Properties;
  * @author Olaf Kock
  */
 public class VerifyProperties {
+
+	public VerifyProperties(String category) {
+		this._log = new LogHealthcheckWrapper(category);
+	}
 
 	public Collection<HealthcheckItem> doVerify() {
 		try {
@@ -2144,12 +2151,18 @@ public class VerifyProperties {
 		}
 	};
 
-	public static class LogHealthcheckWrapper {
+	public class LogHealthcheckWrapper {
+		
+		private String category;
+
+		public LogHealthcheckWrapper(String category) {
+			this.category = category;
+		}
 		
 		public void error(String msg) {
 			HealthcheckItemImpl item = new HealthcheckItemImpl(false, msg, 
 					"https://github.com/liferay/liferay-portal/blob/master/portal-impl/src/com/liferay/portal/verify/VerifyProcess.java", 
-					"breaking-changes");
+					category);
 			result.add(item);
 		}
 		
@@ -2157,7 +2170,7 @@ public class VerifyProperties {
 			HealthcheckItemImpl item = new HealthcheckItemImpl(false, 
 					msg + " " + throwable.getClass().getName() + " " + throwable.getMessage(), 
 					"https://github.com/liferay/liferay-portal/blob/master/portal-impl/src/com/liferay/portal/verify/VerifyProcess.java", 
-					"breaking-changes");
+					category);
 			result.add(item);
 		}
 		
@@ -2167,8 +2180,13 @@ public class VerifyProperties {
 			return result;
 		}
 		
+		public String lookupMessage(Locale locale, String key, Object... info) {
+			ResourceBundle bundle = ResourceBundleUtil.getBundle(locale, this.getClass().getClassLoader());
+			return ResourceBundleUtil.getString(bundle, key, info);
+		}
+		
 		private List<HealthcheckItem> result = new LinkedList<HealthcheckItem>();
 	}
 	
-	private static final LogHealthcheckWrapper _log = new LogHealthcheckWrapper();
+	private final LogHealthcheckWrapper _log;
 }

@@ -46,6 +46,7 @@ public class CommerceHealthcheckWrapperInitializer {
 	void doRegister(CommerceHealthHttpStatus commerceHealthHttpStatus) {
 		log.info("doRegister on " + commerceHealthHttpStatus.getClass().getName());
 		CommerceHealthcheckWrapper service = new CommerceHealthcheckWrapper(commerceHealthHttpStatus);
+
 		unregisteredServices.add(service);
 		registerServices();
 	}

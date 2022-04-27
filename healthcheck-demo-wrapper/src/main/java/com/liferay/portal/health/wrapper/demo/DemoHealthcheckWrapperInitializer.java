@@ -45,6 +45,8 @@ public class DemoHealthcheckWrapperInitializer {
 	void doRegister(ChecklistProvider checklistProvider) {
 		log.info("doRegister on " + checklistProvider.getClass().getName());
 		DemoHealthcheckWrapper service = new DemoHealthcheckWrapper(checklistProvider);
+
+		// Full registration can only be done when this service is fully initialized/activated
 		unregisteredServices.add(service);
 		registerServices();
 	}
