@@ -9,24 +9,23 @@
 	<liferay-ui:message key="healthcheckweb.cta"/>
 </p>
 
-<ul>
+<table>
 <% List<HealthcheckItem> checks = (List<HealthcheckItem>) renderRequest.getAttribute("checks");
 	
 	for(HealthcheckItem check: checks) {
 		String style = check.isResolved()? "" : " style=\"font-weight:bold;\"";
 %>
-<li <%=style %>>
-<%=check.isResolved() %>, <%=check.getCategory() %>, <%=check.getMessage() %>
+<tr><td <%=style %>>
+<%=check.isResolved() %></td><td><%=check.getCategory() %></td><td><%=check.getMessage() %></td><td>
 <%
 	if(check.getLink() != null) {
 		out.write(" (<a href=\"" + check.getLink() + "\">hint</a>)");
 	} else {
-		out.write(" (no hint)");
+		out.write(" (no&nbsp;hint)");
 	}
-
 %>
-</li>
+</td></tr>
 <%		
 	}
 %>
-</ul>
+</table>

@@ -30,15 +30,17 @@ import healthcheck.web.constants.HealthcheckWebPortletKeys;
 @Component(
 	immediate = true,
 	property = {
+		"com.liferay.portlet.ajaxable=true",
 		"com.liferay.portlet.display-category=category.sample",
 		"com.liferay.portlet.header-portlet-css=/css/main.css",
 		"com.liferay.portlet.instanceable=true",
+		"com.liferay.portlet.remoteable=true",
 		"javax.portlet.display-name=HealthcheckWeb",
 		"javax.portlet.init-param.template-path=/",
 		"javax.portlet.init-param.view-template=/view.jsp",
 		"javax.portlet.name=" + HealthcheckWebPortletKeys.HEALTHCHECKWEB,
 		"javax.portlet.resource-bundle=content.Language",
-		"javax.portlet.security-role-ref=power-user,user"
+		"javax.portlet.security-role-ref=administrator"
 	},
 	service = Portlet.class
 )
