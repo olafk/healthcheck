@@ -9,10 +9,14 @@ This project currently consists of:
 * Commerce Healthcheck adapters
     * This adapts commerce's `CommerceHealthHttpStatus` to the Healthcheck interface 
 * Demo Checklist adapters
-    * This adapts Olaf's demo-checklist to the Healthcheck interface 
+    * This adapts [Olaf's demo-checklist](https://github.com/olafk/demo-checklist-web) to the Healthcheck interface 
 * Breaking Changes implementations
     * with some copies from Liferay's portal-impl code (VerifyProperties, which currently runs only during upgrades)
-
+* Best Practice implementations
+    * e.g. "Do not use default user accounts"
+* Operational implementations
+    * e.g. checks for available memory and redirection configuration
+	
 ## How to build
 
 Clone this repository into a Liferay Workspace's `modules` directory.
@@ -25,5 +29,6 @@ Created with `liferay.workspace.product=dxp-7.4-u18`
 
 ## Limitations
 
-* No permission checking (Commerce Health Checks implement this, for example in CommerceHealthStatusDisplayContext)
+* Very basic permission checking (Commerce Health Checks implement this in a better way, for example in CommerceHealthStatusDisplayContext). Health Check UI is only available for Company Administrators.
 * UI is veeeeery barebones right now 
+* Only few native health checks implemented: Contribute more, in code or just ideas
