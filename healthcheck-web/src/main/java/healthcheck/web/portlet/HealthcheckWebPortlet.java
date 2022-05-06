@@ -31,9 +31,9 @@ import healthcheck.web.constants.HealthcheckWebPortletKeys;
 	immediate = true,
 	property = {
 		"com.liferay.portlet.ajaxable=true",
-		"com.liferay.portlet.display-category=category.sample",
+		"com.liferay.portlet.display-category=category.hidden",
 		"com.liferay.portlet.header-portlet-css=/css/main.css",
-		"com.liferay.portlet.instanceable=true",
+		"com.liferay.portlet.instanceable=false",
 		"com.liferay.portlet.remoteable=true",
 		"javax.portlet.display-name=HealthcheckWeb",
 		"javax.portlet.init-param.template-path=/",
