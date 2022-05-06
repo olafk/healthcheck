@@ -52,7 +52,7 @@ public class CommerceHealthcheckWrapper extends HealthcheckBaseImpl {
 		} catch (Exception e) {
 			exception = e.getClass().getName() + " " + e.getMessage();
 		}
-		String message = status.getName(locale) + " " + status.getDescription(locale) + " " + channel.getName() + " " + exception;
+		String message = status.getName(locale) + " - " + status.getDescription(locale) + " (" + channel.getName() + ") " + exception;
 		String link = "/group/control_panel/manage?p_p_id=com_liferay_commerce_health_status_web_internal_portlet_CommerceHealthCheckPortlet";
 		
 		return new HealthcheckItemImpl(resolved, message, link, lookupMessage(locale, getCategory()));
