@@ -15,8 +15,8 @@ import org.osgi.service.component.annotations.Component;
 		)
 public class HttpsHealthcheck extends HealthcheckBaseImpl {
 	private static final String LINK = null;
-	private static final String MSG = "healthcheck-https";
-	private static final String MSG_LOCALHOST = "healthcheck-https-localhost";
+	private static final String MSG = "healthcheck-https-in-year-x";
+	private static final String MSG_LOCALHOST = "healthcheck-https-localhost-in-year-x";
 
 	@Override
 	public Collection<HealthcheckItem> check(ThemeDisplay themeDisplay) {
