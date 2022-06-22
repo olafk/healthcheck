@@ -32,3 +32,4 @@ Created with `liferay.workspace.product=dxp-7.4-u18`
 * Very basic permission checking (Commerce Health Checks implement this in a better way, for example in CommerceHealthStatusDisplayContext). Health Check UI is only available for Company Administrators.
 * UI is veeeeery barebones right now 
 * Only few native health checks implemented: Contribute more, in code or just ideas
+* Assumes it only runs on System level (e.g. first virtual instance) and UI is not available on secondary instances. Even though implemented checks might be instance specific...
