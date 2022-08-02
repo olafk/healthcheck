@@ -62,7 +62,7 @@ public class CommerceHealthcheckWrapperInitializer {
 		}
 	}
 
-	void doUnRegister(CommerceHealthHttpStatus commerceHealthHttpStatus) {
+	private void doUnRegister(CommerceHealthHttpStatus commerceHealthHttpStatus) {
 		if(services.containsKey(commerceHealthHttpStatus)) {
 			ServiceRegistration<Healthcheck> serviceRegistration = services.get(commerceHealthHttpStatus);
 			serviceRegistration.unregister();
@@ -92,6 +92,14 @@ public class CommerceHealthcheckWrapperInitializer {
 		registerServices();
 	}
 
+	@SuppressWarnings("unused")
+	private void unsetCommerceChannelLocalService(CommerceChannelLocalService commerceChannelLocalService) {
+		for (Map.Entry<CommerceHealthHttpStatus,ServiceRegistration<Healthcheck>> registration : services.entrySet()) {
+			unregisteredServices.add(new CommerceHealthcheckWrapper(registration.getKey()));
+			doUnRegister(registration.getKey());
+		}
+	}
+		
 	private CommerceChannelLocalService commerceChannelLocalService;
 	private List<CommerceHealthcheckWrapper> unregisteredServices = new LinkedList<CommerceHealthcheckWrapper>();
 	private Map<CommerceHealthHttpStatus, ServiceRegistration<Healthcheck>> services = new HashMap<CommerceHealthHttpStatus, ServiceRegistration<Healthcheck>>();
