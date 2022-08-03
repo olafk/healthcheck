@@ -1,7 +1,7 @@
 <%@page import="com.liferay.portal.health.api.HealthcheckItem"%>
 <%@page import="java.util.List"%>
 <%@ include file="./init.jsp" %>
-
+<div style="padding:10px;">
 <p>
 	<b><liferay-ui:message key="healthcheckweb.caption"/></b>
 </p>
@@ -29,3 +29,4 @@
 	}
 %>
 </table>
+</div>
