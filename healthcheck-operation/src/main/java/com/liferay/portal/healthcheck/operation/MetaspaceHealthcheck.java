@@ -11,6 +11,15 @@ import java.util.Collection;
 
 import org.osgi.service.component.annotations.Component;
 
+/** 
+ * DXP's default metaspace is 768M, and it might not run with less than this.
+ * 
+ * Make sure that sufficient Metaspace is configured.
+ * 
+ * @author Olaf Kock
+ *
+ */
+
 @Component(
 		service=Healthcheck.class
 		)

@@ -10,6 +10,12 @@ import java.util.Collection;
 
 import org.osgi.service.component.annotations.Component;
 
+/**
+ * It's 2022 (when I write this check). Make sure we're accessed through https only.
+ * Unless we're on localhost
+ * 
+ * @author Olaf Kock
+ */
 @Component(
 		service=Healthcheck.class
 		)

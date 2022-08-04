@@ -24,6 +24,15 @@ import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedServiceFactory;
 import org.osgi.service.component.annotations.Component;
 
+/**
+ * Some operations fail when the server can't reliably tell its 
+ * own host name (e.g. behind a reverse proxy). In that case, the redirectURL
+ * should be configured appropriately.
+ *   
+ * @author Olaf Kock
+ *
+ */
+
 @Component(
 		immediate = true,
 		configurationPid = RedirectHealthcheck.PID,
