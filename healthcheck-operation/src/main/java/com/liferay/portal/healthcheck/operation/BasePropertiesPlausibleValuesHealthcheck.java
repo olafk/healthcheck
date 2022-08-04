@@ -60,7 +60,7 @@ public abstract class BasePropertiesPlausibleValuesHealthcheck<T> extends Health
 					result.add(create(false, themeDisplay.getLocale(), link, errorMsg, property, value));
 				}
 			} else {
-				log.warn(property + " is null. This is a field defined in PropsValues, but undefined in any portal*.properties file");
+				log.warn("null " + property /* + " is null. This is a field defined in PropsValues, but undefined in any portal*.properties file" */);
 			}
 		}
 		if(result.isEmpty()) {
@@ -124,7 +124,15 @@ public abstract class BasePropertiesPlausibleValuesHealthcheck<T> extends Health
 		return null;
 	}
 	
+	/**
+	 *  Fields that are present in PropsValues, but are known to not be present in PropsKeys
+	 *  for various reasons (e.g. they might be implemented without properties, or just 
+	 *  convenience lookups derived from other properties)
+	 */
+	
 	private static final Set<String> knownMissingProperties = new HashSet<String>(Arrays.asList( new String[] {
+		"FEATURE_FLAGS_JSON",
+		"LIFERAY_WEB_PORTAL_CONTEXT_TEMPDIR",
 		"PORTLET_EVENT_DISTRIBUTION_LAYOUT",
 		"PORTLET_EVENT_DISTRIBUTION_LAYOUT_SET",
 		"PORTLET_PUBLIC_RENDER_PARAMETER_DISTRIBUTION_LAYOUT",
