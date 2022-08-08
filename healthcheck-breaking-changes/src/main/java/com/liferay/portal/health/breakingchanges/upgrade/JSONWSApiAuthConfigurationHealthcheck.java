@@ -1,4 +1,4 @@
-package com.liferay.portal.health.breakingchanges.legacy;
+package com.liferay.portal.health.breakingchanges.upgrade;
 
 import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.health.api.Healthcheck;
