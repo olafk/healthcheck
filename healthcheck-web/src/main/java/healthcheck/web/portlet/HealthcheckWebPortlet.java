@@ -3,6 +3,7 @@ package healthcheck.web.portlet;
 import com.liferay.portal.health.api.Healthcheck;
 import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
+import com.liferay.portal.health.api.HealthcheckItemImpl;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -53,7 +54,13 @@ public class HealthcheckWebPortlet extends MVCPortlet {
 		List<HealthcheckItem> checks = new LinkedList<HealthcheckItem>();
 		if(themeDisplay.getPermissionChecker().isCompanyAdmin(themeDisplay.getCompanyId())) {
 			for (Healthcheck healthcheck : healthchecks) {
-				checks.addAll(healthcheck.check(themeDisplay));
+				try {
+					checks.addAll(healthcheck.check(themeDisplay));
+				} catch (Exception e) {
+					checks.add(new HealthcheckItemImpl(false, 
+							healthcheck.getClass().getName() + " threw " + e.getClass().getName() + " " + e.getMessage(), 
+							null, healthcheck.getCategory()));
+				}
 			}
 		} else {
 			Healthcheck dummy = new HealthcheckBaseImpl() {
