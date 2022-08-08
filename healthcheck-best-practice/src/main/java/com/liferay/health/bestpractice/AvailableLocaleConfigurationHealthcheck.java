@@ -44,8 +44,8 @@ public class AvailableLocaleConfigurationHealthcheck extends HealthcheckBaseImpl
 		LinkedList<HealthcheckItem> result = new LinkedList<HealthcheckItem>();
 		Locale locale = themeDisplay.getLocale();
 		validateProperties(result, locale, PropsValues.LOCALES, "locales");
-		validateProperties(result, locale, PropsValues.LOCALES_ENABLED, "enabled");
-		validateProperties(result, locale, PropsValues.LOCALES_BETA, "beta");
+		validateProperties(result, locale, PropsValues.LOCALES_ENABLED, "locales.enabled");
+		validateProperties(result, locale, PropsValues.LOCALES_BETA, "locales.beta");
 		
 		if(result.isEmpty()) {
 			result.add(create(true, locale, LINK, MSG));
@@ -56,6 +56,7 @@ public class AvailableLocaleConfigurationHealthcheck extends HealthcheckBaseImpl
 	private void validateProperties(LinkedList<HealthcheckItem> result, Locale locale, String[] locales, String collectionName) {
 		for (int i = 0; i < locales.length; i++) {
 			String loc = locales[i];
+			// some JVM naming seems to be different from ours...
 			String alternativeLoc = loc.replace("latin", "#Latn");
 			if(loc.length()<5) {
 				result.add(create(false, locale, LINK, ERROR_MSG_LENGTH, collectionName, loc));
