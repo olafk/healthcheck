@@ -108,17 +108,17 @@ public abstract class BasePropertiesPlausibleValuesHealthcheck<T> extends Health
 		} catch (NoSuchFieldException e) {
 			if(! knownMissingProperties.contains(fieldName)) {
 				log.error("No such field: PropsKeys." + fieldName);
-				return e.getClass().getName() + " " + e.getMessage();
+				return e.getClass().getName() + " " + e.getMessage() + " for " + fieldName;
 			}
 		} catch (SecurityException e) {
 			log.error(e); 
-			return e.getClass().getName() + " " + e.getMessage();
+			return e.getClass().getName() + " " + e.getMessage() + " for " + fieldName;
 		} catch (IllegalArgumentException e) {
 			log.error(e);
-			return e.getClass().getName() + " " + e.getMessage();
+			return e.getClass().getName() + " " + e.getMessage() + " for " + fieldName;
 		} catch (IllegalAccessException e) {
 			log.error(e);
-			return e.getClass().getName() + " " + e.getMessage();
+			return e.getClass().getName() + " " + e.getMessage() + " for " + fieldName;
 		}
 
 		return null;
