@@ -37,7 +37,7 @@ public class AvailableLocaleConfigurationHealthcheck extends HealthcheckBaseImpl
 	private static final String MSG  = "healthcheck-locale-properties";
 	private static final String ERROR_MSG_LENGTH = "healthcheck-locale-properties-length";
 	private static final String ERROR_MSG_DIFF = "healthcheck-locale-properties-diff";
-	private static final Set<String> availableLocales = Arrays.asList(DateFormat.getAvailableLocales()).stream().map(Object::toString).collect(Collectors.toSet());;
+	private static final Set<String> availableLocales = Arrays.asList(DateFormat.getAvailableLocales()).stream().map(Object::toString).collect(Collectors.toUnmodifiableSet());;
 
 	@Override
 	public Collection<HealthcheckItem> check(ThemeDisplay themeDisplay) {
