@@ -3,7 +3,6 @@ package com.liferay.portal.health.breakingchanges.legacy;
 import com.liferay.portal.health.api.Healthcheck;
 import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
-import com.liferay.portal.health.api.HealthcheckItemImpl;
 import com.liferay.portal.health.breakingchanges.legacy.copied.VerifyProperties;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 
@@ -16,6 +15,8 @@ import org.osgi.service.component.annotations.Component;
 		)
 public class VerifyPropertiesHealthcheck extends HealthcheckBaseImpl {
 
+	private static final String MSG = "healthcheck-verify-properties-success";
+	
 	@Override
 	public Collection<HealthcheckItem> check(ThemeDisplay themeDisplay) {
 		String localizedCategory = lookupMessage(themeDisplay.getLocale(), getCategory());
@@ -23,7 +24,7 @@ public class VerifyPropertiesHealthcheck extends HealthcheckBaseImpl {
 		Collection<HealthcheckItem> items = vp.doVerify();
 		if(items.isEmpty()) {
 			// todo: Translate!
-			items.add(new HealthcheckItemImpl(true, "Verify Properties: Success", null, localizedCategory));
+			items.add(create(true, themeDisplay.getLocale(), null, MSG));
 		}
 		return items;
 	}
