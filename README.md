@@ -21,7 +21,7 @@ This project currently consists of:
 
 Clone this repository into a Liferay Workspace's `modules` directory.
 
-Created with `liferay.workspace.product=dxp-7.4-u18`
+Created with `liferay.workspace.product=dxp-7.4-u18`, last run with U35.
 
 ## Reference
 
@@ -33,3 +33,17 @@ Created with `liferay.workspace.product=dxp-7.4-u18`
 * UI is veeeeery barebones right now 
 * Only few native health checks implemented: Contribute more, in code or just ideas
 * Assumes it only runs on System level (e.g. first virtual instance) and UI is not available on secondary instances. Even though implemented checks might be instance specific...
+* Speaking of instances: Not much thought has been given to scenarios with multiple instances that might have different - instance specific - configuration.
+
+## Ideas for the UI
+
+The UI is - explicitly - _very_ ugly. To make its ugliness even more explicit, it's non-interactive and 100% built with `<table>`.
+ 
+Collecting a few ideas that could go into UI features:
+
+* Explicitly ignore individual healthchecks (this way recommendations can be added more comfortably - anybody who disagrees with them can ignore them)
+* Run healthchecks in background - this enables long running processes to run as well
+* Filter/Sort results by category/result
+* Selectively run individual filters or categories (especially when long running checks are implemented, that are meant to run in the background)
+
+
