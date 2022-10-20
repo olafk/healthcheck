@@ -31,9 +31,9 @@ public abstract class HealthcheckBaseImpl implements Healthcheck {
 		return new HealthcheckItemImpl(state, message, link, lookupMessage(locale, getCategory()));
 	}
 	
-	public HealthcheckItem create(Locale locale, Throwable throwable) {
+	public HealthcheckItem create(Healthcheck check, Locale locale, Throwable throwable) {
 		ResourceBundle bundle = ResourceBundleUtil.getBundle(locale, HealthcheckItemImpl.class);
-		String message = ResourceBundleUtil.getString(bundle, "exception-notification-for-healthcheck", this.getClass().getName(), 
+		String message = ResourceBundleUtil.getString(bundle, "exception-notification-for-healthcheck", check.getClass().getName(), 
 				throwable.getClass().getName() + " " + throwable.getMessage());
 		return new HealthcheckItemImpl(false, message, null, lookupMessage(locale, getCategory()));
 	}

@@ -31,7 +31,7 @@ public class DefaultAdminUserHealthcheck extends HealthcheckBaseImpl {
 		} catch (NoSuchUserException e) {
 			// ignore - this is great and exactly what we're after.
 		} catch (PortalException e) {
-			return wrap(create(themeDisplay.getLocale(), e));
+			return wrap(create(this, themeDisplay.getLocale(), e));
 		}
 		return wrap(create(true, themeDisplay.getLocale(), LINK, MSG));
 	}

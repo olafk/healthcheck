@@ -1,0 +1,5 @@
+Bundle-Name: generic-configuration-lookup-api
+Bundle-SymbolicName: de.olafkock.liferay.configuration
+Bundle-Version: 1.0.0
+Export-Package: de.olafkock.liferay.configuration.api
+Bundle-Activator: de.olafkock.liferay.configuration.impl.BundleActivator

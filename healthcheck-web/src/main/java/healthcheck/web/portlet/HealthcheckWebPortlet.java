@@ -3,7 +3,6 @@ package healthcheck.web.portlet;
 import com.liferay.portal.health.api.Healthcheck;
 import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
-import com.liferay.portal.health.api.HealthcheckItemImpl;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -57,14 +56,22 @@ public class HealthcheckWebPortlet extends MVCPortlet {
 				try {
 					checks.addAll(healthcheck.check(themeDisplay));
 				} catch (Exception e) {
-					checks.add(new HealthcheckItemImpl(false, 
-							healthcheck.getClass().getName() + " threw " + e.getClass().getName() + " " + e.getMessage(), 
-							null, healthcheck.getCategory()));
+					HealthcheckBaseImpl b = new HealthcheckBaseImpl() {
+						@Override
+						public String getCategory() {
+							return healthcheck.getCategory();
+						}
+						@Override
+						public Collection<HealthcheckItem> check(ThemeDisplay themeDisplay) {
+							// Unused in this dummy
+							return null;
+						}
+					};
+					checks.add(b.create(healthcheck, themeDisplay.getLocale(), e));
 				}
 			}
 		} else {
 			Healthcheck dummy = new HealthcheckBaseImpl() {
-				
 				@Override
 				public String getCategory() {
 					return "healthcheck-category-generic";
