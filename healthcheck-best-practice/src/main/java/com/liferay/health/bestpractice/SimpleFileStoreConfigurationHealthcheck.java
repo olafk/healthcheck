@@ -80,7 +80,9 @@ public class SimpleFileStoreConfigurationHealthcheck extends HealthcheckBaseImpl
 
 	protected File getRootDir() {
 		if(rootDir == null) {
-			rootPath = configurationLookup.getDefaultValue("com.liferay.portal.store.file.system.configuration.FileSystemStoreConfiguration", "rootDir");
+			if(rootPath == null) {
+				rootPath = configurationLookup.getDefaultValue("com.liferay.portal.store.file.system.configuration.FileSystemStoreConfiguration", "rootDir");
+			}
 
 			rootDir = new File(rootPath);
 	
