@@ -19,7 +19,7 @@ This project currently consists of:
 	
 ## How to build
 
-Clone this repository into a Liferay Workspace's `modules` directory.
+Clone this repository into a Liferay Workspace's `modules/healthcheck` directory.
 
 Created with `liferay.workspace.product=dxp-7.4-u18`, last run with U35.
 
