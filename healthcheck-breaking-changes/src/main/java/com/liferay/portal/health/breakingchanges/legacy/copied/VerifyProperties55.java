@@ -1,3 +1,5 @@
+package com.liferay.portal.health.breakingchanges.legacy.copied;
+
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
@@ -12,68 +14,65 @@
  * details.
  */
 
-package com.liferay.portal.health.breakingchanges.legacy.copied;
-
-
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.health.api.HealthcheckItemImpl;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.LoggingTimer;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.SystemProperties;
 import com.liferay.portal.util.PropsUtil;
-import com.liferay.portlet.documentlibrary.store.StoreFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 /**
- * Copied on 26. April 2022 from Liferay Source code revision 3e9ef5532c105d05a155709c7fbcef6f5697db04, 
- * and adapted to be used in Health Check implementation (e.g. log replaced health check results, superclass)
+ * Copied on 23. Dec 2022 from Liferay Source code revision c47a49f97260969f31a2f037f70c726196a03094, 
+ * and adapted to be used in Health Check implementation (e.g. log replaced health check results, omit System.exit())
  * https://github.com/liferay/liferay-portal/blob/master/portal-impl/src/com/liferay/portal/verify/VerifyProperties.java
  * 
  * @author Brian Wing Shun Chan
  * @author Olaf Kock
  */
-public class VerifyProperties {
 
-	public VerifyProperties(String category) {
-		this._log = new LogHealthcheckWrapper(category);
-	}
+public class VerifyProperties55 {
 
-	public Collection<HealthcheckItem> doVerify() {
+	public static List<HealthcheckItem> doVerify(String category) {
+		_log.category = category;
+		List<HealthcheckItem> result = null;
 		try {
-			verifySystemProperties();
+			verify();
+			result = _log.popItems();
 		} catch (Exception e) {
-			_log.error("error verifying system properties", e);
+			result = _log.popItems();
+			result.add(new HealthcheckItemImpl(false, e.getClass().getName() + " " + e.getMessage(), null, _log.category));
 		}
-
-		try {
-			verifyPortalProperties();
-		} catch (Exception e) {
-			_log.error("error verifying portal properties", e);
-		}
-
-		verifyDocumentLibrary();
-		return popItems();
-	}
-
-	private Collection<HealthcheckItem> popItems() {
 		return _log.popItems();
 	}
 	
 	
-	
-	protected InputStream getPropertiesResourceAsStream(String resourceName)
+	public static void verify() throws Exception {
+		verifySystemProperties();
+
+		List<String> keys = verifyPortalProperties();
+
+		if (!keys.isEmpty()) {
+			_log.error(
+				"Found incorrect use of migrated portal properties " + keys);
+		}
+	}
+
+	protected static InputStream getPropertiesResourceAsStream(
+			String resourceName)
 		throws FileNotFoundException {
 
 		File propertyFile = new File(resourceName);
@@ -82,18 +81,22 @@ public class VerifyProperties {
 			return new FileInputStream(propertyFile);
 		}
 
-		ClassLoader classLoader = VerifyProperties.class.getClassLoader();
+		ClassLoader classLoader = VerifyProperties55.class.getClassLoader();
 
 		try {
 			return classLoader.getResourceAsStream(resourceName);
 		}
 		catch (RuntimeException runtimeException) {
-			_log.error("Unable to get resource " + resourceName, runtimeException);
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					"Unable to get resource " + resourceName, runtimeException);
+			}
+
 			return null;
 		}
 	}
 
-	protected Properties loadPortalProperties() {
+	protected static Properties loadPortalProperties() {
 		Properties properties = new Properties();
 
 		List<String> propertiesResourceNames = ListUtil.fromArray(
@@ -125,14 +128,9 @@ public class VerifyProperties {
 		return properties;
 	}
 
-	protected void verifyDocumentLibrary() {
-		StoreFactory storeFactory = StoreFactory.getInstance();
-
-		storeFactory.checkProperties();
-	}
-
-	protected void verifyMigratedPortalProperty(
-			Properties portalProperties, String oldKey, String newKey)
+	protected static void verifyMigratedPortalProperty(
+			Properties portalProperties, String oldKey, String newKey,
+			List<String> unmigratedKeys)
 		throws Exception {
 
 		if (portalProperties.containsKey(oldKey)) {
@@ -140,10 +138,13 @@ public class VerifyProperties {
 				StringBundler.concat(
 					"Portal property \"", oldKey,
 					"\" was migrated to the system property \"", newKey, "\""));
+
+			unmigratedKeys.add(oldKey);
 		}
 	}
 
-	protected void verifyMigratedSystemProperty(String oldKey, String newKey)
+	protected static void verifyMigratedSystemProperty(
+			String oldKey, String newKey)
 		throws Exception {
 
 		String value = SystemProperties.get(oldKey);
@@ -156,7 +157,7 @@ public class VerifyProperties {
 		}
 	}
 
-	protected void verifyModularizedPortalProperty(
+	protected static void verifyModularizedPortalProperty(
 			Properties portalProperties, String oldKey, String newKey,
 			String moduleName)
 		throws Exception {
@@ -169,12 +170,12 @@ public class VerifyProperties {
 		}
 	}
 
-	protected void verifyModularizedSystemProperty(
-			Properties systemProperties, String oldKey, String newKey,
+	protected static void verifyModularizedSystemProperty(
+			Set<String> systemPropertyNames, String oldKey, String newKey,
 			String moduleName)
 		throws Exception {
 
-		if (systemProperties.containsKey(oldKey)) {
+		if (systemPropertyNames.contains(oldKey)) {
 			_log.error(
 				StringBundler.concat(
 					"System property \"", oldKey, "\" was modularized to ",
@@ -182,7 +183,7 @@ public class VerifyProperties {
 		}
 	}
 
-	protected void verifyObsoletePortalProperty(
+	protected static void verifyObsoletePortalProperty(
 			Properties portalProperties, String key)
 		throws Exception {
 
@@ -191,7 +192,9 @@ public class VerifyProperties {
 		}
 	}
 
-	protected void verifyObsoleteSystemProperty(String key) throws Exception {
+	protected static void verifyObsoleteSystemProperty(String key)
+		throws Exception {
+
 		String value = SystemProperties.get(key);
 
 		if (value != null) {
@@ -199,38 +202,45 @@ public class VerifyProperties {
 		}
 	}
 
-	protected void verifyPortalProperties() throws Exception {
-		Properties portalProperties = loadPortalProperties();
+	protected static List<String> verifyPortalProperties() throws Exception {
+		List<String> unmigratedKeys = new LinkedList<>();
 
-		for (String[] keys : _MIGRATED_PORTAL_KEYS) {
-			String oldKey = keys[0];
-			String newKey = keys[1];
+		try (LoggingTimer loggingTimer = new LoggingTimer()) {
+			Properties portalProperties = loadPortalProperties();
 
-			verifyMigratedPortalProperty(portalProperties, oldKey, newKey);
+			for (String[] keys : _MIGRATED_PORTAL_KEYS) {
+				String oldKey = keys[0];
+				String newKey = keys[1];
+
+				verifyMigratedPortalProperty(
+					portalProperties, oldKey, newKey, unmigratedKeys);
+			}
+
+			for (String[] keys : _RENAMED_PORTAL_KEYS) {
+				String oldKey = keys[0];
+				String newKey = keys[1];
+
+				verifyRenamedPortalProperty(portalProperties, oldKey, newKey);
+			}
+
+			for (String key : _OBSOLETE_PORTAL_KEYS) {
+				verifyObsoletePortalProperty(portalProperties, key);
+			}
+
+			for (String[] keys : _MODULARIZED_PORTAL_KEYS) {
+				String oldKey = keys[0];
+				String newKey = keys[1];
+				String moduleName = keys[2];
+
+				verifyModularizedPortalProperty(
+					portalProperties, oldKey, newKey, moduleName);
+			}
 		}
 
-		for (String[] keys : _RENAMED_PORTAL_KEYS) {
-			String oldKey = keys[0];
-			String newKey = keys[1];
-
-			verifyRenamedPortalProperty(portalProperties, oldKey, newKey);
-		}
-
-		for (String key : _OBSOLETE_PORTAL_KEYS) {
-			verifyObsoletePortalProperty(portalProperties, key);
-		}
-
-		for (String[] keys : _MODULARIZED_PORTAL_KEYS) {
-			String oldKey = keys[0];
-			String newKey = keys[1];
-			String moduleName = keys[2];
-
-			verifyModularizedPortalProperty(
-				portalProperties, oldKey, newKey, moduleName);
-		}
+		return unmigratedKeys;
 	}
 
-	protected void verifyRenamedPortalProperty(
+	protected static void verifyRenamedPortalProperty(
 			Properties portalProperties, String oldKey, String newKey)
 		throws Exception {
 
@@ -242,7 +252,8 @@ public class VerifyProperties {
 		}
 	}
 
-	protected void verifyRenamedSystemProperty(String oldKey, String newKey)
+	protected static void verifyRenamedSystemProperty(
+			String oldKey, String newKey)
 		throws Exception {
 
 		String value = SystemProperties.get(oldKey);
@@ -255,34 +266,36 @@ public class VerifyProperties {
 		}
 	}
 
-	protected void verifySystemProperties() throws Exception {
-		for (String[] keys : _MIGRATED_SYSTEM_KEYS) {
-			String oldKey = keys[0];
-			String newKey = keys[1];
+	protected static void verifySystemProperties() throws Exception {
+		try (LoggingTimer loggingTimer = new LoggingTimer()) {
+			for (String[] keys : _MIGRATED_SYSTEM_KEYS) {
+				String oldKey = keys[0];
+				String newKey = keys[1];
 
-			verifyMigratedSystemProperty(oldKey, newKey);
-		}
+				verifyMigratedSystemProperty(oldKey, newKey);
+			}
 
-		for (String[] keys : _RENAMED_SYSTEM_KEYS) {
-			String oldKey = keys[0];
-			String newKey = keys[1];
+			for (String[] keys : _RENAMED_SYSTEM_KEYS) {
+				String oldKey = keys[0];
+				String newKey = keys[1];
 
-			verifyRenamedSystemProperty(oldKey, newKey);
-		}
+				verifyRenamedSystemProperty(oldKey, newKey);
+			}
 
-		for (String key : _OBSOLETE_SYSTEM_KEYS) {
-			verifyObsoleteSystemProperty(key);
-		}
+			for (String key : _OBSOLETE_SYSTEM_KEYS) {
+				verifyObsoleteSystemProperty(key);
+			}
 
-		Properties systemProperties = SystemProperties.getProperties();
+			Set<String> propertyNames = SystemProperties.getPropertyNames();
 
-		for (String[] keys : _MODULARIZED_SYSTEM_KEYS) {
-			String oldKey = keys[0];
-			String newKey = keys[1];
-			String moduleName = keys[2];
+			for (String[] keys : _MODULARIZED_SYSTEM_KEYS) {
+				String oldKey = keys[0];
+				String newKey = keys[1];
+				String moduleName = keys[2];
 
-			verifyModularizedSystemProperty(
-				systemProperties, oldKey, newKey, moduleName);
+				verifyModularizedSystemProperty(
+					propertyNames, oldKey, newKey, moduleName);
+			}
 		}
 	}
 
@@ -303,7 +316,41 @@ public class VerifyProperties {
 		{
 			"http.header.secure.x.frame.options.255",
 			"http.header.secure.x.frame.options.255"
-		}
+		},
+		{
+			"module.framework.beginning.start.level",
+			"module.framework.beginning.start.level"
+		},
+		{
+			"module.framework.dynamic.install.start.level",
+			"module.framework.dynamic.install.start.level"
+		},
+		{
+			"module.framework.file.install.config.encoding",
+			"module.framework.file.install.config.encoding"
+		},
+		{
+			"module.framework.concurrent.startup.enabled",
+			"module.framework.concurrent.startup.enabled"
+		},
+		{
+			"module.framework.configuration.bundle.symbolic.names",
+			"module.framework.configuration.bundle.symbolic.names"
+		},
+		{
+			"module.framework.runtime.start.level",
+			"module.framework.runtime.start.level"
+		},
+		{
+			"module.framework.services.ignored.interfaces",
+			"module.framework.services.ignored.interfaces"
+		},
+		{"module.framework.static.jars", "module.framework.static.jars"},
+		{
+			"module.framework.system.packages.extra",
+			"module.framework.system.packages.extra"
+		},
+		{"module.framework.web.start.level", "module.framework.web.start.level"}
 	};
 
 	private static final String[][] _MIGRATED_SYSTEM_KEYS = {
@@ -346,6 +393,38 @@ public class VerifyProperties {
 		{
 			"com.liferay.util.Http.timeout",
 			"com.liferay.portal.util.HttpImpl.timeout"
+		},
+		{
+			"com.liferay.portal.util.HttpImpl.max.connections.per.host",
+			"com.liferay.portal.kernel.util.Http.max.connections.per.host"
+		},
+		{
+			"com.liferay.portal.util.HttpImpl.max.total.connections",
+			"com.liferay.portal.kernel.util.Http.max.total.connections"
+		},
+		{
+			"com.liferay.portal.util.HttpImpl.proxy.auth.type",
+			"com.liferay.portal.kernel.util.Http.proxy.auth.type"
+		},
+		{
+			"com.liferay.portal.util.HttpImpl.proxy.ntlm.domain",
+			"com.liferay.portal.kernel.util.Http.proxy.ntlm.domain"
+		},
+		{
+			"com.liferay.portal.util.HttpImpl.proxy.ntlm.host",
+			"com.liferay.portal.kernel.util.Http.proxy.ntlm.host"
+		},
+		{
+			"com.liferay.portal.util.HttpImpl.proxy.password",
+			"com.liferay.portal.kernel.util.Http.proxy.password"
+		},
+		{
+			"com.liferay.portal.util.HttpImpl.proxy.username",
+			"com.liferay.portal.kernel.util.Http.proxy.username"
+		},
+		{
+			"com.liferay.portal.util.HttpImpl.timeout",
+			"com.liferay.portal.kernel.util.Http.timeout"
 		},
 		{
 			"com.liferay.util.format.PhoneNumberFormat",
@@ -1580,6 +1659,7 @@ public class VerifyProperties {
 		"asset.tag.properties.enabled", "asset.tag.suggestions.enabled",
 		"auth.login.prompt.enabled", "auth.max.failures.limit",
 		"auth.user.uuid.store.enabled", "auto.deploy.blacklist.threshold",
+		"auto.deploy.copy.commons.logging", "auto.deploy.copy.log4j",
 		"auto.deploy.dest.dir", "auto.deploy.default.dest.dir",
 		"auto.deploy.jboss.dest.dir", "auto.deploy.jboss.dest.dir[5]",
 		"auto.deploy.jboss.prefix", "auto.deploy.tomcat.dest.dir",
@@ -1599,8 +1679,8 @@ public class VerifyProperties {
 		"buffered.increment.parallel.queue.size",
 		"buffered.increment.serial.queue.size",
 		"cache.clear.on.context.initialization",
-		"calendar.publish.to.live.by.default", "captcha.max.challenges",
-		"captcha.check.portal.create_account",
+		"cache.clear.on.plugin.undeploy", "calendar.publish.to.live.by.default",
+		"captcha.max.challenges", "captcha.check.portal.create_account",
 		"captcha.check.portal.send_password",
 		"captcha.check.portlet.message_boards.edit_category",
 		"captcha.check.portlet.message_boards.edit_message",
@@ -1730,7 +1810,8 @@ public class VerifyProperties {
 		"ehcache.rmi.peer.provider.factory.class",
 		"ehcache.rmi.peer.provider.factory.properties",
 		"ehcache.socket.so.timeout", "ehcache.socket.start.port",
-		"ehcache.statistics.enabled", "finalize.manager.thread.enabled",
+		"ehcache.statistics.enabled", "enterprise.product.commerce.enabled",
+		"finalize.manager.thread.enabled",
 		"hot.deploy.hook.custom.jsp.verification.enabled",
 		"hot.undeploy.enabled", "hot.undeploy.interval",
 		"hot.undeploy.on.redeploy", "hibernate.cache.region.factory_class",
@@ -1741,7 +1822,8 @@ public class VerifyProperties {
 		"hibernate.session.factory.imported.class.name.regexp", "icq.jar",
 		"icq.login", "icq.password", "index.dump.compression.enabled",
 		"index.filter.search.limit", "index.on.upgrade",
-		"index.portal.field.analyzer.enabled", "index.search.highlight.enabled",
+		"index.portal.field.analyzer.enabled", "index.search.engine.id",
+		"index.search.highlight.enabled", "index.search.writer.max.queue.size",
 		"index.read.only", "index.with.thread", "intraband.impl",
 		"intraband.mailbox.reaper.thread.enabled",
 		"intraband.mailbox.storage.life", "intraband.proxy.dump.classes.dir",
@@ -1826,10 +1908,11 @@ public class VerifyProperties {
 		"layout.view.page[control_panel]", "layout.view.page[embedded]",
 		"layout.view.page[link_to_layout]", "layout.view.page[panel]",
 		"layout.view.page[url]", "library.download.url.resin.jar",
-		"library.download.url.script-10.jar", "look.and.feel.modifiable",
-		"lucene.analyzer", "lucene.cluster.index.loading.sync.timeout",
-		"lucene.file.extractor", "lucene.file.extractor.regexp.strip",
-		"lucene.replicate.write", "lucene.store.jdbc.auto.clean.up",
+		"library.download.url.script-10.jar", "liferay.lib.global.shared.dir",
+		"liferay.web.portal.dir", "look.and.feel.modifiable", "lucene.analyzer",
+		"lucene.cluster.index.loading.sync.timeout", "lucene.file.extractor",
+		"lucene.file.extractor.regexp.strip", "lucene.replicate.write",
+		"lucene.store.jdbc.auto.clean.up",
 		"lucene.store.jdbc.auto.clean.up.enabled",
 		"lucene.store.jdbc.auto.clean.up.interval",
 		"lucene.store.jdbc.dialect.db2", "lucene.store.jdbc.dialect.derby",
@@ -1840,7 +1923,11 @@ public class VerifyProperties {
 		"mail.hook.cyrus.delete.user", "mail.hook.cyrus.home",
 		"mail.hook.fusemail.account.type", "mail.hook.fusemail.group.parent",
 		"mail.hook.fusemail.password", "mail.hook.fusemail.url",
-		"mail.hook.fusemail.username",
+		"mail.hook.fusemail.username", "mail.hook.impl",
+		"mail.hook.sendmail.add.user", "mail.hook.sendmail.change.password",
+		"mail.hook.sendmail.delete.user", "mail.hook.sendmail.home",
+		"mail.hook.sendmail.virtusertable",
+		"mail.hook.sendmail.virtusertable.refresh", "mail.hook.shell.script",
 		"memory.cluster.scheduler.lock.cache.enabled",
 		"message.boards.email.message.added.signature",
 		"message.boards.email.message.updated.signature",
@@ -1850,13 +1937,17 @@ public class VerifyProperties {
 		"microsoft.translator.client.id", "microsoft.translator.client.secret",
 		"minifier.inline.content.cache.size",
 		"mobile.device.styling.wap.enabled", "module.framework.initial.bundles",
+		"module.framework.properties.ds.lock.timeout.milliseconds",
+		"module.framework.properties.ds.stop.timeout.milliseconds",
 		"module.framework.properties.felix.fileinstall.disableNio2",
 		"module.framework.properties.felix.fileinstall.log.level",
 		"module.framework.properties.file.install.disableNio2",
 		"module.framework.properties.file.install.log.level",
 		"module.framework.properties.file.install.optionalImportRefreshScope",
+		"module.framework.properties.lpkg.deployer.dir",
 		"module.framework.properties.lpkg.index.validator.enabled",
-		"module.framework.register.liferay.services", "msn.login",
+		"module.framework.register.liferay.services",
+		"module.framework.resolver.revision.batch.size", "msn.login",
 		"msn.password", "multicast.group.address[\"hibernate\"]",
 		"multicast.group.port[\"hibernate\"]", "my.sites.display.style",
 		"multi.value.map.com.liferay.portal.convert." +
@@ -1876,6 +1967,7 @@ public class VerifyProperties {
 		"organizations.form.update.miscellaneous",
 		"organizations.indexer.enabled", "organizations.rootable",
 		"organizations.types", "permissions.object.blocking.cache",
+		"poller.notifications.timeout", "poller.request.timeout",
 		"portal.cache.manager.type.multi.vm",
 		"portal.cache.manager.type.single.vm", "portal.ctx",
 		"portal.fabric.enabled", "portal.fabric.agent.selector.class",
@@ -1911,8 +2003,8 @@ public class VerifyProperties {
 		"sandbox.deploy.listeners", "sc.image.max.size",
 		"sc.image.thumbnail.max.height", "sc.image.thumbnail.max.width",
 		"sc.product.comments.enabled", "scheduler.classes",
-		"schema.run.minimal", "scripting.jruby.compile.mode",
-		"scripting.jruby.compile.threshold",
+		"scheduler.event.message.listener.lock.timeout", "schema.run.minimal",
+		"scripting.jruby.compile.mode", "scripting.jruby.compile.threshold",
 		"search.container.page.iterator.page.values",
 		"service.builder.service.read.only.prefixes", "session.disabled",
 		"setup.database.types", "shard.available.names", "shard.default.name",
@@ -1992,6 +2084,10 @@ public class VerifyProperties {
 			"com.liferay.portal.url.rewrite.filter.internal.URLRewriteFilter"
 		},
 		{
+			"com.liferay.portal.upload.LiferayFileItem.threshold.size",
+			"com.liferay.portal.kernel.upload.FileItem.threshold.size"
+		},
+		{
 			"default.guest.friendly.url",
 			"default.guest.public.layout.friendly.url"
 		},
@@ -2062,6 +2158,15 @@ public class VerifyProperties {
 			"velocity.engine.restricted.variables"
 		},
 		{
+			"module.framework.properties.dependency.manager.sync.timeout",
+			"dependency.manager.sync.timeout"
+		},
+		{
+			"module.framework.properties.dependency.manager.thread.pool." +
+				"enabled",
+			"dependency.manager.thread.pool.enabled"
+		},
+		{
 			"module.framework.properties.felix.fileinstall.bundles.new.start",
 			"module.framework.file.install.bundles.start.new"
 		},
@@ -2105,6 +2210,10 @@ public class VerifyProperties {
 			"module.framework.file.install.subdir.mode"
 		},
 		{
+			"module.framework.properties.initial.system.check.enabled",
+			"initial.system.check.enabled"
+		},
+		{
 			"passwords.passwordpolicytoolkit.charset.lowercase",
 			"passwords.passwordpolicytoolkit.validator.charset.lowercase"
 		},
@@ -2144,7 +2253,7 @@ public class VerifyProperties {
 		}
 	};
 
-	public class LogHealthcheckWrapper {
+	public static class LogHealthcheckWrapper {
 		
 		private String category;
 
@@ -2167,6 +2276,14 @@ public class VerifyProperties {
 			result.add(item);
 		}
 		
+		public void warn(String msg, RuntimeException exception) {
+			error(msg, exception);
+		}
+
+		public boolean isWarnEnabled() {
+			return true;
+		}
+
 		public List<HealthcheckItem> popItems() {
 			List<HealthcheckItem> result = this.result;
 			this.result = new LinkedList<HealthcheckItem>();
@@ -2181,5 +2298,6 @@ public class VerifyProperties {
 		private List<HealthcheckItem> result = new LinkedList<HealthcheckItem>();
 	}
 	
-	private final LogHealthcheckWrapper _log;
+	private static final LogHealthcheckWrapper _log = new LogHealthcheckWrapper("healthcheck-category-breaking-changes");
+
 }
