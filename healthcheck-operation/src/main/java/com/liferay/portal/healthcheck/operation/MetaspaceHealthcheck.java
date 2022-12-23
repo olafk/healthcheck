@@ -32,7 +32,8 @@ public class MetaspaceHealthcheck extends HealthcheckBaseImpl {
 		for (MemoryPoolMXBean memoryMXBean : ManagementFactory.getMemoryPoolMXBeans()) {
 		    if ("Metaspace".equals(memoryMXBean.getName())) {
 		            long maxMetaspace = memoryMXBean.getUsage().getMax();
-		            return wrap(create(maxMetaspace>=768*1024*1024, themeDisplay.getLocale(), LINK, MSG, maxMetaspace));
+		            return wrap(create(maxMetaspace>=768*1024*1024 || maxMetaspace==-1, 
+		            		themeDisplay.getLocale(), LINK, MSG, maxMetaspace));
 		    }
 		}
 		
