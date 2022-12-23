@@ -9,6 +9,8 @@ import com.liferay.portal.kernel.util.WebKeys;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -84,6 +86,20 @@ public class HealthcheckWebPortlet extends MVCPortlet {
 			};
 			checks.addAll(dummy.check(themeDisplay));
 		}
+		Collections.sort(checks, new Comparator<HealthcheckItem>() {
+
+			@Override
+			public int compare(HealthcheckItem arg0, HealthcheckItem arg1) {
+				if(arg0.isResolved() == arg1.isResolved()) {
+					return 0;
+				} else if(arg0.isResolved()) {
+					return 1;
+				} else {
+					return -1;
+				}
+			}
+			
+		});
 		renderRequest.setAttribute("checks", checks);
 		super.doView(renderRequest, renderResponse);
 	}
