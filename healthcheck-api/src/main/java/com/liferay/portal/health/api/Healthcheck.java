@@ -1,8 +1,7 @@
 package com.liferay.portal.health.api;
 
-import com.liferay.portal.kernel.theme.ThemeDisplay;
-
 import java.util.Collection;
+import java.util.Locale;
 
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -12,6 +11,6 @@ import org.osgi.annotation.versioning.ProviderType;
 
 @ProviderType
 public interface Healthcheck {
-	Collection<HealthcheckItem> check(ThemeDisplay themeDisplay);
+	Collection<HealthcheckItem> check(long companyId, Locale locale);
 	String getCategory();
 }

@@ -5,10 +5,10 @@ import com.liferay.portal.health.api.Healthcheck;
 import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Activate;
@@ -35,11 +35,11 @@ public class JSONWSApiAuthConfigurationHealthcheck extends HealthcheckBaseImpl {
 	private List<String> urlsIncludes;
 
 	@Override
-	public Collection<HealthcheckItem> check(ThemeDisplay themeDisplay) {
+	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
 		boolean correctlyConfigured = urlsIncludes.contains("/api/json*") 
 				&& urlsIncludes.contains("/api/jsonws*") 
 				&& urlsIncludes.contains("/c/portal/json_service*");
-		return wrap(create(correctlyConfigured, themeDisplay.getLocale(), LINK, 
+		return wrap(create(correctlyConfigured, locale, LINK, 
 				correctlyConfigured? MSG : ERRORMSG	, urlsIncludes));
 	}
 

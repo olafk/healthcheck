@@ -8,13 +8,13 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.TermQuery;
 import com.liferay.portal.kernel.search.generic.TermQueryImpl;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.search.engine.adapter.SearchEngineAdapter;
 import com.liferay.portal.search.engine.adapter.search.CountSearchRequest;
 import com.liferay.portal.search.engine.adapter.search.CountSearchResponse;
 import com.liferay.portal.search.index.IndexNameBuilder;
 
 import java.util.Collection;
+import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -37,9 +37,9 @@ public class ContentIndexedHealthcheck extends HealthcheckBaseImpl {
 	private static final String ERROR_MSG = "healthcheck-content-indexed-error";
 
 	@Override
-	public Collection<HealthcheckItem> check(ThemeDisplay themeDisplay) {
+	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
 		CountSearchRequest countSearchRequest = new CountSearchRequest();
-		countSearchRequest.setIndexNames(indexNameBuilder.getIndexName(themeDisplay.getCompanyId()));
+		countSearchRequest.setIndexNames(indexNameBuilder.getIndexName(companyId));
 		TermQuery termQuery = new TermQueryImpl(
 			Field.ENTRY_CLASS_NAME, User.class.getName());
 
@@ -47,10 +47,10 @@ public class ContentIndexedHealthcheck extends HealthcheckBaseImpl {
 		CountSearchResponse countSearchResponse =
 			searchEngineAdapter.execute(countSearchRequest);
 		long indexCount = countSearchResponse.getCount();
-		long dbCount = userLocalService.getCompanyUsersCount(themeDisplay.getCompanyId());
+		long dbCount = userLocalService.getCompanyUsersCount(companyId);
 		
 		boolean exists = (indexCount >= dbCount);
-		return wrap(create(exists,  themeDisplay.getLocale(), LINK, exists ? MSG : ERROR_MSG, indexCount, dbCount));
+		return wrap(create(exists,  locale, LINK, exists ? MSG : ERROR_MSG, indexCount, dbCount));
 	}
 
 	@Override

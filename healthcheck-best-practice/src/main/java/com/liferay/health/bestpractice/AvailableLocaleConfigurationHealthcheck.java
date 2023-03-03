@@ -3,7 +3,6 @@ package com.liferay.health.bestpractice;
 import com.liferay.portal.health.api.Healthcheck;
 import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.util.PropsValues;
 
 import java.text.DateFormat;
@@ -41,9 +40,8 @@ public class AvailableLocaleConfigurationHealthcheck extends HealthcheckBaseImpl
 	private static final Set<String> availableLocales = Arrays.asList(DateFormat.getAvailableLocales()).stream().map(Object::toString).collect(Collectors.toCollection(TreeSet::new));;
 
 	@Override
-	public Collection<HealthcheckItem> check(ThemeDisplay themeDisplay) {
+	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
 		LinkedList<HealthcheckItem> result = new LinkedList<HealthcheckItem>();
-		Locale locale = themeDisplay.getLocale();
 		validateProperties(result, locale, PropsValues.LOCALES, "locales");
 		validateProperties(result, locale, PropsValues.LOCALES_ENABLED, "locales.enabled");
 		validateProperties(result, locale, PropsValues.LOCALES_BETA, "locales.beta");

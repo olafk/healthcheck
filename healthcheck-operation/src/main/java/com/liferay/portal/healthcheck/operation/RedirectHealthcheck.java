@@ -8,19 +8,18 @@ import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.healthcheck.operation.auxiliary.HostNameExtractingFilter;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.servlet.Filter;
-import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.framework.Constants;
 import org.osgi.service.cm.ConfigurationException;
@@ -46,27 +45,14 @@ import org.osgi.service.component.annotations.Reference;
 public class RedirectHealthcheck extends HealthcheckBaseImpl implements ManagedServiceFactory {
 
 	@Override
-	public Collection<HealthcheckItem> check(ThemeDisplay themeDisplay) {
-		long companyId = themeDisplay.getCompanyId();
-		Locale locale = themeDisplay.getLocale();
-		HttpServletRequest request = themeDisplay.getRequest();
-		String currentURL = request.getRequestURL().toString();
-		String serverName = request.getServerName();
-
-		String url = PortalUtil.escapeRedirect(currentURL);
-		
-		_log.error(filter);
+	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
 		HostNameExtractingFilter f = (HostNameExtractingFilter) filter;
 		Set<String> urls = f.getRequestedHostNames(companyId);
 		
-		Collection<HealthcheckItem> result = wrap(create(url!=null, 
-				locale, 
-				PARTIAL_LINK + companyToRedirectConfigPid.get(companyId), 
-				"healthcheck-redirection-url", 
-				serverName));
+		Collection<HealthcheckItem> result = new LinkedList<HealthcheckItem>();
 		
 		for (String requestedUrl : urls) {
-			url = PortalUtil.escapeRedirect(requestedUrl);
+			String url = PortalUtil.escapeRedirect(requestedUrl);
 			result.add(create(url!=null, 
 					locale, 
 					PARTIAL_LINK + companyToRedirectConfigPid.get(companyId), 
@@ -82,7 +68,7 @@ public class RedirectHealthcheck extends HealthcheckBaseImpl implements ManagedS
 			return "null";
 		}
 		int separatorIndex = url.indexOf("://");
-		if(separatorIndex<0) {
+		if(separatorIndex<1) { // not found, and should have a scheme leading up to it
 			return "???";
 		}
 		return HtmlUtil.escape(url.substring(separatorIndex + 3));

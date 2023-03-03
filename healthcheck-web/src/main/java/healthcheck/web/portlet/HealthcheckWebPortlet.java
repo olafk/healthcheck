@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.portlet.Portlet;
 import javax.portlet.PortletException;
@@ -56,7 +57,7 @@ public class HealthcheckWebPortlet extends MVCPortlet {
 		if(themeDisplay.getPermissionChecker().isCompanyAdmin(themeDisplay.getCompanyId())) {
 			for (Healthcheck healthcheck : healthchecks) {
 				try {
-					checks.addAll(healthcheck.check(themeDisplay));
+					checks.addAll(healthcheck.check(themeDisplay.getCompanyId(), themeDisplay.getLocale()));
 				} catch (Exception e) {
 					HealthcheckBaseImpl b = new HealthcheckBaseImpl() {
 						@Override
@@ -64,7 +65,7 @@ public class HealthcheckWebPortlet extends MVCPortlet {
 							return healthcheck.getCategory();
 						}
 						@Override
-						public Collection<HealthcheckItem> check(ThemeDisplay themeDisplay) {
+						public Collection<HealthcheckItem> check(long companyId, Locale locale) {
 							// Unused in this dummy
 							return null;
 						}
@@ -80,18 +81,18 @@ public class HealthcheckWebPortlet extends MVCPortlet {
 				}
 				
 				@Override
-				public Collection<HealthcheckItem> check(ThemeDisplay themeDisplay) {
-					return wrap(create(false, themeDisplay.getLocale(), "/", "healthcheck-need-to-be-company-administrator"));
+				public Collection<HealthcheckItem> check(long companyId, Locale locale) {
+					return wrap(create(false, locale, "/", "healthcheck-need-to-be-company-administrator"));
 				}
 			};
-			checks.addAll(dummy.check(themeDisplay));
+			checks.addAll(dummy.check(themeDisplay.getCompanyId(), themeDisplay.getLocale()));
 		}
 		Collections.sort(checks, new Comparator<HealthcheckItem>() {
 
 			@Override
 			public int compare(HealthcheckItem arg0, HealthcheckItem arg1) {
 				if(arg0.isResolved() == arg1.isResolved()) {
-					return 0;
+					return arg0.getCategory().compareTo(arg1.getCategory());
 				} else if(arg0.isResolved()) {
 					return 1;
 				} else {

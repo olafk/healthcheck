@@ -4,10 +4,10 @@ import com.liferay.portal.health.api.Healthcheck;
 import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.health.breakingchanges.deprecated.sample.DeprecatedSampleService;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -39,14 +39,14 @@ public class VerifyDeprecatedServiceDemoHealthcheck extends HealthcheckBaseImpl 
 	private static final String ERROR_MESSAGE = "healthcheck-deprecated-service-demo-found";
 	
 	@Override
-	public Collection<HealthcheckItem> check(ThemeDisplay themeDisplay) {
+	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
 		Collection<HealthcheckItem> items = new LinkedList<HealthcheckItem>();
 		if(services.isEmpty()) {
 			// todo: Translate!
-			items.add(create(true, themeDisplay.getLocale(), null, MSG));
+			items.add(create(true, locale, null, MSG));
 		} else {
 			for (DeprecatedSampleService service : services) {
-				items.add(create(false, themeDisplay.getLocale(), null, ERROR_MESSAGE, 
+				items.add(create(false, locale, null, ERROR_MESSAGE, 
 						DeprecatedSampleService.class.getName(), 
 						service.getClass().getName()));
 			}

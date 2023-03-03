@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 
@@ -48,7 +49,7 @@ public abstract class BasePropertiesPlausibleValuesHealthcheck<T> extends Health
 	}
 	
 
-	public Collection<HealthcheckItem> check(ThemeDisplay themeDisplay, PropertyValidator validator) {
+	public Collection<HealthcheckItem> check(long companyId, Locale locale, PropertyValidator validator) {
 		List<HealthcheckItem> result = new LinkedList<HealthcheckItem>();
 		List<String> theProperties = getProperties();
 		log.info("found " + theProperties.size() + " properties");
@@ -57,14 +58,14 @@ public abstract class BasePropertiesPlausibleValuesHealthcheck<T> extends Health
 			String value = PropsUtil.get(property);
 			if(value != null) {
 				if(!validator.isValid(value)) {
-					result.add(create(false, themeDisplay.getLocale(), link, errorMsg, property, value));
+					result.add(create(false, locale, link, errorMsg, property, value));
 				}
 			} else {
 				log.warn("null " + property /* + " is null. This is a field defined in PropsValues, but undefined in any portal*.properties file" */);
 			}
 		}
 		if(result.isEmpty()) {
-			result.add(create(true, themeDisplay.getLocale(), link, msg));
+			result.add(create(true, locale, link, msg));
 		}
 		return result;	
 	}

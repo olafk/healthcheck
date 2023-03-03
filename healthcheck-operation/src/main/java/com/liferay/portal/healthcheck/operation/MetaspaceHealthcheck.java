@@ -3,11 +3,11 @@ package com.liferay.portal.healthcheck.operation;
 import com.liferay.portal.health.api.Healthcheck;
 import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryPoolMXBean;
 import java.util.Collection;
+import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -28,16 +28,16 @@ public class MetaspaceHealthcheck extends HealthcheckBaseImpl {
 	private static final String MSG = "healthcheck-max-metaspace-must-be-above-768m";
 
 	@Override
-	public Collection<HealthcheckItem> check(ThemeDisplay themeDisplay) {
+	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
 		for (MemoryPoolMXBean memoryMXBean : ManagementFactory.getMemoryPoolMXBeans()) {
 		    if ("Metaspace".equals(memoryMXBean.getName())) {
 		            long maxMetaspace = memoryMXBean.getUsage().getMax();
 		            return wrap(create(maxMetaspace>=768*1024*1024 || maxMetaspace==-1, 
-		            		themeDisplay.getLocale(), LINK, MSG, maxMetaspace));
+		            		locale, LINK, MSG, maxMetaspace));
 		    }
 		}
 		
-        return wrap(create(false, themeDisplay.getLocale(), LINK, MSG, "undetected"));
+        return wrap(create(false, locale, LINK, MSG, "undetected"));
 	}
 
 	@Override

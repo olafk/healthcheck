@@ -6,7 +6,6 @@ import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.health.api.HealthcheckItemImpl;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,12 +24,11 @@ public class CommerceHealthcheckWrapper extends HealthcheckBaseImpl {
 	
 	
 	@Override
-	public Collection<HealthcheckItem> check(ThemeDisplay themeDisplay) {
-		long companyId = themeDisplay.getCompanyId();
+	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
 		List<CommerceChannel> commerceChannels = commerceChannelLocalService.getCommerceChannels(companyId);
 		ArrayList<HealthcheckItem> result = new ArrayList<HealthcheckItem>(commerceChannels.size());
 		for (CommerceChannel channel : commerceChannels) {
-			result.add(createResult(status, companyId, channel, themeDisplay.getLocale()));
+			result.add(createResult(status, companyId, channel, locale));
 		}
 		return result;
 	}

@@ -8,9 +8,9 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.pwd.PasswordEncryptorUtil;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
 
 import java.util.Collection;
+import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -21,19 +21,19 @@ import org.osgi.service.component.annotations.Reference;
 public class DefaultAdminUserHealthcheck extends HealthcheckBaseImpl {
 
 	@Override
-	public Collection<HealthcheckItem> check(ThemeDisplay themeDisplay) {
+	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
 		try {
-			User user = userLocalService.getUserByEmailAddress(themeDisplay.getCompanyId(), "test@liferay.com");
+			User user = userLocalService.getUserByEmailAddress(companyId, "test@liferay.com");
 			if(user != null) {
 				String hashedPassword = PasswordEncryptorUtil.encrypt("test", user.getPassword());
-				return wrap(create(! user.getPassword().equals(hashedPassword), themeDisplay.getLocale(), LINK + LINK_PARAMETER + user.getUserId(), MSG));
+				return wrap(create(! user.getPassword().equals(hashedPassword), locale, LINK + LINK_PARAMETER + user.getUserId(), MSG));
 			}
 		} catch (NoSuchUserException e) {
 			// ignore - this is great and exactly what we're after.
 		} catch (PortalException e) {
-			return wrap(create(this, themeDisplay.getLocale(), e));
+			return wrap(create(this, locale, e));
 		}
-		return wrap(create(true, themeDisplay.getLocale(), LINK, MSG));
+		return wrap(create(true, locale, LINK, MSG));
 	}
 
 	@Override

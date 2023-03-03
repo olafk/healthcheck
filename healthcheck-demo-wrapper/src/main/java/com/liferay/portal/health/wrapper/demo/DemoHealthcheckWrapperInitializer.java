@@ -3,6 +3,7 @@ package com.liferay.portal.health.wrapper.demo;
 import com.liferay.portal.health.api.Healthcheck;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.sales.checklist.api.ChecklistProvider;
 
 import java.util.HashMap;
@@ -37,6 +38,8 @@ public class DemoHealthcheckWrapperInitializer {
 		registerServices();
 	}
 
+	@Reference private CompanyLocalService companyLocalService;
+	
 	@Reference(			
 			cardinality = ReferenceCardinality.MULTIPLE,
 		    policyOption = ReferencePolicyOption.GREEDY,
@@ -64,6 +67,7 @@ public class DemoHealthcheckWrapperInitializer {
 		if(context != null) {
 			for (Iterator<DemoHealthcheckWrapper> iterator = unregisteredServices.iterator(); iterator.hasNext();) {
 				DemoHealthcheckWrapper wrapper = iterator.next();
+				wrapper.setCompanyLocalService(companyLocalService);
 				Hashtable<String, Object> properties = new Hashtable<String,Object>();
 				ServiceRegistration<Healthcheck> serviceRegistration = context.registerService(Healthcheck.class, wrapper, properties);
 				services.put(wrapper.getWrappee(), serviceRegistration);

@@ -3,7 +3,6 @@ package com.liferay.health.bestpractice;
 import com.liferay.portal.health.api.Healthcheck;
 import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.util.PropsValues;
 
@@ -28,9 +27,8 @@ public class GoogleFileStoreConfigurationHealthcheck extends HealthcheckBaseImpl
 	private static final String ERROR_MSG = "";
 	
 	@Override
-	public Collection<HealthcheckItem> check(ThemeDisplay themeDisplay) {
+	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
 		LinkedList<HealthcheckItem> result = new LinkedList<HealthcheckItem>();
-		Locale locale = themeDisplay.getLocale();
 		if(PropsValues.DL_STORE_IMPL.equals("com.liferay.portal.store.gcs.GCSStore")) {
 			String key = PropsUtil.get("dl.store.gcs.aes256.key");
 			// base64 encoded 256bit AES keys are 44 characters long

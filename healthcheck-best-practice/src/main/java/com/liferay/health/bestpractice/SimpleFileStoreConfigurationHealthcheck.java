@@ -4,7 +4,6 @@ import com.liferay.portal.health.api.Healthcheck;
 import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.util.PropsValues;
 
 import java.io.File;
@@ -39,8 +38,7 @@ public class SimpleFileStoreConfigurationHealthcheck extends HealthcheckBaseImpl
 	private final int WARNING_LIMIT = 500;
 	
 	@Override
-	public Collection<HealthcheckItem> check(ThemeDisplay themeDisplay) {
-		Locale locale = themeDisplay.getLocale();
+	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
 		if(PropsValues.DL_STORE_IMPL.equals("com.liferay.portal.store.file.system.FileSystemStore")) {
 			if(getRootDir().isDirectory()) {
 				int files = getRecursiveMaxFiles(getRootDir(), 0);

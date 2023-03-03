@@ -4,9 +4,9 @@ import com.liferay.portal.health.api.Healthcheck;
 import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
 
 import java.util.Collection;
+import java.util.Locale;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Activate;
@@ -24,7 +24,7 @@ public class RemoteElasticHealthcheck extends HealthcheckBaseImpl {
 	private final static String MSG = "healthcheck-elasticsearch-sidecar-not-supported";
 	
 	@Override
-	public Collection<HealthcheckItem> check(ThemeDisplay themeDisplay) {
+	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
 		boolean remote = false;
 		boolean configured = operationMode!= null || productionModeEnabled!= null;
 		if(configured) {
@@ -34,7 +34,7 @@ public class RemoteElasticHealthcheck extends HealthcheckBaseImpl {
 				remote = true;
 			}
 		}
-        return wrap(create(remote, themeDisplay.getLocale(), LINK, MSG, productionModeEnabled, operationMode));
+        return wrap(create(remote, locale, LINK, MSG, productionModeEnabled, operationMode));
 	}
 
 	@Override
