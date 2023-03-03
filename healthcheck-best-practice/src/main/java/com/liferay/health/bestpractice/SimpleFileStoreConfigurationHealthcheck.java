@@ -1,8 +1,12 @@
 package com.liferay.health.bestpractice;
 
+import com.liferay.health.bestpractice.configuration.HealthcheckBestPracticeConfiguration;
+import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.health.api.Healthcheck;
 import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
 import com.liferay.portal.util.PropsValues;
 
@@ -25,7 +29,10 @@ import de.olafkock.liferay.configuration.api.GenericConfigurationLookup;
  * @author Olaf Kock
  */
 @Component(
-		configurationPid = "com.liferay.portal.store.file.system.configuration.FileSystemStoreConfiguration",
+		configurationPid = {
+				"com.liferay.portal.store.file.system.configuration.FileSystemStoreConfiguration",
+				"com.liferay.health.bestpractice.configuration.HealthcheckBestPracticeConfiguration"
+				},
 		service = Healthcheck.class
 		)
 public class SimpleFileStoreConfigurationHealthcheck extends HealthcheckBaseImpl {
@@ -35,23 +42,32 @@ public class SimpleFileStoreConfigurationHealthcheck extends HealthcheckBaseImpl
 	private final String MSG_TOO_MANY_FILES = "healthcheck-simple-file-store-too-many-files";
 	private final String MSG_UNUSED = "healthcheck-simple-file-store-unused";
 	private final String MSG_NO_DIR = "healthcheck-simple-file-store-no-dir";
-	private final int WARNING_LIMIT = 500;
+	private final String MSG_USABLE_SPACE = "healthcheck-simple-file-store-usable-space";
 	
 	@Override
 	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
+		Collection<HealthcheckItem> result; 
 		if(PropsValues.DL_STORE_IMPL.equals("com.liferay.portal.store.file.system.FileSystemStore")) {
 			if(getRootDir().isDirectory()) {
 				int files = getRecursiveMaxFiles(getRootDir(), 0);
-				if(files > WARNING_LIMIT) {
-					return wrap(create(false, locale, LINK, MSG_TOO_MANY_FILES, files, WARNING_LIMIT, getRootDir().getAbsolutePath()));
+				if(files > maximumFiles) {
+					result = wrap(create(false, locale, LINK, MSG_TOO_MANY_FILES, files, maximumFiles, getRootDir().getAbsolutePath()));
 				} else {
-					return wrap(create(true, locale, LINK, MSG, files, WARNING_LIMIT, getRootDir().getAbsolutePath()));
+					result = wrap(create(true, locale, LINK, MSG, files, maximumFiles, getRootDir().getAbsolutePath()));
 				}
 			} else {
-				return wrap(create(false, locale, LINK, MSG_NO_DIR, getRootDir().getAbsolutePath()));
+				result = wrap(create(false, locale, LINK, MSG_NO_DIR, getRootDir().getAbsolutePath()));
 			}
+			result.add(create(getRootDir().getUsableSpace() > minimumUsableSpace, 
+					locale,
+					null,
+					MSG_USABLE_SPACE,
+					minimumUsableSpace,
+					getRootDir().getUsableSpace()));
+		} else {
+			result = wrap(create(true, locale, LINK, MSG_UNUSED));
 		}
-		return wrap(create(true, locale, LINK, MSG_UNUSED));
+		return result;
 	}
 	
 	private int getRecursiveMaxFiles(File dir, int max) {
@@ -73,10 +89,14 @@ public class SimpleFileStoreConfigurationHealthcheck extends HealthcheckBaseImpl
 	@Activate
 	@Modified
 	protected void activate(Map<String, Object> properties) {
-		rootPath = (String) properties.get("rootDir");
+		HealthcheckBestPracticeConfiguration config = ConfigurableUtil.createConfigurable(HealthcheckBestPracticeConfiguration.class, properties);
+		maximumFiles = config.maximumSimpleStoreFiles();
+		minimumUsableSpace = config.minimumUsableSpace();
 	}
 
 	protected File getRootDir() {
+		// as we don't have classloader access to the configuration class FileSystemStoreConfiguration (it's not exported), 
+		// we'll need to figure out the configured value manually, by resolving default values explicitly.
 		if(rootDir == null) {
 			if(rootPath == null) {
 				rootPath = configurationLookup.getDefaultValue("com.liferay.portal.store.file.system.configuration.FileSystemStoreConfiguration", "rootDir");
@@ -104,4 +124,9 @@ public class SimpleFileStoreConfigurationHealthcheck extends HealthcheckBaseImpl
 	
 	private File rootDir;
 	private String rootPath;
+	private Long minimumUsableSpace;
+	private Integer maximumFiles;
+	
+	static Log _log = LogFactoryUtil.getLog(SimpleFileStoreConfigurationHealthcheck.class);
+
 }

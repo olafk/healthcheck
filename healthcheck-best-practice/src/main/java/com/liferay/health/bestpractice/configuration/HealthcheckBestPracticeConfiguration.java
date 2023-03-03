@@ -13,7 +13,15 @@ public interface HealthcheckBestPracticeConfiguration {
             deflt = "500",
 			description = "healthcheck-best-practice-maximum-simple-store-files-description",
             name = "healthcheck-best-practice-maximum-simple-store-files-name",
-            required = true
+            required = false
         )
 	public Integer maximumSimpleStoreFiles();
+	
+	@Meta.AD(
+            deflt = "5000000",
+			description = "healthcheck-best-practice-minimum-usable-space-description",
+            name = "healthcheck-best-practice-minimum-usable-space-name",
+            required = false
+        )
+	public Long minimumUsableSpace();
 }
