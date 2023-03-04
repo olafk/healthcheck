@@ -12,6 +12,13 @@ package com.liferay.portal.health.breakingchanges.legacy.copied;
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
+ *
+ * Copied on 3. Mar 2023 from Liferay DXP Source code U66, 
+ * and adapted to be used in Health Check implementation (e.g. log replaced health check results, omit System.exit())
+ * https://github.com/liferay/liferay-portal/blob/master/portal-impl/src/com/liferay/portal/verify/VerifyProperties.java
+ * 
+ * @author Brian Wing Shun Chan
+ * @author Olaf Kock
  */
 
 import com.liferay.petra.string.StringBundler;
@@ -33,16 +40,9 @@ import java.util.Properties;
 import java.util.Set;
 
 /**
- * Copied on 23. Dec 2022 from Liferay Source code revision c47a49f97260969f31a2f037f70c726196a03094, 
- * and adapted to be used in Health Check implementation (e.g. log replaced health check results, omit System.exit())
- * https://github.com/liferay/liferay-portal/blob/master/portal-impl/src/com/liferay/portal/verify/VerifyProperties.java
- * 
  * @author Brian Wing Shun Chan
- * @author Olaf Kock
  */
-
-public class VerifyProperties55 {
-
+public class VerifyProperties66 {
 	public static List<HealthcheckItem> doVerify(String category) {
 		_log.category = category;
 		List<HealthcheckItem> result = null;
@@ -55,7 +55,6 @@ public class VerifyProperties55 {
 		}
 		return _log.popItems();
 	}
-	
 	
 	public static void verify() throws Exception {
 		verifySystemProperties();
@@ -78,7 +77,7 @@ public class VerifyProperties55 {
 			return new FileInputStream(propertyFile);
 		}
 
-		ClassLoader classLoader = VerifyProperties55.class.getClassLoader();
+		ClassLoader classLoader = VerifyProperties66.class.getClassLoader();
 
 		try {
 			return classLoader.getResourceAsStream(resourceName);
@@ -1541,6 +1540,19 @@ public class VerifyProperties55 {
 			"com.liferay.asset.tags.compiler.web"
 		},
 
+		// Text Extraction
+
+		{
+			"text.extraction.fork.process.enabled",
+			"text-extraction-fork-process-enabled",
+			"com.liferay.portal.tika"
+		},
+		{
+			"text.extraction.fork.process.mime.types",
+			"text-extraction-fork-process-mime-types",
+			"com.liferay.portal.tika"
+		},
+
 		// Translator
 
 		{
@@ -1641,7 +1653,14 @@ public class VerifyProperties55 {
 		{
 			"ical4j.validation.relaxed", "ical4j.validation.relaxed",
 			"com.liferay.calendar.service"
+		},
+
+		// Tika
+
+		{
+			"tika.config", "tika-config-xml", "com.liferay.portal.tika"
 		}
+
 	};
 
 	private static final String[] _OBSOLETE_PORTAL_KEYS = {
@@ -1817,7 +1836,8 @@ public class VerifyProperties55 {
 		"hibernate.cache.use_structured_entries",
 		"hibernate.connection.release_mode",
 		"hibernate.session.factory.imported.class.name.regexp", "icq.jar",
-		"icq.login", "icq.password", "index.dump.compression.enabled",
+		"icq.login", "icq.password", "image.hook.impl",
+		"image.hook.file.system.root.dir", "index.dump.compression.enabled",
 		"index.filter.search.limit", "index.on.upgrade",
 		"index.portal.field.analyzer.enabled", "index.search.engine.id",
 		"index.search.highlight.enabled", "index.search.writer.max.queue.size",

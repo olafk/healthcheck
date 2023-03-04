@@ -3,7 +3,7 @@ package com.liferay.portal.health.breakingchanges.legacy;
 import com.liferay.portal.health.api.Healthcheck;
 import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
-import com.liferay.portal.health.breakingchanges.legacy.copied.VerifyProperties55;
+import com.liferay.portal.health.breakingchanges.legacy.copied.VerifyProperties66;
 
 import java.util.Collection;
 import java.util.Locale;
@@ -21,7 +21,7 @@ public class VerifyPropertiesHealthcheck extends HealthcheckBaseImpl {
 	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
 		String localizedCategory = lookupMessage(locale, getCategory());
 		
-		Collection<HealthcheckItem> items = VerifyProperties55.doVerify(localizedCategory);
+		Collection<HealthcheckItem> items = VerifyProperties66.doVerify(localizedCategory);
 		if(items.isEmpty()) {
 			// todo: Translate!
 			items.add(create(true, locale, null, MSG));
