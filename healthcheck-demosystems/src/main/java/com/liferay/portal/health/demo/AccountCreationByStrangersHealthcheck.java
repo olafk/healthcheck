@@ -20,7 +20,12 @@ import javax.portlet.PortletPreferences;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
-
+/**
+ * Healthcheck for relaxed-security Demo Systems
+ * Ensure that no stranger can create accounts (due to generally 
+ * lower security barriers on demo systems) 
+ * @author Olaf Kock
+ */
 @Component( 
 		service = Healthcheck.class 
 )
