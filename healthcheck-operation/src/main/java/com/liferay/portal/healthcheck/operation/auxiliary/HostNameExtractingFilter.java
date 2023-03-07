@@ -1,5 +1,6 @@
 package com.liferay.portal.healthcheck.operation.auxiliary;
 
+import com.liferay.portal.health.api.AccessedUrlRegister;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.BaseFilter;
@@ -24,10 +25,7 @@ import org.osgi.service.component.annotations.Component;
  * in this whole instance.
  * 
  * @author Olaf Kock
- *
  */
-
-
 
 @Component(
 		immediate = true,
@@ -42,7 +40,7 @@ import org.osgi.service.component.annotations.Component;
 		},
 		service = Filter.class
 )
-public class HostNameExtractingFilter extends BaseFilter {
+public class HostNameExtractingFilter extends BaseFilter implements AccessedUrlRegister {
 
 	@Override
 	protected Log getLog() {
@@ -67,7 +65,8 @@ public class HostNameExtractingFilter extends BaseFilter {
 		super.processFilter(httpServletRequest, httpServletResponse, filterChain);
 	}
 
-	public Set<String> getRequestedHostNames(long companyId) {
+	@Override
+	public Set<String> getAccessedUrls(long companyId) {
 		return Collections.unmodifiableSet(requestedBaseUrls.get(companyId));
 	}
 	

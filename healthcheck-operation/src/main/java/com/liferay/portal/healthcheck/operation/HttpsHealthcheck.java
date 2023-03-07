@@ -1,9 +1,9 @@
 package com.liferay.portal.healthcheck.operation;
 
+import com.liferay.portal.health.api.AccessedUrlRegister;
 import com.liferay.portal.health.api.Healthcheck;
 import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
-import com.liferay.portal.healthcheck.operation.auxiliary.HostNameExtractingFilter;
 import com.liferay.portal.kernel.util.HtmlUtil;
 
 import java.util.Calendar;
@@ -34,8 +34,8 @@ public class HttpsHealthcheck extends HealthcheckBaseImpl {
 	@Override
 	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
 		String year = "" + Calendar.getInstance().get(Calendar.YEAR); // just for rubbing it in in the message
-		HostNameExtractingFilter f = (HostNameExtractingFilter) filter;
-		Set<String> urls = f.getRequestedHostNames(companyId);
+		AccessedUrlRegister register = (AccessedUrlRegister) filter;
+		Set<String> urls = register.getAccessedUrls(companyId);
 		Collection<HealthcheckItem> result = new LinkedList<HealthcheckItem>();
 
 		for (String requestedUrl : urls) {

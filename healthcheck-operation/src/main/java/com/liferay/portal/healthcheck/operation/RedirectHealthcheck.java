@@ -47,7 +47,7 @@ public class RedirectHealthcheck extends HealthcheckBaseImpl implements ManagedS
 	@Override
 	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
 		HostNameExtractingFilter f = (HostNameExtractingFilter) filter;
-		Set<String> urls = f.getRequestedHostNames(companyId);
+		Set<String> urls = f.getAccessedUrls(companyId);
 		
 		Collection<HealthcheckItem> result = new LinkedList<HealthcheckItem>();
 		
