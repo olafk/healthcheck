@@ -1,0 +1,3 @@
+Bundle-Name: healthcheck-demosystems
+Bundle-SymbolicName: com.liferay.portal.health.demo
+Bundle-Version: 1.0.0
