@@ -23,8 +23,12 @@ import org.osgi.service.component.annotations.Reference;
 import de.olafkock.liferay.configuration.api.GenericConfigurationLookup;
 /**
  * Check various conditions for proper use of the (simple) FileSystemStore.
- * It can only store a limited amount of files due to OS limitations for
- * the number of files in one folder. 
+ * It stores all files in a single directory, which might lead to performance problems. Note, that
+ * even if you don't experience performance problems at runtime (because Java & your file system 
+ * play well together, it might be shell-based tools, e.g. used for backups, that break your neck.
+ * The expected maximum number of files is configurable - the default is chosen arbitrarily, to 
+ * motivate a rather early change of store implementation, rather than a late migration when the
+ * store has a humongous number of files already. 
  *  
  * @author Olaf Kock
  */

@@ -8,10 +8,10 @@ This project currently consists of:
 
 * Commerce Healthcheck adapters
     * This adapts commerce's `CommerceHealthHttpStatus` to the Healthcheck interface 
-* Demo Checklist adapters
-    * This adapts [Olaf's demo-checklist](https://github.com/olafk/demo-checklist-web) to the Healthcheck interface 
+* Demo System relaxed security healthchecks
+    * This refactors [Olaf's demo-checklist](https://github.com/olafk/demo-checklist-web) to the Healthcheck interface, implementing relaxed security checks that are suitable for demo systems. 
 * Breaking Changes implementations
-    * with some copies from Liferay's portal-impl code (VerifyProperties, which currently runs only during upgrades)
+    * with some copies from Liferay's portal-impl code (e.g. VerifyProperties, which currently runs only during upgrades)
 * Best Practice implementations
     * e.g. "Do not use default user accounts"
 * Operational implementations
@@ -21,7 +21,7 @@ This project currently consists of:
 
 Clone this repository into a Liferay Workspace's `modules/healthcheck` directory.
 
-Created with `liferay.workspace.product=dxp-7.4-u18`, last run with U35.
+Created with `liferay.workspace.product=dxp-7.4-u18`, last run with U65.
 
 ## Reference
 
@@ -41,7 +41,7 @@ The UI is - explicitly - _very_ ugly. To make its ugliness even more explicit, i
  
 Collecting a few ideas that could go into UI features:
 
-* Explicitly ignore individual healthchecks (this way recommendations can be added more comfortably - anybody who disagrees with them can ignore them)
+* Explicitly ignore individual healthchecks (this way recommendations can be added more comfortably - anybody who disagrees with them can ignore them) - currently checks can be excluded by blacklisting their individual services.
 * Run healthchecks in background - this enables long running processes to run as well
 * Filter/Sort results by category/result
 * Selectively run individual filters or categories (especially when long running checks are implemented, that are meant to run in the background)
