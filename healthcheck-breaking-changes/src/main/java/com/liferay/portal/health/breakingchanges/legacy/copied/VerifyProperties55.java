@@ -17,6 +17,7 @@ package com.liferay.portal.health.breakingchanges.legacy.copied;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.health.api.HealthcheckItemImpl;
+import com.liferay.portal.health.breakingchanges.legacy.VerifyPropertiesHealthcheck;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LoggingTimer;
 import com.liferay.portal.kernel.util.SystemProperties;
@@ -51,7 +52,7 @@ public class VerifyProperties55 {
 			result = _log.popItems();
 		} catch (Exception e) {
 			result = _log.popItems();
-			result.add(new HealthcheckItemImpl(false, e.getClass().getName() + " " + e.getMessage(), null, _log.category));
+			result.add(new HealthcheckItemImpl(false, VerifyPropertiesHealthcheck.class.getName() + "-exception", e.getClass().getName() + " " + e.getMessage(), null, _log.category));
 		}
 		return _log.popItems();
 	}

@@ -55,14 +55,37 @@ public class SimpleFileStoreConfigurationHealthcheck extends HealthcheckBaseImpl
 			if(getRootDir().isDirectory()) {
 				int files = getRecursiveMaxFiles(getRootDir(), 0);
 				if(files > maximumFiles) {
-					result = wrap(create(false, locale, LINK, MSG_TOO_MANY_FILES, files, maximumFiles, getRootDir().getAbsolutePath()));
+					result = wrap(create(
+							false,
+							this.getClass().getName() + "-maxfiles",
+							locale, 
+							LINK, 
+							MSG_TOO_MANY_FILES, 
+							files, 
+							maximumFiles, 
+							getRootDir().getAbsolutePath()));
 				} else {
-					result = wrap(create(true, locale, LINK, MSG, files, maximumFiles, getRootDir().getAbsolutePath()));
+					result = wrap(create(
+							true,
+							this.getClass().getName() + "-maxfiles",
+							locale, 
+							LINK, 
+							MSG, 
+							files, 
+							maximumFiles, 
+							getRootDir().getAbsolutePath()));
 				}
 			} else {
-				result = wrap(create(false, locale, LINK, MSG_NO_DIR, getRootDir().getAbsolutePath()));
+				result = wrap(create(
+						false,
+						this.getClass().getName() + "-no-directory",
+						locale, 
+						LINK, 
+						MSG_NO_DIR, 
+						getRootDir().getAbsolutePath()));
 			}
-			result.add(create(getRootDir().getUsableSpace() > minimumUsableSpace, 
+			result.add(create(getRootDir().getUsableSpace() > minimumUsableSpace,
+					this.getClass().getName() + "-diskspace",
 					locale,
 					null,
 					MSG_USABLE_SPACE,

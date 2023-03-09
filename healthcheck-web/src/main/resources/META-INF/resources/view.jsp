@@ -1,32 +1,82 @@
+<%@page import="com.liferay.portal.kernel.util.HtmlUtil"%>
 <%@page import="com.liferay.portal.health.api.HealthcheckItem"%>
 <%@page import="java.util.List"%>
 <%@ include file="./init.jsp" %>
-<div style="padding:10px;">
-<p>
+<div class="container-fluid container-fluid-max-xl" style="">
+  <p>
 	<b><liferay-ui:message key="healthcheckweb.caption"/></b>
-</p>
-<p>
+  </p>
+  <p>
 	<liferay-ui:message key="healthcheckweb.cta"/>
-</p>
+  </p>
+<%
+int failedChecks = (int) renderRequest.getAttribute("failedChecks");
+int succeededChecks = (int) renderRequest.getAttribute("succeededChecks");
+int ignoredChecks = (int) renderRequest.getAttribute("ignoredChecks");
+List<HealthcheckItem> checks = (List<HealthcheckItem>) renderRequest.getAttribute("checks");
+%>
+
+  <div class="row align-items-lg-start align-items-sm-start align-items-start align-items-md-start flex-lg-row flex-sm-row flex-row flex-md-row">
+   <div class="col col-lg-3 col-sm-12 col-12 col-md-4">
+   </div>
+   <div class="col col-lg-2 col-sm-4 col-6 col-md-2" style="text-align:center;">
+	 <div style="font-size:48px;">
+       <clay:icon symbol="exclamation-circle" /><br/>
+       <%= failedChecks %>
+     </div>
+     <liferay-ui:message key="failed"/>
+   </div>
+   <div class="col col-lg-2 col-sm-4 col-6 col-md-2" style="text-align:center;">
+   	 <div style="font-size:48px; ">
+       <clay:icon symbol="check-circle" /><br/>
+       <%= succeededChecks %>
+      </div>
+     <liferay-ui:message key="succeeded"/>
+   </div>
+   <div class="col col-lg-2 col-sm-4 col-6 col-md-2" style="text-align:center;">
+   	 <div style="font-size:48px; ">
+       <clay:icon symbol="moon" /><br/>
+       <%= ignoredChecks %>
+     </div>
+     <liferay-ui:message key="ignored"/>
+   </div>
+   <div class="col col-lg-3 col-sm-12 col-12 col-md-4">
+   </div>
+  </div>
 
 <table>
-<% List<HealthcheckItem> checks = (List<HealthcheckItem>) renderRequest.getAttribute("checks");
-	
-	for(HealthcheckItem check: checks) {
-		String style = check.isResolved()? "" : " style=\"font-weight:bold;\"";
+<% for(HealthcheckItem check: checks) {
+		String style = check.isResolved()? "" : "font-weight:bold;";
+		String symbol = check.isResolved()? "check-circle" : "exclamation-circle";
 %>
-<tr><td <%=style %>>
-<%=check.isResolved() %></td><td><%=check.getCategory() %></td><td><%=check.getMessage() %></td><td>
-<%
-	if(check.getLink() != null) {
+<tr style="border: 1px solid grey; <%=style %>">
+	<td style="min-width:3em; text-align:center;"><clay:icon symbol="<%=symbol %>" /></td>
+	<td><%=check.getCategory() %></td>
+	<td><%=check.getMessage() %></td>
+	<td>
+	<%
+		if(check.getLink() != null) {
 		out.write(" (<a href=\"" + check.getLink() + "\">hint</a>)");
-	} else {
+			} else {
 		out.write(" (no&nbsp;hint)");
-	}
-%>
-</td></tr>
+			}
+	%>
+	</td>
+	<td>
+		<aui:button-row>
+			<portlet:actionURL name="ignoreMessage" var="ignoreAction">
+				<portlet:param name="ignore" value="<%=check.getKey()%>"/>
+			</portlet:actionURL>
+		    <aui:button onClick="<%=ignoreAction%>" value="ignore" />
+		</aui:button-row>
+	</td>
+</tr>
 <%		
 	}
 %>
 </table>
+<% if(ignoredChecks>0) { %>
+	<portlet:actionURL name="resetIgnore" var="resetIgnoreAction"/>
+	<aui:button onClick="<%=resetIgnoreAction%>" value="reset-ignore"/>
+<% } %>
 </div>

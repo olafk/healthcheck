@@ -5,18 +5,26 @@ import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
+import javax.portlet.ActionRequest;
+import javax.portlet.ActionResponse;
 import javax.portlet.Portlet;
 import javax.portlet.PortletException;
+import javax.portlet.PortletPreferences;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
@@ -101,8 +109,56 @@ public class HealthcheckWebPortlet extends MVCPortlet {
 			}
 			
 		});
+		PortletPreferences preferences = renderRequest.getPreferences();
+		String[] ignoredChecksArray = preferences.getValues("ignore", new String[] {});
+		Set<String> ignoreChecks = new HashSet<String>(Arrays.asList(ignoredChecksArray));
+
+		int failed = 0;
+		int succeeded = 0;
+		int ignored = 0;
+		for (Iterator<HealthcheckItem> iterator = checks.iterator(); iterator.hasNext();) {
+			HealthcheckItem check = (HealthcheckItem) iterator.next();
+			if(ignoreChecks.contains(check.getKey())) {
+				iterator.remove();
+				ignored++;
+			} else if(check.isResolved()) {
+				succeeded++; 
+			} else {
+				failed++;
+			}
+		}
 		renderRequest.setAttribute("checks", checks);
+		renderRequest.setAttribute("failedChecks", failed);
+		renderRequest.setAttribute("succeededChecks", succeeded);
+		renderRequest.setAttribute("ignoredChecks", ignored);
 		super.doView(renderRequest, renderResponse);
+	}
+	
+	public void resetIgnore(ActionRequest actionRequest, ActionResponse actionResponse)
+			throws PortletException, IOException {
+		ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
+		if(themeDisplay.getPermissionChecker().isCompanyAdmin(themeDisplay.getCompanyId())) {
+			PortletPreferences preferences = actionRequest.getPreferences();
+			preferences.setValues("ignore", new String[0] );
+			preferences.store();
+		}
+	}	
+	
+	
+	public void ignoreMessage(ActionRequest actionRequest, ActionResponse actionResponse)
+			throws PortletException, IOException {
+		ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
+		if(themeDisplay.getPermissionChecker().isCompanyAdmin(themeDisplay.getCompanyId())) {
+			String key = ParamUtil.getString(actionRequest, "ignore");
+			PortletPreferences preferences = actionRequest.getPreferences();
+			String[] ignoredArray = preferences.getValues("ignore", new String[] {});
+			Set<String> ignoredKeys = new HashSet<String>(Arrays.asList(ignoredArray));
+	
+			ignoredKeys.add(key);
+	
+			preferences.setValues("ignore", (String[]) ignoredKeys.toArray(new String[ignoredKeys.size()]));
+			preferences.store();
+		}
 	}
 	
 	@Reference(			

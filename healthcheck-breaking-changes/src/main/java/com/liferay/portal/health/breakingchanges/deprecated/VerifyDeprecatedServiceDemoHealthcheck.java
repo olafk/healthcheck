@@ -46,7 +46,11 @@ public class VerifyDeprecatedServiceDemoHealthcheck extends HealthcheckBaseImpl 
 			items.add(create(true, locale, null, MSG));
 		} else {
 			for (DeprecatedSampleService service : services) {
-				items.add(create(false, locale, null, ERROR_MESSAGE, 
+				items.add(create(false, 
+						this.getClass().getName() + "-" + service.getClass().getName(),
+						locale, 
+						null, 
+						ERROR_MESSAGE, 
 						DeprecatedSampleService.class.getName(), 
 						service.getClass().getName()));
 			}

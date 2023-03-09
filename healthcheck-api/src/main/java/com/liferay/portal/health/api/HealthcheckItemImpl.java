@@ -1,8 +1,10 @@
 package com.liferay.portal.health.api;
 
 public class HealthcheckItemImpl implements HealthcheckItem {
-	public HealthcheckItemImpl(boolean resolved, String message, String link, String category) {
+
+	public HealthcheckItemImpl(boolean resolved, String source, String message, String link, String category) {
 		this.resolved = resolved;
+		this.source = source;
 		this.link = link;
 		this.message = message;
 		this.category = category;
@@ -28,8 +30,14 @@ public class HealthcheckItemImpl implements HealthcheckItem {
 		return category;
 	}
 	
+	@Override
+	public String getKey() {
+		return source + "-" + resolved;
+	}
+	
 	private final boolean resolved;
+	private final String source;
 	private final String message;
-	private String link;
-	private String category;
+	private final String link;
+	private final String category;
 }
