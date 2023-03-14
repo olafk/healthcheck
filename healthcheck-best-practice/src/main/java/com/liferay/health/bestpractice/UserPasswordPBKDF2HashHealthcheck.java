@@ -77,14 +77,14 @@ public class UserPasswordPBKDF2HashHealthcheck extends HealthcheckBaseImpl{
 		}
 		
 		if(counted != usersCount) {
-			result.add(create(false, locale, LINK, "healthcheck-best-practice-user-count-mismatch-x-uncounted", usersCount-counted));
+			result.add(create(false, locale, LINK, "healthcheck-best-practice-user-count-mismatch-x-uncounted", ""+ (usersCount-counted) + "/" + usersCount));
 		}
 
 		for(HashMap.Entry<String,Long> entry: algorithms.entrySet()) {
 			if(entry.getKey().equalsIgnoreCase(hashingAlgorithm)) {
-				result.add(create(true, locale, LINK, "healthcheck-best-practice-pbkdf2-found-x-entries-with-default-algorithm-y", entry.getValue(), hashingAlgorithm));
+				result.add(create(true, locale, LINK, "healthcheck-best-practice-pbkdf2-found-x-entries-with-default-algorithm-y", ""+entry.getValue()+"/"+usersCount, hashingAlgorithm));
 			} else {
-				result.add(create(false, locale, LINK, "healthcheck-best-practice-pbkdf2-found-x-entries-with-nondefault-algorithm-y-looking-for-z", entry.getValue(), entry.getKey(), hashingAlgorithm));
+				result.add(create(false, locale, LINK, "healthcheck-best-practice-pbkdf2-found-x-entries-with-nondefault-algorithm-y-looking-for-z", ""+entry.getValue()+"/"+usersCount, entry.getKey(), hashingAlgorithm));
 			}
 		}
 		return result;
