@@ -48,7 +48,8 @@ public class HttpsHealthcheck extends HealthcheckBaseImpl {
 				result.add(create(true, locale, LINK, MSG_LOCALHOST, year, scheme));
 			} else {
 				result.add(create(
-	        		scheme!=null && scheme.equalsIgnoreCase("https"), 
+	        		scheme!=null && scheme.equalsIgnoreCase("https"),
+	        		this.getClass().getName() + "-" + HtmlUtil.escapeURL(requestedUrl),
 	        		locale, LINK, MSG, year, requestedUrl));
 			}
 		}
