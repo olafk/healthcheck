@@ -35,7 +35,7 @@ List<HealthcheckItem> checks = (List<HealthcheckItem>) renderRequest.getAttribut
    </div>
    <div class="col col-lg-2 col-sm-4 col-6 col-md-2" style="text-align:center;">
    	 <div style="font-size:48px; ">
-       <clay:icon symbol="moon" /><br/>
+       <clay:icon symbol="folder" /><br/>
        <%= ignoredChecks %>
      </div>
      <liferay-ui:message key="ignored"/>
@@ -43,8 +43,8 @@ List<HealthcheckItem> checks = (List<HealthcheckItem>) renderRequest.getAttribut
    <div class="col col-lg-3 col-sm-12 col-12 col-md-4">
    </div>
   </div>
-
-<table>
+  
+<table class="sheet">
 <% for(HealthcheckItem check: checks) {
 		String style = check.isResolved()? "" : "font-weight:bold;";
 		String symbol = check.isResolved()? "check-circle" : "exclamation-circle";
@@ -53,7 +53,7 @@ List<HealthcheckItem> checks = (List<HealthcheckItem>) renderRequest.getAttribut
 	<td style="min-width:3em; text-align:center;"><clay:icon symbol="<%=symbol %>" /></td>
 	<td><%=check.getCategory() %></td>
 	<td><%=check.getMessage() %></td>
-	<td>
+	<td style="padding:2px;">
 	<%
 		if(check.getLink() != null) {
 		out.write(" (<a href=\"" + check.getLink() + "\">hint</a>)");
@@ -62,7 +62,7 @@ List<HealthcheckItem> checks = (List<HealthcheckItem>) renderRequest.getAttribut
 			}
 	%>
 	</td>
-	<td>
+	<td style="padding:2px;">
 		<aui:button-row>
 			<portlet:actionURL name="ignoreMessage" var="ignoreAction">
 				<portlet:param name="ignore" value="<%=check.getKey()%>"/>

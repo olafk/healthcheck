@@ -7,16 +7,17 @@ At the beginning, most attention has been given to implement the backend, and th
 This project currently consists of:
 
 * Commerce Healthcheck adapters
-    * This adapts commerce's `CommerceHealthHttpStatus` to the Healthcheck interface 
+    * An adapter from commerce's `CommerceHealthHttpStatus` to the Healthcheck interface 
 * Demo System relaxed security healthchecks
     * This refactors [Olaf's demo-checklist](https://github.com/olafk/demo-checklist-web) to the Healthcheck interface, implementing relaxed security checks that are suitable for demo systems. 
 * Breaking Changes implementations
-    * with some copies from Liferay's portal-impl code (e.g. VerifyProperties, which currently runs only during upgrades)
+    * e.g. with some copies from Liferay's portal-impl code (e.g. VerifyProperties, which currently runs only during upgrades)
+    * e.g. with a simulated "Have you implemented a deprecated service that's no longer supported?" alert
 * Best Practice implementations
-    * e.g. "Do not use default user accounts"
-* Operational implementations
+    * e.g. "Do not use default user accounts & passwords"
+* Operational implementations    
     * e.g. checks for available memory and redirection configuration
-	
+
 ## How to build
 
 Clone this repository into a Liferay Workspace's `modules/healthcheck` directory.
@@ -37,13 +38,12 @@ Created with `liferay.workspace.product=dxp-7.4-u18`, last run with U65.
 
 ## Ideas for the UI
 
-The UI is - explicitly - _very_ ugly. To make its ugliness even more explicit, it's non-interactive and 100% built with `<table>`.
+The UI is - explicitly - _very_ ugly. To make its ugliness even more explicit, it's minimally interactive and 100% built with `<table>`.
+
+You can ignore some healthchecks (successful or unsuccessful). They'll still be executed, but the result will not be shown.
  
 Collecting a few ideas that could go into UI features:
 
-* Explicitly ignore individual healthchecks (this way recommendations can be added more comfortably - anybody who disagrees with them can ignore them) - currently checks can be excluded by blacklisting their individual services.
-* Run healthchecks in background - this enables long running processes to run as well
+* Run healthchecks in background (scheduled) - this enables long running processes to run as well
 * Filter/Sort results by category/result
 * Selectively run individual filters or categories (especially when long running checks are implemented, that are meant to run in the background)
-
-
