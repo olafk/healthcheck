@@ -56,7 +56,7 @@ List<HealthcheckItem> checks = (List<HealthcheckItem>) renderRequest.getAttribut
 	<td style="padding:2px;">
 	<%
 		if(check.getLink() != null) {
-		out.write(" (<a href=\"" + check.getLink() + "\">hint</a>)");
+		out.write(" (<a href=\"" + check.getLink() + "\" target=\"_blank\">hint</a>)");
 			} else {
 		out.write(" (no&nbsp;hint)");
 			}
