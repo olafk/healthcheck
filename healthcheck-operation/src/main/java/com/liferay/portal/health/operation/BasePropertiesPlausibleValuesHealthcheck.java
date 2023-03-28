@@ -1,4 +1,4 @@
-package com.liferay.portal.healthcheck.operation;
+package com.liferay.portal.health.operation;
 
 import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;

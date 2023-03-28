@@ -1,4 +1,4 @@
-Bundle-Name: healthcheck-api
+Bundle-Name: com-liferay-portal-health-api
 Bundle-SymbolicName: com.liferay.portal.health.api
 Bundle-Version: 1.1.0
 Export-Package: com.liferay.portal.health.api

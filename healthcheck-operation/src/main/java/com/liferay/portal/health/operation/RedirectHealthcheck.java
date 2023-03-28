@@ -1,11 +1,11 @@
-package com.liferay.portal.healthcheck.operation;
+package com.liferay.portal.health.operation;
 
 import static com.liferay.configuration.admin.constants.ConfigurationAdminPortletKeys.INSTANCE_SETTINGS;
 
 import com.liferay.portal.health.api.Healthcheck;
 import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
-import com.liferay.portal.healthcheck.operation.auxiliary.HostNameExtractingFilter;
+import com.liferay.portal.health.operation.auxiliary.HostNameExtractingFilter;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;

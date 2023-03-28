@@ -1,8 +1,9 @@
-package healthcheck.web.portlet;
+package com.liferay.portal.health.web.portlet;
 
 import com.liferay.portal.health.api.Healthcheck;
 import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
+import com.liferay.portal.health.web.constants.HealthcheckWebPortletKeys;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -33,8 +34,6 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
-import healthcheck.web.constants.HealthcheckWebPortletKeys;
-
 /**
  * @author Olaf Kock
  */
@@ -49,7 +48,7 @@ import healthcheck.web.constants.HealthcheckWebPortletKeys;
 		"javax.portlet.display-name=HealthcheckWeb",
 		"javax.portlet.init-param.template-path=/",
 		"javax.portlet.init-param.view-template=/view.jsp",
-		"javax.portlet.name=" + HealthcheckWebPortletKeys.HEALTHCHECKWEB,
+		"javax.portlet.name=" + HealthcheckWebPortletKeys.HEALTHCHECK_WEB_PORTLET,
 		"javax.portlet.resource-bundle=content.Language",
 		"javax.portlet.security-role-ref=administrator"
 	},

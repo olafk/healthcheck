@@ -1,4 +1,4 @@
-package com.liferay.portal.healthcheck.operation.auxiliary;
+package com.liferay.portal.health.operation.auxiliary;
 
 import com.liferay.portal.health.api.AccessedUrlRegister;
 import com.liferay.portal.kernel.log.Log;
@@ -34,7 +34,7 @@ import org.osgi.service.component.annotations.Component;
 				"dispatcher=REQUEST",
 				"servlet-context-name=",
 				// Note: servlet-filter-name is used as target expression in 
-				// com.liferay.portal.healthcheck.operation.RedirectHealthcheck
+				// com.liferay.portal.health.operation.RedirectHealthcheck
 				"servlet-filter-name=Healthcheck Hostname Extracting Filter",
 				"url-pattern=/*"
 		},

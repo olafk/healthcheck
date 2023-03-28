@@ -1,4 +1,4 @@
-package com.liferay.portal.healthcheck.operation;
+package com.liferay.portal.health.operation;
 
 import com.liferay.portal.health.api.AccessedUrlRegister;
 import com.liferay.portal.health.api.Healthcheck;

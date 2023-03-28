@@ -1,4 +1,4 @@
 Bundle-Name: healthcheck-web
-Bundle-SymbolicName: healthcheck.web
+Bundle-SymbolicName: com.liferay.portal.health.web
 Bundle-Version: 1.0.0
-Export-Package: healthcheck.web.constants
+Export-Package: com.liferay.portal.health.web.constants
