@@ -40,6 +40,8 @@ Created with `liferay.workspace.product=dxp-7.4-u18`, last run with U65.
 
 The UI is - explicitly - _very_ ugly. To make its ugliness even more explicit, it's minimally interactive and 100% built with `<table>`.
 
+![UI Screenshot](healthcheck-ui.png) 
+
 You can ignore some healthchecks (successful or unsuccessful). They'll still be executed, but the result will not be shown.
  
 Collecting a few ideas that could go into UI features:
