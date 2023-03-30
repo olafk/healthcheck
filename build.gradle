@@ -2,6 +2,6 @@ tasks.withType(JavaCompile) {
 
 	// Generated classes using Jodd library are unable to be read when compiled against JDK 11
 
-//	sourceCompatibility = JavaVersion.VERSION_1_8
-//	targetCompatibility = JavaVersion.VERSION_1_8
+	sourceCompatibility = JavaVersion.VERSION_11
+	targetCompatibility = JavaVersion.VERSION_11
 }
