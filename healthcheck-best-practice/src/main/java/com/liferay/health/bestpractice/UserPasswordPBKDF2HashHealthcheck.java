@@ -66,7 +66,7 @@ public class UserPasswordPBKDF2HashHealthcheck extends HealthcheckBaseImpl{
 		HashMap<String, Long> algorithms = new HashMap<String, Long>();
 		LinkedList<HealthcheckItem> result = new LinkedList<HealthcheckItem>();
 
-		int usersCount = userLocalService.getUsersCount(companyId, false, WorkflowConstants.STATUS_APPROVED);
+		int usersCount = userLocalService.getUsersCount(companyId, WorkflowConstants.STATUS_APPROVED);
 		int counted = 0;
 		int pageSize = 100;
 		for(int i=0; i<=usersCount/pageSize; i++) {
@@ -74,7 +74,6 @@ public class UserPasswordPBKDF2HashHealthcheck extends HealthcheckBaseImpl{
 			try {
 				users = userLocalService.getUsers(
 							companyId, 
-							false, 
 							WorkflowConstants.STATUS_APPROVED, 
 							i*pageSize, 
 							((i+1)*pageSize), 
