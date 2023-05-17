@@ -41,17 +41,23 @@ import org.osgi.service.component.annotations.Reference;
 	)
 public class HealthcheckPanelApp extends BasePanelApp {
 
+	private Portlet portlet;
+
 	@Override
 	public String getPortletId() {
 		return HealthcheckWebPortletKeys.HEALTHCHECK_WEB_PORTLET;
 	}
 	
 	@Override
+	public Portlet getPortlet() {
+		return portlet;
+	}
+	
 	@Reference(
 		target = "(javax.portlet.name=" + HealthcheckWebPortletKeys.HEALTHCHECK_WEB_PORTLET + ")",
 		unbind = "-"
 	)
 	public void setPortlet(Portlet portlet) {
-		super.setPortlet(portlet);
+		this.portlet = portlet;
 	}
 }
