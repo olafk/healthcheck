@@ -14,7 +14,7 @@
 
 package com.liferay.portal.health.wrapper.commerce;
 
-import com.liferay.commerce.health.status.CommerceHealthHttpStatus;
+import com.liferay.commerce.health.status.CommerceHealthStatus;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.portal.health.api.Healthcheck;
 import com.liferay.portal.kernel.log.Log;
@@ -57,7 +57,7 @@ public class CommerceHealthcheckWrapperInitializer {
 		    policyOption = ReferencePolicyOption.GREEDY,
 		    unbind = "doUnRegister" 
 	)
-	void doRegister(CommerceHealthHttpStatus commerceHealthHttpStatus) {
+	void doRegister(CommerceHealthStatus commerceHealthHttpStatus) {
 		// TODO: Reimplement with ServiceTracker to get rid of this conditional:
 
 		// At the time of writing this class, WishListContentCommerceHealthHttpStatus is not enabled, but
@@ -76,7 +76,7 @@ public class CommerceHealthcheckWrapperInitializer {
 		}
 	}
 
-	private void doUnRegister(CommerceHealthHttpStatus commerceHealthHttpStatus) {
+	private void doUnRegister(CommerceHealthStatus commerceHealthHttpStatus) {
 		if(services.containsKey(commerceHealthHttpStatus)) {
 			ServiceRegistration<Healthcheck> serviceRegistration = services.get(commerceHealthHttpStatus);
 			serviceRegistration.unregister();
@@ -108,7 +108,7 @@ public class CommerceHealthcheckWrapperInitializer {
 
 	@SuppressWarnings("unused")
 	private void unsetCommerceChannelLocalService(CommerceChannelLocalService commerceChannelLocalService) {
-		for (Map.Entry<CommerceHealthHttpStatus,ServiceRegistration<Healthcheck>> registration : services.entrySet()) {
+		for (Map.Entry<CommerceHealthStatus,ServiceRegistration<Healthcheck>> registration : services.entrySet()) {
 			unregisteredServices.add(new CommerceHealthcheckWrapper(registration.getKey()));
 			doUnRegister(registration.getKey());
 		}
@@ -116,7 +116,7 @@ public class CommerceHealthcheckWrapperInitializer {
 		
 	private CommerceChannelLocalService commerceChannelLocalService;
 	private List<CommerceHealthcheckWrapper> unregisteredServices = new LinkedList<CommerceHealthcheckWrapper>();
-	private Map<CommerceHealthHttpStatus, ServiceRegistration<Healthcheck>> services = new HashMap<CommerceHealthHttpStatus, ServiceRegistration<Healthcheck>>();
+	private Map<CommerceHealthStatus, ServiceRegistration<Healthcheck>> services = new HashMap<CommerceHealthStatus, ServiceRegistration<Healthcheck>>();
 	
 	private static Log log = LogFactoryUtil.getLog(CommerceHealthcheckWrapperInitializer.class);
 }

@@ -14,7 +14,7 @@
 
 package com.liferay.portal.health.wrapper.commerce;
 
-import com.liferay.commerce.health.status.CommerceHealthHttpStatus;
+import com.liferay.commerce.health.status.CommerceHealthStatus;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.portal.health.api.HealthcheckBaseImpl;
@@ -28,7 +28,7 @@ import java.util.Locale;
 
 public class CommerceHealthcheckWrapper extends HealthcheckBaseImpl {
 
-	public CommerceHealthcheckWrapper(CommerceHealthHttpStatus status) {
+	public CommerceHealthcheckWrapper(CommerceHealthStatus status) {
 		this.status = status;
 	}
 	
@@ -52,11 +52,11 @@ public class CommerceHealthcheckWrapper extends HealthcheckBaseImpl {
 		return "healthcheck-category-commerce";
 	}
 	
-	public CommerceHealthHttpStatus getWrappee() {
+	public CommerceHealthStatus getWrappee() {
 		return status;
 	}
 
-	private HealthcheckItem createResult(CommerceHealthHttpStatus status, long companyId, CommerceChannel channel, Locale locale) {
+	private HealthcheckItem createResult(CommerceHealthStatus status, long companyId, CommerceChannel channel, Locale locale) {
 		boolean resolved = false;
 		String exception = "";
 		try {
@@ -71,5 +71,5 @@ public class CommerceHealthcheckWrapper extends HealthcheckBaseImpl {
 	}
 
 	private CommerceChannelLocalService commerceChannelLocalService;
-	private CommerceHealthHttpStatus status;
+	private CommerceHealthStatus status;
 }
