@@ -2,7 +2,7 @@
 <%@page import="com.liferay.portal.health.api.HealthcheckItem"%>
 <%@page import="java.util.List"%>
 <%@ include file="./init.jsp" %>
-<div class="container-fluid container-fluid-max-xl" style="">
+<div class="container-fluid container-fluid-max-xl sheet" style="">
   <p>
 	<b><liferay-ui:message key="healthcheckweb.caption"/></b>
   </p>
@@ -44,7 +44,7 @@ List<HealthcheckItem> checks = (List<HealthcheckItem>) renderRequest.getAttribut
    </div>
   </div>
   
-<table class="sheet">
+<table>
 <% for(HealthcheckItem check: checks) {
 		String style = check.isResolved()? "" : "font-weight:bold;";
 		String symbol = check.isResolved()? "check-circle" : "exclamation-circle";
