@@ -76,7 +76,9 @@ List<HealthcheckItem> checks = (List<HealthcheckItem>) renderRequest.getAttribut
 %>
 </table>
 <% if(ignoredChecks>0) { %>
+<div style="margin-top:2rem;">
 	<portlet:actionURL name="resetIgnore" var="resetIgnoreAction"/>
 	<aui:button onClick="<%=resetIgnoreAction%>" value="reset-ignore"/>
+</div>
 <% } %>
 </div>
