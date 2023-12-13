@@ -32,6 +32,9 @@ public abstract class HealthcheckBaseImpl implements Healthcheck {
 	 * @return
 	 */
 	public String lookupMessage(Locale locale, String key, Object... info) {
+		if(locale == null || key==null) {
+			return "Internal Error: " + this.getClass().getName() + " looked up null key";
+		}
 		ResourceBundle bundle = ResourceBundleUtil.getBundle(locale, this.getClass().getClassLoader());
 		String result = ResourceBundleUtil.getString(bundle, key, info);
 		if(result == null) {
