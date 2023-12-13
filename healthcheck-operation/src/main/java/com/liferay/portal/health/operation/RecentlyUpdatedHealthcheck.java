@@ -69,7 +69,7 @@ public class RecentlyUpdatedHealthcheck extends HealthcheckBaseImpl {
 					false,
 					locale,
 					null,
-					"healthcheck-recently-updated-couldnt-compute", version + " (CE decoding not yet implemented)"));
+					"healthcheck-recently-updated-couldnt-compute", version));
 		}
 	}
 
