@@ -144,6 +144,7 @@ public class HealthcheckWebPortlet extends MVCPortlet {
 		renderRequest.setAttribute("failedChecks", failed);
 		renderRequest.setAttribute("succeededChecks", succeeded);
 		renderRequest.setAttribute("ignoredChecks", ignored);
+		renderRequest.setAttribute("the-ignored-checks", ignoreChecks);
 		super.doView(renderRequest, renderResponse);
 	}
 	

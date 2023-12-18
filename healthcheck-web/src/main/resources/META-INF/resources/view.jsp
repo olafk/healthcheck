@@ -1,6 +1,7 @@
 <%@page import="com.liferay.portal.kernel.util.HtmlUtil"%>
 <%@page import="com.liferay.portal.health.api.HealthcheckItem"%>
 <%@page import="java.util.List"%>
+<%@page import="java.util.Set"%>
 <%@ include file="./init.jsp" %>
 <div class="container-fluid container-fluid-max-xl sheet" style="">
   <p>
@@ -13,6 +14,7 @@
 int failedChecks = (int) renderRequest.getAttribute("failedChecks");
 int succeededChecks = (int) renderRequest.getAttribute("succeededChecks");
 int ignoredChecks = (int) renderRequest.getAttribute("ignoredChecks");
+Set<String> theIgnoredChecks = (Set<String>) renderRequest.getAttribute("the-ignored-checks");
 List<HealthcheckItem> checks = (List<HealthcheckItem>) renderRequest.getAttribute("checks");
 %>
 
@@ -76,9 +78,17 @@ List<HealthcheckItem> checks = (List<HealthcheckItem>) renderRequest.getAttribut
 %>
 </table>
 <% if(ignoredChecks>0) { %>
-<div style="margin-top:2rem;">
-	<portlet:actionURL name="resetIgnore" var="resetIgnoreAction"/>
-	<aui:button onClick="<%=resetIgnoreAction%>" value="reset-ignore"/>
-</div>
-<% } %>
+	<div style="margin-top:2rem;">
+		<portlet:actionURL name="resetIgnore" var="resetIgnoreAction"/>
+		<aui:button onClick="<%=resetIgnoreAction%>" value="reset-ignore"/>
+	</div>
+<!--
+Ignored <%=ignoredChecks%> healthcheck(s):
+<%
+   for(String theCheck : theIgnoredChecks) {
+      out.write(theCheck);
+      out.write("\n");
+   }
+%>-->
+	<%   } %>
 </div>
