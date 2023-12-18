@@ -27,6 +27,4 @@ public interface HealthcheckOperationalConfiguration {
             required = false
         )
 	public Integer acceptableMissingUpdates();
-	
-	
 }
