@@ -16,12 +16,12 @@ package com.liferay.health.bestpractice;
 
 import com.liferay.health.bestpractice.configuration.HealthcheckBestPracticeConfiguration;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
+import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.health.api.Healthcheck;
 import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
 import com.liferay.portal.util.PropsValues;
 
 import java.io.File;

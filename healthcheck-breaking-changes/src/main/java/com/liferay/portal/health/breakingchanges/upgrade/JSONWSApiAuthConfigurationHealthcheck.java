@@ -15,10 +15,10 @@
 package com.liferay.portal.health.breakingchanges.upgrade;
 
 import com.liferay.petra.string.StringUtil;
+import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.health.api.Healthcheck;
 import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
-import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
 
 import java.util.Collection;
 import java.util.List;
