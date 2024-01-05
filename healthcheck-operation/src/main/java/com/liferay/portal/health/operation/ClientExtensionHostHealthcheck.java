@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 
@@ -61,35 +62,48 @@ public class ClientExtensionHostHealthcheck extends HealthcheckBaseImpl {
 						).load(
 							clientExtensionEntry.getTypeSettings()
 						).build();
-				String url = typeSettings.get("url");
-				String host = getHost(url);
-				if(host != null) {
-					// create a problem indicator in any case, so that users can
-					// ignore it if the URL is expected. The ignore-key includes the 
-					// ignored host name and the current company host name, so that
-					// any system restored under a different name (when company-virtualhost
-					// is configured correctly) will trigger new alerts.
-					// Note: There is a separate health check to validate the company
-					// virtualhost, that should make this unignorable.
-					
-					result.add(
-							create(
-									false, 
-									this.getClass().getName() + "-" + virtualHostname + "-" + host, 
-									locale, 
-									LINK_BASE + clientExtensionEntry.getExternalReferenceCode(),
-									MSG, 
-									clientExtensionEntry.getName(locale),
-									host));
+				String[] urls;
+				String tsUrl = typeSettings.get("url");
+				if(tsUrl==null) {
+					String multilineUrls = typeSettings.get("urls");
+					String multilineCssUrls = typeSettings.get("cssURLs");
+					if(multilineCssUrls != null && multilineCssUrls.length()>5) {
+						multilineUrls += "\n" + multilineCssUrls;
+					}
+					urls = StringUtil.split(multilineUrls, '\n');
 				} else {
-					result.add(
-							create(false, 
-									this.getClass().getName()+"-"+url, 
-									locale, 
-									LINK_BASE + clientExtensionEntry.getExternalReferenceCode(),
-									"healthcheck-client-extension-undetectable-host",
-									clientExtensionEntry.getName(locale),
-									url));
+					urls = new String[] {tsUrl};
+				}
+				for (String url : urls) {
+					String host = getHost(url);
+					if(host != null) {
+						// create a problem indicator in any case, so that users can
+						// ignore it if the URL is expected. The ignore-key includes the 
+						// ignored host name and the current company host name, so that
+						// any system restored under a different name (when company-virtualhost
+						// is configured correctly) will trigger new alerts.
+						// Note: There is a separate health check to validate the company
+						// virtualhost, that should make this unignorable.
+						
+						result.add(
+								create(
+										false, 
+										this.getClass().getName() + "-" + virtualHostname + "-" + host, 
+										locale, 
+										LINK_BASE + clientExtensionEntry.getExternalReferenceCode(),
+										MSG, 
+										clientExtensionEntry.getName(locale),
+										host));
+					} else {
+						result.add(
+								create(false, 
+										this.getClass().getName()+"-"+url, 
+										locale, 
+										LINK_BASE + clientExtensionEntry.getExternalReferenceCode(),
+										"healthcheck-client-extension-undetectable-host",
+										clientExtensionEntry.getName(locale),
+										url));
+					}
 				}
 			}
 			if(result.isEmpty()) {
