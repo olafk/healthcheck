@@ -107,7 +107,7 @@ public class ClientExtensionHostHealthcheck extends HealthcheckBaseImpl {
 	}
 
 	private String getHost(String url) {
-		if(url.startsWith("http")) {
+		if(url != null && url.startsWith("http")) {
 			int endOfHost = url.indexOf('/', 8);
 			if(endOfHost>-1) {
 				return url.substring(0, endOfHost);
