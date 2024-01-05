@@ -20,6 +20,8 @@ import com.liferay.portal.health.api.Healthcheck;
 import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
@@ -98,6 +100,7 @@ public class ClientExtensionHostHealthcheck extends HealthcheckBaseImpl {
 						"healthcheck-client-extension-none-detected"));
 			}
 		} catch (PortalException e) {
+			_log.error(e);
 			result.add(create(this, locale, e));
 		}
 		return result;
@@ -125,4 +128,7 @@ public class ClientExtensionHostHealthcheck extends HealthcheckBaseImpl {
 	
 	@Reference
 	protected CompanyLocalService companyLocalService;
+	
+	
+	static Log _log = LogFactoryUtil.getLog(ClientExtensionHostHealthcheck.class);
 }
