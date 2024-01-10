@@ -50,6 +50,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 public class VerifyDeprecatedServiceDemoHealthcheck extends HealthcheckBaseImpl {
 
 	private static final String MSG = "healthcheck-deprecated-service-demo";
+	@SuppressWarnings("unused")
 	private static final String ERROR_MESSAGE = "healthcheck-deprecated-service-demo-found";
 	
 	@Override
@@ -59,14 +60,19 @@ public class VerifyDeprecatedServiceDemoHealthcheck extends HealthcheckBaseImpl 
 			// todo: Translate!
 			items.add(create(true, locale, null, MSG));
 		} else {
-			for (DeprecatedSampleService service : services) {
-				items.add(create(false, 
-						this.getClass().getName() + "-" + service.getClass().getName(),
-						locale, 
-						null, 
-						ERROR_MESSAGE, 
-						DeprecatedSampleService.class.getName(), 
-						service.getClass().getName()));
+			for (@SuppressWarnings("unused") DeprecatedSampleService service : services) {
+// skip - this is just a demo implementation with an artificially 
+// deprecated custom service.
+// Use this class as a blueprint if you come across a truly detect-worthy
+// deprecated service				
+				
+//				items.add(create(false, 
+//						this.getClass().getName() + "-" + service.getClass().getName(),
+//						locale, 
+//						null, 
+//						ERROR_MESSAGE, 
+//						DeprecatedSampleService.class.getName(), 
+//						service.getClass().getName()));
 			}
 		}
 		return items;
@@ -83,12 +89,10 @@ public class VerifyDeprecatedServiceDemoHealthcheck extends HealthcheckBaseImpl 
 		services.remove(service);
 	}
 	
-	
 	private LinkedList<DeprecatedSampleService> services = new LinkedList<DeprecatedSampleService>();
 	
 	@Override
 	public String getCategory() {
 		return "healthcheck-category-breaking-changes";
 	}
-
 }
