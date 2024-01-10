@@ -46,6 +46,7 @@ public class ClientExtensionHostHealthcheck extends HealthcheckBaseImpl {
 
 	private final static String LINK_BASE = "/group/guest/~/control_panel/manage?p_p_id=com_liferay_client_extension_web_internal_portlet_ClientExtensionAdminPortlet&p_p_lifecycle=0&_com_liferay_client_extension_web_internal_portlet_ClientExtensionAdminPortlet_mvcRenderCommandName=%2Fclient_extension_admin%2Fedit_client_extension_entry&_com_liferay_client_extension_web_internal_portlet_ClientExtensionAdminPortlet_externalReferenceCode=";
 	private final static String MSG = "healthcheck-client-extension-host";
+
 	public ClientExtensionHostHealthcheck() {
 	}
 
@@ -95,7 +96,17 @@ public class ClientExtensionHostHealthcheck extends HealthcheckBaseImpl {
 										clientExtensionEntry.getName(locale),
 										host));
 					} else {
-						result.add(
+						if(url.startsWith("/document")) {
+						    result.add(
+								create(true, 
+										this.getClass().getName()+"-"+url, 
+										locale, 
+										LINK_BASE + clientExtensionEntry.getExternalReferenceCode(),
+										"healthcheck-client-extension-local-doclib",
+										clientExtensionEntry.getName(locale),
+										url));
+						} else {
+						    result.add(
 								create(false, 
 										this.getClass().getName()+"-"+url, 
 										locale, 
@@ -103,6 +114,7 @@ public class ClientExtensionHostHealthcheck extends HealthcheckBaseImpl {
 										"healthcheck-client-extension-undetectable-host",
 										clientExtensionEntry.getName(locale),
 										url));
+						}
 					}
 				}
 			}
