@@ -27,4 +27,12 @@ public interface HealthcheckOperationalConfiguration {
             required = false
         )
 	public Integer acceptableMissingUpdates();
+
+	@Meta.AD(
+            deflt = "3",
+			description = "healthcheck-operational-acceptable-age-in-quarters-description",
+            name = "healthcheck-operational-acceptable-age-in-quarters-name",
+            required = false
+        )
+	public Integer acceptableAgeInQuarters();
 }

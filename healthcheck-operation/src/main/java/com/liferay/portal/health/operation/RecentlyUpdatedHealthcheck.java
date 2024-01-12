@@ -26,6 +26,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -38,12 +40,14 @@ import org.osgi.service.component.annotations.Modified;
 public class RecentlyUpdatedHealthcheck extends HealthcheckBaseImpl {
 
 	private int acceptableMissingUpdates;
+	private int acceptableAgeInQuarters;
+	private static final String QUARTERLY_PATTERN = "^(\\d{4})\\.Q(\\d)\\.(\\d)$";
 
 	@Override
 	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
 		final String version = ReleaseInfo.getVersionDisplayName();
 		final String term; 
-		final String message;
+		String message;
 		if(ReleaseInfo.isDXP()) {
 			term = "Update ";
 			message = "healthcheck-recently-updated-dxp"; 
@@ -64,13 +68,44 @@ public class RecentlyUpdatedHealthcheck extends HealthcheckBaseImpl {
 					null, 
 					message, update, expectedActualUpdate));
 		} else {
-			// TO DO
-			return wrap(create(
-					false,
-					locale,
-					null,
-					"healthcheck-recently-updated-couldnt-compute", version));
+			// might be a quarterly release, e.g. "2023.Q4.1"
+			Pattern pattern = Pattern.compile(QUARTERLY_PATTERN);
+			Matcher matcher = pattern.matcher(version);
+			if(matcher.matches()) {
+				int year = Integer.valueOf(matcher.group(1));
+				int quarter = Integer.valueOf(matcher.group(2));
+				int patch = Integer.valueOf(matcher.group(3));
+				message = "healthcheck-recent-quarterly-dxp"; 
+				
+				int ageInQuarters = getAgeInQuarters(year, quarter, patch);
+				return wrap(create(
+						ageInQuarters <= acceptableAgeInQuarters,
+						locale,
+						null,
+						message,
+						version,
+						acceptableAgeInQuarters, 
+						ageInQuarters));
+			} else {
+				return wrap(create(
+						false,
+						locale,
+						null,
+						"healthcheck-recently-updated-couldnt-compute", version));
+
+			}
 		}
+	}
+
+	private int getAgeInQuarters(int releaseYear, int releaseQuarter, int patch) {
+		LocalDate now = LocalDate.now();
+		int currentYear = now.getYear();
+		int month = now.getMonthValue();
+		int currentQuarter = 1+((int)((month-1)/3));
+
+		int ageInQuarters = (currentYear - releaseYear) * 4 + (currentQuarter-releaseQuarter-1); 
+		
+		return ageInQuarters;
 	}
 
 	private int guessCurrentlyExpectedUpdate() {
@@ -94,5 +129,6 @@ public class RecentlyUpdatedHealthcheck extends HealthcheckBaseImpl {
 	protected void activate(Map<String, Object> properties) {
 		HealthcheckOperationalConfiguration config = ConfigurableUtil.createConfigurable(HealthcheckOperationalConfiguration.class, properties);
 		acceptableMissingUpdates = config.acceptableMissingUpdates();
+		acceptableAgeInQuarters = config.acceptableAgeInQuarters();
 	}
 }
