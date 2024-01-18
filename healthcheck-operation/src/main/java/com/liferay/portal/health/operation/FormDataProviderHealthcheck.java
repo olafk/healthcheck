@@ -16,20 +16,25 @@ package com.liferay.portal.health.operation;
 
 import com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance;
 import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceLocalServiceUtil;
+import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.health.api.Healthcheck;
 import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
+import com.liferay.portal.health.operation.configuration.HealthcheckOperationalConfiguration;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSON;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -44,6 +49,7 @@ public class FormDataProviderHealthcheck extends HealthcheckBaseImpl {
 
 	private final static String LINK_BASE = "/group/guest/~/control_panel/manage?p_p_id=com_liferay_dynamic_data_mapping_data_provider_web_portlet_DDMDataProviderPortlet&p_p_lifecycle=0&p_p_state=maximized&p_p_mode=view&_com_liferay_dynamic_data_mapping_data_provider_web_portlet_DDMDataProviderPortlet_displayStyle=descriptive&_com_liferay_dynamic_data_mapping_data_provider_web_portlet_DDMDataProviderPortlet_mvcPath=%2Fedit_data_provider.jsp&_com_liferay_dynamic_data_mapping_data_provider_web_portlet_DDMDataProviderPortlet_dataProviderInstanceId=";
 	private final static String MSG = "healthcheck-dataprovider-detected-host-ignore-if-expected";
+	private final static String MSG_WHITELISTED = "healthcheck-dataprovider-whitelisted";
 	public FormDataProviderHealthcheck() {
 	}
 
@@ -67,13 +73,23 @@ public class FormDataProviderHealthcheck extends HealthcheckBaseImpl {
 					// Note: There is a separate health check to validate the company
 					// virtualhost, that should make this unignorable.
 					String host = getHost(url);
-					result.add(
+					if(hostWhitelists.contains(host)) {
+						result.add(
+							create(
+								true, 
+								this.getClass().getName() + "-" + virtualHostname + "-" + host, 
+								locale, 
+								LINK_BASE + dataProvider.getDataProviderInstanceId(), 
+								MSG_WHITELISTED, dataProvider.getName(locale), host));
+					} else {
+						result.add(
 							create(
 								false, 
 								this.getClass().getName() + "-" + virtualHostname + "-" + host, 
 								locale, 
 								LINK_BASE + dataProvider.getDataProviderInstanceId(), 
 								MSG, dataProvider.getName(locale), host));
+					}
 				}
 				
 			}
@@ -108,6 +124,8 @@ public class FormDataProviderHealthcheck extends HealthcheckBaseImpl {
 	@Activate
 	@Modified
 	protected void activate(Map<String, Object> properties) {
+		HealthcheckOperationalConfiguration config = ConfigurableUtil.createConfigurable(HealthcheckOperationalConfiguration.class, properties);
+		hostWhitelists = new HashSet<>(Arrays.asList(config.clientExtensionHostWhitelist()));
 	}
 	
 	@Reference
@@ -135,4 +153,5 @@ public class FormDataProviderHealthcheck extends HealthcheckBaseImpl {
 		public String value;
 	}
 	
+	private Set<String> hostWhitelists;
 }

@@ -35,4 +35,18 @@ public interface HealthcheckOperationalConfiguration {
             required = false
         )
 	public Integer acceptableAgeInQuarters();
+
+	@Meta.AD(
+			description = "healthcheck-operational-client-extension-host-whitelist-description",
+            name = "healthcheck-operational-client-extension-host-whitelist-name",
+            required = false
+        )
+	public String[] clientExtensionHostWhitelist();
+
+	@Meta.AD(
+			description = "healthcheck-operational-dataprovider-host-whitelist-description",
+            name = "healthcheck-operational-dataprovider-host-whitelist-name",
+            required = false
+        )
+	public String[] dataProviderHostWhitelist();
 }
