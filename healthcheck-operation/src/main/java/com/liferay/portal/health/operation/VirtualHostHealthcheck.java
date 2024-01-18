@@ -68,7 +68,7 @@ public class VirtualHostHealthcheck extends HealthcheckBaseImpl {
 
 	@Override
 	public String getCategory() {
-		return "healthcheck-category-demosystem";
+		return "healthcheck-category-operation";
 	}
 	
 	@Reference(target="(servlet-filter-name=Healthcheck Hostname Extracting Filter)")
