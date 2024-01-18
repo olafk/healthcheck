@@ -20,6 +20,8 @@ import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.health.api.HealthcheckItemImpl;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,6 +42,7 @@ public class CommerceHealthcheckWrapper extends HealthcheckBaseImpl {
 	@Override
 	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
 		List<CommerceChannel> commerceChannels = commerceChannelLocalService.getCommerceChannels(companyId);
+		_log.info("Executing Commerce Healthcheck " + getWrappee().getClass().getSimpleName() + " for " + commerceChannels.size() + " channel(s)");
 		ArrayList<HealthcheckItem> result = new ArrayList<HealthcheckItem>(commerceChannels.size());
 		for (CommerceChannel channel : commerceChannels) {
 			result.add(createResult(status, companyId, channel, locale));
@@ -72,4 +75,7 @@ public class CommerceHealthcheckWrapper extends HealthcheckBaseImpl {
 
 	private CommerceChannelLocalService commerceChannelLocalService;
 	private CommerceHealthStatus status;
+	
+	static Log _log = LogFactoryUtil.getLog(CommerceHealthcheckWrapper.class);
+
 }
