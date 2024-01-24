@@ -54,13 +54,13 @@ List<HealthcheckItem> checks = (List<HealthcheckItem>) renderRequest.getAttribut
 <tr style="border: 1px solid grey; <%=style %>">
 	<td style="min-width:3em; text-align:center;"><clay:icon symbol="<%=symbol %>" /></td>
 	<td><%=check.getCategory() %></td>
-	<td><%=check.getMessage() %></td>
-	<td style="padding:2px;">
+	<td style="word-wrap: anywhere;"><%=check.getMessage() %></td>
+	<td style="padding:2px; word-wrap: normal;">
 	<%
 		if(check.getLink() != null) {
-		out.write(" (<a href=\"" + check.getLink() + "\" target=\"_blank\">hint</a>)");
+		out.write("(<a href=\"" + check.getLink() + "\" target=\"_blank\">hint</a>)");
 			} else {
-		out.write(" (no&nbsp;hint)");
+		out.write("(no&nbsp;hint)");
 			}
 	%>
 	</td>
