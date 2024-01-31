@@ -178,7 +178,7 @@ public class HealthcheckWebPortlet extends MVCPortlet {
 	@Reference(			
 			cardinality = ReferenceCardinality.MULTIPLE,
 		    policyOption = ReferencePolicyOption.GREEDY,
-		    unbind = "doUnRegister" 
+		    unbind = "doUnregister" 
 	)
 	void doRegister(Healthcheck healthcheck) {
 		healthchecks.add(healthcheck);
