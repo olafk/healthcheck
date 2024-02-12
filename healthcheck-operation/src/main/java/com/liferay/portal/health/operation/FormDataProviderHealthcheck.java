@@ -24,6 +24,8 @@ import com.liferay.portal.health.operation.configuration.HealthcheckOperationalC
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSON;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 
 import java.util.Arrays;
@@ -125,7 +127,14 @@ public class FormDataProviderHealthcheck extends HealthcheckBaseImpl {
 	@Modified
 	protected void activate(Map<String, Object> properties) {
 		HealthcheckOperationalConfiguration config = ConfigurableUtil.createConfigurable(HealthcheckOperationalConfiguration.class, properties);
-		hostWhitelists = new HashSet<>(Arrays.asList(config.clientExtensionHostWhitelist()));
+		String[] whitelist = config.dataProviderHostWhitelist();
+		if(whitelist == null) {
+			_log.info("empty DataProvider whitelist");
+			hostWhitelists = new HashSet<String>();
+		} else {
+			_log.info("setting up DataProvider whitelist with " + whitelist.length + " elements.");
+			hostWhitelists = new HashSet<String>(Arrays.asList(whitelist));
+		}
 	}
 	
 	@Reference
@@ -153,5 +162,8 @@ public class FormDataProviderHealthcheck extends HealthcheckBaseImpl {
 		public String value;
 	}
 	
-	private Set<String> hostWhitelists;
+	private Set<String> hostWhitelists = new HashSet<String>();
+	
+	static Log _log = LogFactoryUtil.getLog(FormDataProviderHealthcheck.class);
+
 }

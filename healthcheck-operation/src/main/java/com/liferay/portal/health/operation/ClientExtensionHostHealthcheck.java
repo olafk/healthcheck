@@ -169,13 +169,18 @@ public class ClientExtensionHostHealthcheck extends HealthcheckBaseImpl {
 	@Modified
 	protected void activate(Map<String, Object> properties) {
 		HealthcheckOperationalConfiguration config = ConfigurableUtil.createConfigurable(HealthcheckOperationalConfiguration.class, properties);
-		hostWhitelists = new HashSet<>(Arrays.asList(config.clientExtensionHostWhitelist()));
+		String[] whitelist = config.clientExtensionHostWhitelist();
+		if(whitelist==null) {
+			hostWhitelists = new HashSet<String>();
+		} else {
+			hostWhitelists = new HashSet<>(Arrays.asList(whitelist));
+		}
 	}
 	
 	@Reference
 	protected CompanyLocalService companyLocalService;
 	
+	private Set<String> hostWhitelists = new HashSet<String>();
 	
 	static Log _log = LogFactoryUtil.getLog(ClientExtensionHostHealthcheck.class);
-	private Set<String> hostWhitelists;
 }
