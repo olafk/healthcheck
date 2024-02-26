@@ -4,16 +4,15 @@ import com.liferay.portal.configuration.metatype.definitions.ExtendedMetaTypeSer
 
 import java.util.SortedSet;
 
-import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.metatype.MetaTypeService;
 
 import de.olafkock.liferay.configuration.api.GenericConfigurationLookup;
 
-@Component(
-		immediate=true,
-		service=GenericConfigurationLookup.class
-		)
+//@Component(
+//		immediate=true,
+//		service=GenericConfigurationLookup.class
+//		)
 public class GenericConfigurationLookupImpl implements GenericConfigurationLookup {
 
 	/**
