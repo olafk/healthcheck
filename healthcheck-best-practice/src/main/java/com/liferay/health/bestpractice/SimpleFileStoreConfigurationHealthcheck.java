@@ -14,6 +14,7 @@
 
 package com.liferay.health.bestpractice;
 
+import com.liferay.health.bestpractice.configuration.FileSystemStoreConfiguration;
 import com.liferay.health.bestpractice.configuration.HealthcheckBestPracticeConfiguration;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
@@ -66,8 +67,8 @@ public class SimpleFileStoreConfigurationHealthcheck extends HealthcheckBaseImpl
 	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
 		Collection<HealthcheckItem> result; 
 		if(PropsValues.DL_STORE_IMPL.equals("com.liferay.portal.store.file.system.FileSystemStore")) {
-			if(getRootDir().isDirectory()) {
-				int files = getRecursiveMaxFiles(getRootDir(), 0);
+			if(rootDir.isDirectory()) {
+				int files = getRecursiveMaxFiles(rootDir, 0);
 				if(files > maximumFiles) {
 					result = wrap(create(
 							false,
@@ -77,7 +78,7 @@ public class SimpleFileStoreConfigurationHealthcheck extends HealthcheckBaseImpl
 							MSG_TOO_MANY_FILES, 
 							files, 
 							maximumFiles, 
-							getRootDir().getAbsolutePath()));
+							rootDir.getAbsolutePath()));
 				} else {
 					result = wrap(create(
 							true,
@@ -87,7 +88,7 @@ public class SimpleFileStoreConfigurationHealthcheck extends HealthcheckBaseImpl
 							MSG, 
 							files, 
 							maximumFiles, 
-							getRootDir().getAbsolutePath()));
+							rootDir.getAbsolutePath()));
 				}
 			} else {
 				result = wrap(create(
@@ -96,15 +97,15 @@ public class SimpleFileStoreConfigurationHealthcheck extends HealthcheckBaseImpl
 						locale, 
 						LINK, 
 						MSG_NO_DIR, 
-						getRootDir().getAbsolutePath()));
+						rootDir.getAbsolutePath()));
 			}
-			result.add(create(getRootDir().getUsableSpace() > minimumUsableSpace,
+			result.add(create(rootDir.getUsableSpace() > minimumUsableSpace,
 					this.getClass().getName() + "-diskspace",
 					locale,
 					null,
 					MSG_USABLE_SPACE,
 					minimumUsableSpace,
-					getRootDir().getUsableSpace()));
+					rootDir.getUsableSpace()));
 		} else {
 			result = wrap(create(true, locale, LINK, MSG_UNUSED));
 		}
@@ -131,28 +132,24 @@ public class SimpleFileStoreConfigurationHealthcheck extends HealthcheckBaseImpl
 	@Modified
 	protected void activate(Map<String, Object> properties) {
 		HealthcheckBestPracticeConfiguration config = ConfigurableUtil.createConfigurable(HealthcheckBestPracticeConfiguration.class, properties);
+		FileSystemStoreConfiguration fileStoreConfig = ConfigurableUtil.createConfigurable(FileSystemStoreConfiguration.class, properties);
 		maximumFiles = config.maximumSimpleStoreFiles();
 		minimumUsableSpace = config.minimumUsableSpace();
-	}
-
-	protected File getRootDir() {
-		// as we don't have classloader access to the configuration class FileSystemStoreConfiguration (it's not exported), 
-		// we'll need to figure out the configured value manually, by resolving default values explicitly.
-		if(rootDir == null) {
+		if(fileStoreConfig != null) {
+			String rootPath = fileStoreConfig.rootDir();
 			if(rootPath == null) {
-				rootPath = configurationLookup.getDefaultValue("com.liferay.portal.store.file.system.configuration.FileSystemStoreConfiguration", "rootDir");
+				rootPath = configurationLookup.getDefaultValue(
+						"com.liferay.portal.store.file.system.configuration.FileSystemStoreConfiguration", "rootDir");
 			}
-
-			rootDir = new File(rootPath);
-	
-			if (!rootDir.isAbsolute()) {
-				rootDir = new File(PropsValues.LIFERAY_HOME, rootPath);
+			File dir = new File(rootPath);
+			
+			if (!dir.isAbsolute()) {
+				dir = new File(PropsValues.LIFERAY_HOME, rootPath);
 			}
+			rootDir = dir;
 		}
-		return rootDir;
 	}
-	
-	
+
 	@Reference
 	protected void setConfigurationProvider(ConfigurationProvider configurationProvider) {
 	    // configuration update will actually be handled in the @Modified event,
@@ -164,10 +161,8 @@ public class SimpleFileStoreConfigurationHealthcheck extends HealthcheckBaseImpl
 	protected GenericConfigurationLookup configurationLookup;
 	
 	private File rootDir;
-	private String rootPath;
 	private Long minimumUsableSpace;
 	private Integer maximumFiles;
 	
 	static Log _log = LogFactoryUtil.getLog(SimpleFileStoreConfigurationHealthcheck.class);
-
 }
