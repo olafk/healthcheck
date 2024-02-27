@@ -25,20 +25,15 @@ import java.util.Locale;
 import org.osgi.service.component.annotations.Component;
 
 /**
- * Healthcheck for relaxed-security Demo Systems
- * Demo Systems should have the session extended as long as a browser
- * is open, to cater for longer Q&A sessions without any interruption 
- * when the logout-message is missed.
- *  
+ * Healthcheck for relaxed-security Demo Systems Demo Systems should have the
+ * session extended as long as a browser is open, to cater for longer Q&A
+ * sessions without any interruption when the logout-message is missed.
+ * 
  * @author Olaf Kock
  */
-@Component(
-	immediate = true,
-	property = {
+@Component(immediate = true, property = {
 		// TODO enter required service properties
-	},
-	service = Healthcheck.class
-)
+}, service = Healthcheck.class)
 public class SessionTimeoutHealthcheck extends HealthcheckBaseImpl {
 
 	private static final String LINK = "https://docs.liferay.com/portal/7.3-latest/propertiesdoc/portal.properties.html#Session";

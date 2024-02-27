@@ -23,17 +23,17 @@ public class HealthcheckItemImpl implements HealthcheckItem {
 		this.message = message;
 		this.category = category;
 	}
-	
+
 	@Override
 	public boolean isResolved() {
 		return resolved;
 	}
-	
+
 	@Override
 	public String getMessage() {
 		return message;
 	}
-	
+
 	@Override
 	public String getLink() {
 		return link;
@@ -43,12 +43,12 @@ public class HealthcheckItemImpl implements HealthcheckItem {
 	public String getCategory() {
 		return category;
 	}
-	
+
 	@Override
 	public String getKey() {
 		return source + "-" + resolved;
 	}
-	
+
 	private final boolean resolved;
 	private final String source;
 	private final String message;

@@ -26,5 +26,6 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface Healthcheck {
 	Collection<HealthcheckItem> check(long companyId, Locale locale);
+
 	String getCategory();
 }

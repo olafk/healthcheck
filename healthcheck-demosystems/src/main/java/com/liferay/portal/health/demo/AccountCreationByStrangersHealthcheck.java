@@ -35,14 +35,12 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * Healthcheck for relaxed-security Demo Systems
- * Ensure that no stranger can create accounts (due to generally 
- * lower security barriers on demo systems) 
+ * Healthcheck for relaxed-security Demo Systems Ensure that no stranger can
+ * create accounts (due to generally lower security barriers on demo systems)
+ * 
  * @author Olaf Kock
  */
-@Component( 
-		service = Healthcheck.class 
-)
+@Component(service = Healthcheck.class)
 
 public class AccountCreationByStrangersHealthcheck extends HealthcheckBaseImpl {
 
@@ -55,29 +53,19 @@ public class AccountCreationByStrangersHealthcheck extends HealthcheckBaseImpl {
 		PortletPreferences preferences = PrefsPropsUtil.getPreferences(companyId);
 
 		try {
-			boolean state = ! _getPrefsPropsBoolean(
-					preferences, 
-					companyLocalService.getCompany(companyId), 
-					PropsKeys.COMPANY_SECURITY_STRANGERS,
-					PropsValues.COMPANY_SECURITY_STRANGERS);
-			
-			return wrap(create(
-					state, 
-					locale, 
-					LINK, 
-					state ? MSG : MSG_ERROR, 
-					"company.security.strangers"));
+			boolean state = !_getPrefsPropsBoolean(preferences, companyLocalService.getCompany(companyId),
+					PropsKeys.COMPANY_SECURITY_STRANGERS, PropsValues.COMPANY_SECURITY_STRANGERS);
+
+			return wrap(create(state, locale, LINK, state ? MSG : MSG_ERROR, "company.security.strangers"));
 		} catch (PortalException e) {
 			return wrap(create(this, locale, e));
-		} 
+		}
 	}
 
-	private static boolean _getPrefsPropsBoolean(
-		PortletPreferences portletPreferences, Company company, String name,
-		boolean defaultValue) {
+	private static boolean _getPrefsPropsBoolean(PortletPreferences portletPreferences, Company company, String name,
+			boolean defaultValue) {
 
-		String value = portletPreferences.getValue(
-			name, PropsUtil.get(company, name));
+		String value = portletPreferences.getValue(name, PropsUtil.get(company, name));
 
 		if (value != null) {
 			return GetterUtil.getBoolean(value);
@@ -85,12 +73,12 @@ public class AccountCreationByStrangersHealthcheck extends HealthcheckBaseImpl {
 
 		return defaultValue;
 	}
-	
+
 	@Override
 	public String getCategory() {
 		return "healthcheck-category-demosystem";
 	}
-	
+
 	@Reference
 	CompanyLocalService companyLocalService;
 }

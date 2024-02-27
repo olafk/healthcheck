@@ -35,24 +35,21 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
+
 /**
- * Check various conditions for proper use of the (simple) FileSystemStore.
- * It stores all files in a single directory, which might lead to performance problems. Note, that
- * even if you don't experience performance problems at runtime (because Java & your file system 
- * play well together, it might be shell-based tools, e.g. used for backups, that break your neck.
- * The expected maximum number of files is configurable - the default is chosen arbitrarily, to 
- * motivate a rather early change of store implementation, rather than a late migration when the
- * store has a humongous number of files already. 
- *  
+ * Check various conditions for proper use of the (simple) FileSystemStore. It
+ * stores all files in a single directory, which might lead to performance
+ * problems. Note, that even if you don't experience performance problems at
+ * runtime (because Java & your file system play well together, it might be
+ * shell-based tools, e.g. used for backups, that break your neck. The expected
+ * maximum number of files is configurable - the default is chosen arbitrarily,
+ * to motivate a rather early change of store implementation, rather than a late
+ * migration when the store has a humongous number of files already.
+ * 
  * @author Olaf Kock
  */
-@Component(
-		configurationPid = {
-				"com.liferay.portal.store.file.system.configuration.FileSystemStoreConfiguration",
-				"com.liferay.health.bestpractice.configuration.HealthcheckBestPracticeConfiguration"
-				},
-		service = Healthcheck.class
-		)
+@Component(configurationPid = { "com.liferay.portal.store.file.system.configuration.FileSystemStoreConfiguration",
+		"com.liferay.health.bestpractice.configuration.HealthcheckBestPracticeConfiguration" }, service = Healthcheck.class)
 public class SimpleFileStoreConfigurationHealthcheck extends HealthcheckBaseImpl {
 
 	private final String LINK = "https://docs.liferay.com/portal/7.4-latest/propertiesdoc/portal.properties.html#Document%20Library%20Service";
@@ -61,61 +58,37 @@ public class SimpleFileStoreConfigurationHealthcheck extends HealthcheckBaseImpl
 	private final String MSG_UNUSED = "healthcheck-simple-file-store-unused";
 	private final String MSG_NO_DIR = "healthcheck-simple-file-store-no-dir";
 	private final String MSG_USABLE_SPACE = "healthcheck-simple-file-store-usable-space";
-	
+
 	@Override
 	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
-		Collection<HealthcheckItem> result; 
-		if(PropsValues.DL_STORE_IMPL.equals("com.liferay.portal.store.file.system.FileSystemStore")) {
-			if(rootDir.isDirectory()) {
+		Collection<HealthcheckItem> result;
+		if (PropsValues.DL_STORE_IMPL.equals("com.liferay.portal.store.file.system.FileSystemStore")) {
+			if (rootDir.isDirectory()) {
 				int files = getRecursiveMaxFiles(rootDir, 0);
-				if(files > maximumFiles) {
-					result = wrap(create(
-							false,
-							this.getClass().getName() + "-maxfiles",
-							locale, 
-							LINK, 
-							MSG_TOO_MANY_FILES, 
-							files, 
-							maximumFiles, 
-							rootDir.getAbsolutePath()));
+				if (files > maximumFiles) {
+					result = wrap(create(false, this.getClass().getName() + "-maxfiles", locale, LINK,
+							MSG_TOO_MANY_FILES, files, maximumFiles, rootDir.getAbsolutePath()));
 				} else {
-					result = wrap(create(
-							true,
-							this.getClass().getName() + "-maxfiles",
-							locale, 
-							LINK, 
-							MSG, 
-							files, 
-							maximumFiles, 
-							rootDir.getAbsolutePath()));
+					result = wrap(create(true, this.getClass().getName() + "-maxfiles", locale, LINK, MSG, files,
+							maximumFiles, rootDir.getAbsolutePath()));
 				}
 			} else {
-				result = wrap(create(
-						false,
-						this.getClass().getName() + "-no-directory",
-						locale, 
-						LINK, 
-						MSG_NO_DIR, 
+				result = wrap(create(false, this.getClass().getName() + "-no-directory", locale, LINK, MSG_NO_DIR,
 						rootDir.getAbsolutePath()));
 			}
-			result.add(create(rootDir.getUsableSpace() > minimumUsableSpace,
-					this.getClass().getName() + "-diskspace",
-					locale,
-					null,
-					MSG_USABLE_SPACE,
-					minimumUsableSpace,
-					rootDir.getUsableSpace()));
+			result.add(create(rootDir.getUsableSpace() > minimumUsableSpace, this.getClass().getName() + "-diskspace",
+					locale, null, MSG_USABLE_SPACE, minimumUsableSpace, rootDir.getUsableSpace()));
 		} else {
 			result = wrap(create(true, locale, LINK, MSG_UNUSED));
 		}
 		return result;
 	}
-	
+
 	private int getRecursiveMaxFiles(File dir, int max) {
 		File[] files = dir.listFiles();
 		int result = Math.max(max, files.length);
 		for (int i = 0; i < files.length; i++) {
-			if(files[i].isDirectory()) {
+			if (files[i].isDirectory()) {
 				result = getRecursiveMaxFiles(files[i], result);
 			}
 		}
@@ -130,13 +103,15 @@ public class SimpleFileStoreConfigurationHealthcheck extends HealthcheckBaseImpl
 	@Activate
 	@Modified
 	protected void activate(Map<String, Object> properties) {
-		HealthcheckBestPracticeConfiguration config = ConfigurableUtil.createConfigurable(HealthcheckBestPracticeConfiguration.class, properties);
+		HealthcheckBestPracticeConfiguration config = ConfigurableUtil
+				.createConfigurable(HealthcheckBestPracticeConfiguration.class, properties);
 		maximumFiles = config.maximumSimpleStoreFiles();
 		minimumUsableSpace = config.minimumUsableSpace();
-		Settings fileStoreSettings = settingsLocatorHelper.getConfigurationBeanSettings("com.liferay.portal.store.file.system.configuration.FileSystemStoreConfiguration");
+		Settings fileStoreSettings = settingsLocatorHelper.getConfigurationBeanSettings(
+				"com.liferay.portal.store.file.system.configuration.FileSystemStoreConfiguration");
 		String rootPath = fileStoreSettings.getValue("rootDir", null);
 		File dir = new File(rootPath);
-		
+
 		if (!dir.isAbsolute()) {
 			dir = new File(PropsValues.LIFERAY_HOME, rootPath);
 		}
@@ -145,17 +120,17 @@ public class SimpleFileStoreConfigurationHealthcheck extends HealthcheckBaseImpl
 
 	@Reference
 	private SettingsLocatorHelper settingsLocatorHelper;
-	
+
 	@Reference
 	protected void setConfigurationProvider(ConfigurationProvider configurationProvider) {
-	    // configuration update will actually be handled in the @Modified event,
-		// which will only be triggered in case we have a @Reference to the 
+		// configuration update will actually be handled in the @Modified event,
+		// which will only be triggered in case we have a @Reference to the
 		// ConfigurationProvider
 	}
-	
+
 	private File rootDir;
 	private Long minimumUsableSpace;
 	private Integer maximumFiles;
-	
+
 	static Log _log = LogFactoryUtil.getLog(SimpleFileStoreConfigurationHealthcheck.class);
 }

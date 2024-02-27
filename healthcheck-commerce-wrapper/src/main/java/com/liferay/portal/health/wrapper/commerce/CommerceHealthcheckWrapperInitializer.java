@@ -42,30 +42,28 @@ public class CommerceHealthcheckWrapperInitializer {
 
 	@Activate
 	private void activate(BundleContext context) {
-		// Activation is enough, as this service might be activated when all 
-		// references have been set, and only then has the bundleContext to 
-		// register this bundle's service wrappers. 
-		// 
+		// Activation is enough, as this service might be activated when all
+		// references have been set, and only then has the bundleContext to
+		// register this bundle's service wrappers.
+		//
 		// Deactivation is done through the individual doUnRegister methods.
 		this.context = context;
 		log.info("Activate BundleContext :" + context);
 		registerServices();
 	}
 
-	@Reference(			
-			cardinality = ReferenceCardinality.MULTIPLE,
-		    policyOption = ReferencePolicyOption.GREEDY,
-		    unbind = "doUnRegister" 
-	)
+	@Reference(cardinality = ReferenceCardinality.MULTIPLE, policyOption = ReferencePolicyOption.GREEDY, unbind = "doUnRegister")
 	void doRegister(CommerceHealthStatus commerceHealthHttpStatus) {
 		// TODO: Reimplement with ServiceTracker to get rid of this conditional:
 
-		// At the time of writing this class, WishListContentCommerceHealthHttpStatus is not enabled, but
-		// I don't know how to programmatically figure this out - as calling isFixed causes a very noisy 
+		// At the time of writing this class, WishListContentCommerceHealthHttpStatus is
+		// not enabled, but
+		// I don't know how to programmatically figure this out - as calling isFixed
+		// causes a very noisy
 		// stacktrace, for now I'm deactivating this check in a stupid and hardcoded way
-		if(! commerceHealthHttpStatus.getClass().getName().startsWith(
+		if (!commerceHealthHttpStatus.getClass().getName().startsWith(
 				"com.liferay.commerce.wish.list.web.internal.health.status.WishListContentCommerceHealth")) {
-			
+
 			log.info("doRegister on " + commerceHealthHttpStatus.getClass().getName());
 			CommerceHealthcheckWrapper service = new CommerceHealthcheckWrapper(commerceHealthHttpStatus);
 
@@ -77,7 +75,7 @@ public class CommerceHealthcheckWrapperInitializer {
 	}
 
 	private void doUnRegister(CommerceHealthStatus commerceHealthHttpStatus) {
-		if(services.containsKey(commerceHealthHttpStatus)) {
+		if (services.containsKey(commerceHealthHttpStatus)) {
 			ServiceRegistration<Healthcheck> serviceRegistration = services.get(commerceHealthHttpStatus);
 			serviceRegistration.unregister();
 			services.remove(commerceHealthHttpStatus);
@@ -86,13 +84,14 @@ public class CommerceHealthcheckWrapperInitializer {
 	}
 
 	private void registerServices() {
-		if(context != null && commerceChannelLocalService != null) {
+		if (context != null && commerceChannelLocalService != null) {
 			for (Iterator<CommerceHealthcheckWrapper> iterator = unregisteredServices.iterator(); iterator.hasNext();) {
 				CommerceHealthcheckWrapper wrapper = iterator.next();
 				wrapper.setCommerceChannelLocalService(commerceChannelLocalService);
-				
-				Hashtable<String, Object> properties = new Hashtable<String,Object>();
-				ServiceRegistration<Healthcheck> serviceRegistration = context.registerService(Healthcheck.class, wrapper, properties);
+
+				Hashtable<String, Object> properties = new Hashtable<String, Object>();
+				ServiceRegistration<Healthcheck> serviceRegistration = context.registerService(Healthcheck.class,
+						wrapper, properties);
 				services.put(wrapper.getWrappee(), serviceRegistration);
 				iterator.remove();
 				log.info("registered wrapper for " + wrapper.getWrappee().getClass().getName());
@@ -108,15 +107,15 @@ public class CommerceHealthcheckWrapperInitializer {
 
 	@SuppressWarnings("unused")
 	private void unsetCommerceChannelLocalService(CommerceChannelLocalService commerceChannelLocalService) {
-		for (Map.Entry<CommerceHealthStatus,ServiceRegistration<Healthcheck>> registration : services.entrySet()) {
+		for (Map.Entry<CommerceHealthStatus, ServiceRegistration<Healthcheck>> registration : services.entrySet()) {
 			unregisteredServices.add(new CommerceHealthcheckWrapper(registration.getKey()));
 			doUnRegister(registration.getKey());
 		}
 	}
-		
+
 	private CommerceChannelLocalService commerceChannelLocalService;
 	private List<CommerceHealthcheckWrapper> unregisteredServices = new LinkedList<CommerceHealthcheckWrapper>();
 	private Map<CommerceHealthStatus, ServiceRegistration<Healthcheck>> services = new HashMap<CommerceHealthStatus, ServiceRegistration<Healthcheck>>();
-	
+
 	private static Log log = LogFactoryUtil.getLog(CommerceHealthcheckWrapperInitializer.class);
 }

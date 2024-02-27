@@ -34,16 +34,14 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * A very basic check for an existing full-text-index (elasticsearch).
- * This check only checks the number of users retrieved through 
- * database and through index to be identical as a smoke test.
+ * A very basic check for an existing full-text-index (elasticsearch). This
+ * check only checks the number of users retrieved through database and through
+ * index to be identical as a smoke test.
  * 
  * @author Olaf Kock
  */
 
-@Component(
-		service = Healthcheck.class
-		)
+@Component(service = Healthcheck.class)
 public class ContentIndexedHealthcheck extends HealthcheckBaseImpl {
 	private static final String LINK = "/group/control_panel/manage?p_p_id=com_liferay_portal_search_admin_web_portlet_SearchAdminPortlet&_com_liferay_portal_search_admin_web_portlet_SearchAdminPortlet_tabs1=index-actions";
 	private static final String MSG = "healthcheck-content-indexed";
@@ -53,17 +51,15 @@ public class ContentIndexedHealthcheck extends HealthcheckBaseImpl {
 	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
 		CountSearchRequest countSearchRequest = new CountSearchRequest();
 		countSearchRequest.setIndexNames(indexNameBuilder.getIndexName(companyId));
-		TermQuery termQuery = new TermQueryImpl(
-			Field.ENTRY_CLASS_NAME, User.class.getName());
+		TermQuery termQuery = new TermQueryImpl(Field.ENTRY_CLASS_NAME, User.class.getName());
 
 		countSearchRequest.setQuery(termQuery);
-		CountSearchResponse countSearchResponse =
-			searchEngineAdapter.execute(countSearchRequest);
+		CountSearchResponse countSearchResponse = searchEngineAdapter.execute(countSearchRequest);
 		long indexCount = countSearchResponse.getCount();
 		long dbCount = userLocalService.getCompanyUsersCount(companyId);
-		
+
 		boolean exists = (indexCount >= dbCount);
-		return wrap(create(exists,  locale, LINK, exists ? MSG : ERROR_MSG, indexCount, dbCount));
+		return wrap(create(exists, locale, LINK, exists ? MSG : ERROR_MSG, indexCount, dbCount));
 	}
 
 	@Override
@@ -76,7 +72,7 @@ public class ContentIndexedHealthcheck extends HealthcheckBaseImpl {
 
 	@Reference
 	UserLocalService userLocalService;
-	
+
 	@Reference
 	IndexNameBuilder indexNameBuilder;
 }

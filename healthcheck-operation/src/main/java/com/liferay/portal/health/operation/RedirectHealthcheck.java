@@ -42,48 +42,42 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * Some operations fail when the server can't reliably tell its 
- * own host name (e.g. behind a reverse proxy). In that case, the redirectURL
- * should be configured appropriately.
- *   
+ * Some operations fail when the server can't reliably tell its own host name
+ * (e.g. behind a reverse proxy). In that case, the redirectURL should be
+ * configured appropriately.
+ * 
  * @author Olaf Kock
  */
 
-@Component(
-		immediate = true,
-		configurationPid = RedirectHealthcheck.PID,
-		property = Constants.SERVICE_PID + "=" + RedirectHealthcheck.PID + ".scoped",
-		service = { Healthcheck.class, ManagedServiceFactory.class } 
-		
-		)
+@Component(immediate = true, configurationPid = RedirectHealthcheck.PID, property = Constants.SERVICE_PID + "="
+		+ RedirectHealthcheck.PID + ".scoped", service = { Healthcheck.class, ManagedServiceFactory.class }
+
+)
 public class RedirectHealthcheck extends HealthcheckBaseImpl implements ManagedServiceFactory {
 
 	@Override
 	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
 		HostNameExtractingFilter f = (HostNameExtractingFilter) filter;
 		Set<String> urls = f.getAccessedUrls(companyId);
-		
+
 		Collection<HealthcheckItem> result = new LinkedList<HealthcheckItem>();
-		
+
 		for (String requestedUrl : urls) {
 			String url = PortalUtil.escapeRedirect(requestedUrl);
-			result.add(create(url!=null,
-					this.getClass().getName() + "-" + HtmlUtil.escapeURL(requestedUrl),
-					locale, 
-					PARTIAL_LINK + companyToRedirectConfigPid.get(companyId), 
-					"healthcheck-redirection-url-previous", 
+			result.add(create(url != null, this.getClass().getName() + "-" + HtmlUtil.escapeURL(requestedUrl), locale,
+					PARTIAL_LINK + companyToRedirectConfigPid.get(companyId), "healthcheck-redirection-url-previous",
 					extractHost(requestedUrl)));
 		}
-			
+
 		return result;
 	}
 
 	private String extractHost(String url) {
-		if(url == null) {
+		if (url == null) {
 			return "null";
 		}
 		int separatorIndex = url.indexOf("://");
-		if(separatorIndex<1) { // not found, and should have a scheme leading up to it
+		if (separatorIndex < 1) { // not found, and should have a scheme leading up to it
 			return "???";
 		}
 		return HtmlUtil.escape(url.substring(separatorIndex + 3));
@@ -93,7 +87,7 @@ public class RedirectHealthcheck extends HealthcheckBaseImpl implements ManagedS
 	public String getCategory() {
 		return "healthcheck-category-operation";
 	}
-	
+
 	@Override
 	public String getName() {
 		return PID + ".scoped";
@@ -103,36 +97,34 @@ public class RedirectHealthcheck extends HealthcheckBaseImpl implements ManagedS
 	public void updated(String pid, Dictionary<String, ?> properties) throws ConfigurationException {
 		long companyId = (Long) properties.get("companyId");
 		companyToRedirectConfigPid.put(companyId, pid);
-		
+
 		log.debug("adding redirection config for " + companyId + " as " + pid);
 	}
-	
+
 	@Override
 	public void deleted(String pid) {
 		Set<Entry<Long, String>> es = companyToRedirectConfigPid.entrySet();
 		for (Entry<Long, String> entry : es) {
-			if(entry.getValue().equals(pid)) {
+			if (entry.getValue().equals(pid)) {
 				Long companyId = entry.getKey();
 				companyToRedirectConfigPid.remove(companyId);
-		
+
 				log.debug("removing redirection config for " + companyId);
 				break;
 			}
 		}
 	}
 
-	@Reference(target="(servlet-filter-name=Healthcheck Hostname Extracting Filter)")
+	@Reference(target = "(servlet-filter-name=Healthcheck Hostname Extracting Filter)")
 	Filter filter;
-	
+
 	static Log _log = LogFactoryUtil.getLog(RedirectHealthcheck.class);
 
 	static final String PID = "com.liferay.redirect.internal.configuration.RedirectURLConfiguration";
-	private HashMap<Long,String> companyToRedirectConfigPid = new HashMap<Long, String>();
+	private HashMap<Long, String> companyToRedirectConfigPid = new HashMap<Long, String>();
 	private static Log log = LogFactoryUtil.getLog(RedirectHealthcheck.class);
-	private static String PARTIAL_LINK = "/group/control_panel/manage?p_p_id=" + 
-							INSTANCE_SETTINGS + "&" + 
-							"_" + INSTANCE_SETTINGS + "_factoryPid=" + PID + "&" + 
-							"_" + INSTANCE_SETTINGS + "_mvcRenderCommandName=%2Fconfiguration_admin%2Fedit_configuration&" + 
-							"_" + INSTANCE_SETTINGS + "_pid=";
+	private static String PARTIAL_LINK = "/group/control_panel/manage?p_p_id=" + INSTANCE_SETTINGS + "&" + "_"
+			+ INSTANCE_SETTINGS + "_factoryPid=" + PID + "&" + "_" + INSTANCE_SETTINGS
+			+ "_mvcRenderCommandName=%2Fconfiguration_admin%2Fedit_configuration&" + "_" + INSTANCE_SETTINGS + "_pid=";
 
 }

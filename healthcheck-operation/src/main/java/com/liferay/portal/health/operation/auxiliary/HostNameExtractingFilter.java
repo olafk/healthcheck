@@ -33,27 +33,18 @@ import javax.servlet.http.HttpServletResponse;
 import org.osgi.service.component.annotations.Component;
 
 /**
- * Keep track of all host names that were ever requested, including 
- * the scheme (http/https). These hosts will be used to check for 
- * allowed redirection of any host name used to access any content 
- * in this whole instance.
+ * Keep track of all host names that were ever requested, including the scheme
+ * (http/https). These hosts will be used to check for allowed redirection of
+ * any host name used to access any content in this whole instance.
  * 
  * @author Olaf Kock
  */
 
-@Component(
-		immediate = true,
-		property = {
-				"before-filter=Auto Login Filter",
-				"dispatcher=REQUEST",
-				"servlet-context-name=",
-				// Note: servlet-filter-name is used as target expression in 
-				// com.liferay.portal.health.operation.RedirectHealthcheck
-				"servlet-filter-name=Healthcheck Hostname Extracting Filter",
-				"url-pattern=/*"
-		},
-		service = Filter.class
-)
+@Component(immediate = true, property = { "before-filter=Auto Login Filter", "dispatcher=REQUEST",
+		"servlet-context-name=",
+		// Note: servlet-filter-name is used as target expression in
+		// com.liferay.portal.health.operation.RedirectHealthcheck
+		"servlet-filter-name=Healthcheck Hostname Extracting Filter", "url-pattern=/*" }, service = Filter.class)
 public class HostNameExtractingFilter extends BaseFilter implements AccessedUrlRegister {
 
 	@Override
@@ -67,10 +58,10 @@ public class HostNameExtractingFilter extends BaseFilter implements AccessedUrlR
 		String host = httpServletRequest.getServerName();
 		String scheme = httpServletRequest.getScheme();
 		long companyId = PortalUtil.getCompanyId(httpServletRequest);
-		
-		if(host != null && host.length() > 1) {
+
+		if (host != null && host.length() > 1) {
 			HashSet<String> urls = requestedBaseUrls.get(companyId);
-			if(urls == null) {
+			if (urls == null) {
 				urls = new HashSet<String>();
 				requestedBaseUrls.put(companyId, urls);
 			}
@@ -83,7 +74,7 @@ public class HostNameExtractingFilter extends BaseFilter implements AccessedUrlR
 	public Set<String> getAccessedUrls(long companyId) {
 		return Collections.unmodifiableSet(requestedBaseUrls.get(companyId));
 	}
-	
+
 	static Log _log = LogFactoryUtil.getLog(HostNameExtractingFilter.class);
 	private HashMap<Long, HashSet<String>> requestedBaseUrls = new HashMap<Long, HashSet<String>>();
 }

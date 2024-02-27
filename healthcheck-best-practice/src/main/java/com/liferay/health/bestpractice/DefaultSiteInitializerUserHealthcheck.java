@@ -29,9 +29,7 @@ import java.util.Locale;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
-@Component(
-		service=Healthcheck.class
-		)
+@Component(service = Healthcheck.class)
 public class DefaultSiteInitializerUserHealthcheck extends HealthcheckBaseImpl {
 
 	@Override
@@ -40,16 +38,16 @@ public class DefaultSiteInitializerUserHealthcheck extends HealthcheckBaseImpl {
 		for (String user : KNOWN_USERS) {
 			result.addAll(checkForUser(companyId, locale, user));
 		}
-		if(result.isEmpty()) {
+		if (result.isEmpty()) {
 			result.add(create(true, locale, null, MSG));
 		}
 		return result;
 	}
-	
+
 	private Collection<HealthcheckItem> checkForUser(long companyId, Locale locale, String mailAddress) {
 		try {
 			User user = userLocalService.getUserByEmailAddress(companyId, mailAddress);
-			if(user != null) {
+			if (user != null) {
 				return wrap(create(false, locale, LINK + LINK_PARAMETER + user.getUserId(), MSG_FOUND, mailAddress));
 			}
 		} catch (NoSuchUserException e) {
@@ -67,44 +65,19 @@ public class DefaultSiteInitializerUserHealthcheck extends HealthcheckBaseImpl {
 
 	@Reference
 	UserLocalService userLocalService;
-	
+
 	private static final String LINK = "/group/control_panel/manage?p_p_id=com_liferay_users_admin_web_portlet_UsersAdminPortlet";
 	private static final String LINK_PARAMETER = "&_com_liferay_users_admin_web_portlet_UsersAdminPortlet_mvcRenderCommandName=%2Fusers_admin%2Fedit_user&_com_liferay_users_admin_web_portlet_UsersAdminPortlet_p_u_i_d=";
 	private static final String MSG = "healthcheck-bestpractice-siteinitializer-user";
 	private static final String MSG_FOUND = "healthcheck-bestpractice-siteinitializer-user-found";
-	private static String[] KNOWN_USERS = {
-			"test.user1@liferay.com"
-			,"test.user2.update@liferay.com"
-			,"test.user3@liferay.com"
-			,"test.user1@liferay.com"
-			,"test.user2@liferay.com"
-			,"scott.producer@mailinator.com"
-			,"marie.producer@mailinator.com"
-			,"ryan.underwriter@mailinator.com"
-			,"clark.insured@mailinator.com"
-			,"administrator@testray.com"
-			,"analyst@testray.com"
-			,"lead@testray.com"
-			,"user@testray.com"
-			,"j@acme.com"
-			,"s@acme.com"
-			,"john.developer@mailinator.com"
-			,"marie.developer@mailinator.com"
-			,"ryan.administrator@mailinator.com"
-			,"clark.customer@mailinator.com"
-			,"pm@partner.com"
-			,"pmu@partner.com"
-			,"psu@partner.com"
-			,"ptu@partner.com"
-			,"cam@liferaytest.com"
-			,"com@liferaytest.com"
-			,"cmm@liferaytest.com"
-			,"cmd@liferaytest.com"
-			,"cfm@liferaytest.com"
-			,"cem@liferaytest.com"
-			,"test@liferay.com"
-			,"employee@liferay.com"
-			,"manager@liferay.com"
-			,"finance@liferay.com"
-	};
+	private static String[] KNOWN_USERS = { "test.user1@liferay.com", "test.user2.update@liferay.com",
+			"test.user3@liferay.com", "test.user1@liferay.com", "test.user2@liferay.com",
+			"scott.producer@mailinator.com", "marie.producer@mailinator.com", "ryan.underwriter@mailinator.com",
+			"clark.insured@mailinator.com", "administrator@testray.com", "analyst@testray.com", "lead@testray.com",
+			"user@testray.com", "j@acme.com", "s@acme.com", "john.developer@mailinator.com",
+			"marie.developer@mailinator.com", "ryan.administrator@mailinator.com", "clark.customer@mailinator.com",
+			"pm@partner.com", "pmu@partner.com", "psu@partner.com", "ptu@partner.com", "cam@liferaytest.com",
+			"com@liferaytest.com", "cmm@liferaytest.com", "cmd@liferaytest.com", "cfm@liferaytest.com",
+			"cem@liferaytest.com", "test@liferay.com", "employee@liferay.com", "manager@liferay.com",
+			"finance@liferay.com" };
 }

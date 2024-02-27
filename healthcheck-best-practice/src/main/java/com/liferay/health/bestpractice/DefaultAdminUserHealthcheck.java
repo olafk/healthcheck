@@ -29,18 +29,17 @@ import java.util.Locale;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
-@Component(
-		service=Healthcheck.class
-		)
+@Component(service = Healthcheck.class)
 public class DefaultAdminUserHealthcheck extends HealthcheckBaseImpl {
 
 	@Override
 	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
 		try {
 			User user = userLocalService.getUserByEmailAddress(companyId, "test@liferay.com");
-			if(user != null) {
+			if (user != null) {
 				String hashedPassword = PasswordEncryptorUtil.encrypt("test", user.getPassword());
-				return wrap(create(! user.getPassword().equals(hashedPassword), locale, LINK + LINK_PARAMETER + user.getUserId(), MSG));
+				return wrap(create(!user.getPassword().equals(hashedPassword), locale,
+						LINK + LINK_PARAMETER + user.getUserId(), MSG));
 			}
 		} catch (NoSuchUserException e) {
 			// ignore - this is great and exactly what we're after.
@@ -57,7 +56,7 @@ public class DefaultAdminUserHealthcheck extends HealthcheckBaseImpl {
 
 	@Reference
 	UserLocalService userLocalService;
-	
+
 	private static final String LINK = "/group/control_panel/manage?p_p_id=com_liferay_users_admin_web_portlet_UsersAdminPortlet";
 	private static final String LINK_PARAMETER = "&_com_liferay_users_admin_web_portlet_UsersAdminPortlet_mvcRenderCommandName=%2Fusers_admin%2Fedit_user&_com_liferay_users_admin_web_portlet_UsersAdminPortlet_p_u_i_d=";
 	private static final String MSG = "healthcheck-bestpractice-default-account-with-default-password";

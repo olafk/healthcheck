@@ -31,19 +31,17 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * Healthcheck for relaxed-security Demo Systems
- * Demo systems, especially on LXC-SM, are often restored from systems that
- * are configured for a different virtual host name. Make sure that the 
- * currently configured virtual host name has at least been accessed once 
- * during the current uptime of the system (typically this happens at least 
- * when the healthcheck report page is accessed)
- *  
+ * Healthcheck for relaxed-security Demo Systems Demo systems, especially on
+ * LXC-SM, are often restored from systems that are configured for a different
+ * virtual host name. Make sure that the currently configured virtual host name
+ * has at least been accessed once during the current uptime of the system
+ * (typically this happens at least when the healthcheck report page is
+ * accessed)
+ * 
  * @author Olaf Kock
  */
 
-@Component(
-		service = Healthcheck.class
-		)
+@Component(service = Healthcheck.class)
 public class VirtualHostHealthcheck extends HealthcheckBaseImpl {
 
 	private static final String MSG = "healthcheck-configured-virtualhost-has-been-accessed";
@@ -57,7 +55,8 @@ public class VirtualHostHealthcheck extends HealthcheckBaseImpl {
 			configuredHostname = companyLocalService.getCompany(companyId).getVirtualHostname();
 			AccessedUrlRegister register = (AccessedUrlRegister) filter;
 			Set<String> requestedHostnames = register.getAccessedUrls(companyId);
-			if(requestedHostnames.contains("https://" + configuredHostname) || requestedHostnames.contains("http://" + configuredHostname)) {
+			if (requestedHostnames.contains("https://" + configuredHostname)
+					|| requestedHostnames.contains("http://" + configuredHostname)) {
 				return wrap(create(true, locale, LINK, MSG, configuredHostname));
 			}
 			return wrap(create(false, locale, LINK, MSG_ERROR, configuredHostname));
@@ -70,8 +69,8 @@ public class VirtualHostHealthcheck extends HealthcheckBaseImpl {
 	public String getCategory() {
 		return "healthcheck-category-operation";
 	}
-	
-	@Reference(target="(servlet-filter-name=Healthcheck Hostname Extracting Filter)")
+
+	@Reference(target = "(servlet-filter-name=Healthcheck Hostname Extracting Filter)")
 	Filter filter;
 
 	@Reference

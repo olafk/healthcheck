@@ -25,7 +25,7 @@ import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
 
-/** 
+/**
  * DXP's default metaspace is 768M, and it might not run with less than this.
  * 
  * Make sure that sufficient Metaspace is configured.
@@ -34,9 +34,7 @@ import org.osgi.service.component.annotations.Component;
  *
  */
 
-@Component(
-		service=Healthcheck.class
-		)
+@Component(service = Healthcheck.class)
 public class MetaspaceHealthcheck extends HealthcheckBaseImpl {
 	private static final String LINK = null;
 	private static final String MSG = "healthcheck-max-metaspace-must-be-above-768m";
@@ -44,14 +42,14 @@ public class MetaspaceHealthcheck extends HealthcheckBaseImpl {
 	@Override
 	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
 		for (MemoryPoolMXBean memoryMXBean : ManagementFactory.getMemoryPoolMXBeans()) {
-		    if ("Metaspace".equals(memoryMXBean.getName())) {
-		            long maxMetaspace = memoryMXBean.getUsage().getMax();
-		            return wrap(create(maxMetaspace>=768*1024*1024 || maxMetaspace==-1, 
-		            		locale, LINK, MSG, maxMetaspace));
-		    }
+			if ("Metaspace".equals(memoryMXBean.getName())) {
+				long maxMetaspace = memoryMXBean.getUsage().getMax();
+				return wrap(create(maxMetaspace >= 768 * 1024 * 1024 || maxMetaspace == -1, locale, LINK, MSG,
+						maxMetaspace));
+			}
 		}
-		
-        return wrap(create(false, locale, LINK, MSG, "undetected"));
+
+		return wrap(create(false, locale, LINK, MSG, "undetected"));
 	}
 
 	@Override

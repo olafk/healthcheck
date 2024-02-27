@@ -32,29 +32,23 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
 
-@Component(
-		configurationPid = "com.liferay.portal.health.operation.configuration.HealthcheckOperationalConfiguration",
-		service=Healthcheck.class
-		)
+@Component(configurationPid = "com.liferay.portal.health.operation.configuration.HealthcheckOperationalConfiguration", service = Healthcheck.class)
 public class DxpLicenseValidityHealthcheck extends HealthcheckBaseImpl {
 
 	private int warningPeriod = 90;
 
 	@Override
 	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
-		if(ReleaseInfo.isDXP()) {
+		if (ReleaseInfo.isDXP()) {
 			Map<String, String> licenseProperties = LicenseManagerUtil.getLicenseProperties("Portal");
 			long expires = Long.valueOf(licenseProperties.get("expirationDate"));
 			long now = new Date().getTime();
 			long remainingMillis = expires - now;
 			long remainingDays = remainingMillis / (1000 * 60 * 60 * 24);
-	
-			return wrap(create(
-					remainingDays > warningPeriod, 
-					this.getClass().getName() + "-" + ((int)(remainingDays/7)),
-					locale, 
-					null, 
-					"healthcheck-license-key-validity-period", remainingDays, warningPeriod));
+
+			return wrap(
+					create(remainingDays > warningPeriod, this.getClass().getName() + "-" + ((int) (remainingDays / 7)),
+							locale, null, "healthcheck-license-key-validity-period", remainingDays, warningPeriod));
 		} else {
 			return Collections.emptyList();
 		}
@@ -64,11 +58,12 @@ public class DxpLicenseValidityHealthcheck extends HealthcheckBaseImpl {
 	public String getCategory() {
 		return "healthcheck-category-operation";
 	}
-	
+
 	@Activate
 	@Modified
 	protected void activate(Map<String, Object> properties) {
-		HealthcheckOperationalConfiguration config = ConfigurableUtil.createConfigurable(HealthcheckOperationalConfiguration.class, properties);
-		warningPeriod  = config.remainingActivationPeriod();
+		HealthcheckOperationalConfiguration config = ConfigurableUtil
+				.createConfigurable(HealthcheckOperationalConfiguration.class, properties);
+		warningPeriod = config.remainingActivationPeriod();
 	}
 }

@@ -32,14 +32,12 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * It's 2022 (when I write this check). Make sure we're accessed through https only.
- * Unless we're on localhost
+ * It's 2022 (when I write this check). Make sure we're accessed through https
+ * only. Unless we're on localhost
  * 
  * @author Olaf Kock
  */
-@Component(
-		service=Healthcheck.class
-		)
+@Component(service = Healthcheck.class)
 public class HttpsHealthcheck extends HealthcheckBaseImpl {
 	private static final String LINK = null;
 	private static final String MSG = "healthcheck-https-in-year-x";
@@ -56,46 +54,42 @@ public class HttpsHealthcheck extends HealthcheckBaseImpl {
 			String scheme = extractScheme(requestedUrl);
 			String host = extractHost(requestedUrl);
 
-			if(host != null && 
-					(host.equalsIgnoreCase("localhost") || 
-					 host.toLowerCase().startsWith("localhost:"))) {
+			if (host != null && (host.equalsIgnoreCase("localhost") || host.toLowerCase().startsWith("localhost:"))) {
 				result.add(create(true, locale, LINK, MSG_LOCALHOST, year, scheme));
 			} else {
-				result.add(create(
-	        		scheme!=null && scheme.equalsIgnoreCase("https"),
-	        		this.getClass().getName() + "-" + HtmlUtil.escapeURL(requestedUrl),
-	        		locale, LINK, MSG, year, requestedUrl));
+				result.add(create(scheme != null && scheme.equalsIgnoreCase("https"),
+						this.getClass().getName() + "-" + HtmlUtil.escapeURL(requestedUrl), locale, LINK, MSG, year,
+						requestedUrl));
 			}
 		}
 		return result;
 	}
 
-	
 	@Override
 	public String getCategory() {
 		return "healthcheck-category-operation";
 	}
-	
-	@Reference(target="(servlet-filter-name=Healthcheck Hostname Extracting Filter)")
+
+	@Reference(target = "(servlet-filter-name=Healthcheck Hostname Extracting Filter)")
 	Filter filter;
-	
+
 	private String extractHost(String url) {
-		if(url == null) {
+		if (url == null) {
 			return "null";
 		}
 		int separatorIndex = url.indexOf("://");
-		if(separatorIndex<1) { // not found, and should have a scheme leading up to it
+		if (separatorIndex < 1) { // not found, and should have a scheme leading up to it
 			return "???";
 		}
 		return HtmlUtil.escape(url.substring(separatorIndex + 3));
 	}
 
 	private String extractScheme(String url) {
-		if(url == null) {
+		if (url == null) {
 			return "null";
 		}
 		int separatorIndex = url.indexOf("://");
-		if(separatorIndex<1) { // not found, and should have a scheme leading up to it
+		if (separatorIndex < 1) { // not found, and should have a scheme leading up to it
 			return "???";
 		}
 		return HtmlUtil.escape(url.substring(0, separatorIndex));

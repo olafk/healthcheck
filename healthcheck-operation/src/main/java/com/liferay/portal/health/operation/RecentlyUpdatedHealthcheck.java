@@ -33,10 +33,7 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
 
-@Component(
-		configurationPid = "com.liferay.portal.health.operation.configuration.HealthcheckOperationalConfiguration",
-		service=Healthcheck.class
-		)
+@Component(configurationPid = "com.liferay.portal.health.operation.configuration.HealthcheckOperationalConfiguration", service = Healthcheck.class)
 public class RecentlyUpdatedHealthcheck extends HealthcheckBaseImpl {
 
 	private int acceptableMissingUpdates;
@@ -46,52 +43,38 @@ public class RecentlyUpdatedHealthcheck extends HealthcheckBaseImpl {
 	@Override
 	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
 		final String version = ReleaseInfo.getVersionDisplayName();
-		final String term; 
+		final String term;
 		String message;
-		if(ReleaseInfo.isDXP()) {
+		if (ReleaseInfo.isDXP()) {
 			term = "Update ";
-			message = "healthcheck-recently-updated-dxp"; 
+			message = "healthcheck-recently-updated-dxp";
 		} else {
 			term = "CE GA";
-			message = "healthcheck-recently-updated-ce"; 
+			message = "healthcheck-recently-updated-ce";
 		}
 
 		int updatePos = version.indexOf(term);
-		if(updatePos>0) {
-			int update = Integer.parseInt(version.substring(updatePos+(term.length())));
+		if (updatePos > 0) {
+			int update = Integer.parseInt(version.substring(updatePos + (term.length())));
 			int currentExpectedUpdate = guessCurrentlyExpectedUpdate();
-			int expectedActualUpdate = currentExpectedUpdate-acceptableMissingUpdates;
-			return wrap(create(
-					update > expectedActualUpdate,
-					this.getClass().getName() + "-" + expectedActualUpdate,
-					locale, 
-					null, 
-					message, update, expectedActualUpdate));
+			int expectedActualUpdate = currentExpectedUpdate - acceptableMissingUpdates;
+			return wrap(create(update > expectedActualUpdate, this.getClass().getName() + "-" + expectedActualUpdate,
+					locale, null, message, update, expectedActualUpdate));
 		} else {
 			// might be a quarterly release, e.g. "2023.Q4.1"
 			Pattern pattern = Pattern.compile(QUARTERLY_PATTERN);
 			Matcher matcher = pattern.matcher(version);
-			if(matcher.matches()) {
+			if (matcher.matches()) {
 				int year = Integer.valueOf(matcher.group(1));
 				int quarter = Integer.valueOf(matcher.group(2));
 				int patch = Integer.valueOf(matcher.group(3));
-				message = "healthcheck-recent-quarterly-dxp"; 
-				
+				message = "healthcheck-recent-quarterly-dxp";
+
 				int ageInQuarters = getAgeInQuarters(year, quarter, patch);
-				return wrap(create(
-						ageInQuarters <= acceptableAgeInQuarters,
-						locale,
-						null,
-						message,
-						version,
-						acceptableAgeInQuarters, 
-						ageInQuarters));
+				return wrap(create(ageInQuarters <= acceptableAgeInQuarters, locale, null, message, version,
+						acceptableAgeInQuarters, ageInQuarters));
 			} else {
-				return wrap(create(
-						false,
-						locale,
-						null,
-						"healthcheck-recently-updated-couldnt-compute", version));
+				return wrap(create(false, locale, null, "healthcheck-recently-updated-couldnt-compute", version));
 
 			}
 		}
@@ -101,33 +84,35 @@ public class RecentlyUpdatedHealthcheck extends HealthcheckBaseImpl {
 		LocalDate now = LocalDate.now();
 		int currentYear = now.getYear();
 		int month = now.getMonthValue();
-		int currentQuarter = 1+((int)((month-1)/3));
+		int currentQuarter = 1 + ((int) ((month - 1) / 3));
 
-		int ageInQuarters = (currentYear - releaseYear) * 4 + (currentQuarter-releaseQuarter-1); 
-		
+		int ageInQuarters = (currentYear - releaseYear) * 4 + (currentQuarter - releaseQuarter - 1);
+
 		return ageInQuarters;
 	}
 
 	private int guessCurrentlyExpectedUpdate() {
-		// Update 15 was released on 11.March 2022 - assuming weekly releases since then, which
+		// Update 15 was released on 11.March 2022 - assuming weekly releases since
+		// then, which
 		// held true until U69 at the time of writing this code
-		// ignore all timezone magic and Date/Time Math Elegance: 
+		// ignore all timezone magic and Date/Time Math Elegance:
 		// We're calculating in the granularity of weeks
 		LocalDate u15rel = LocalDate.of(2022, 3, 11);
 		LocalDate now = LocalDate.now();
 		long timePassed = ChronoUnit.DAYS.between(u15rel, now);
-		return (int) (timePassed/7)+15;
+		return (int) (timePassed / 7) + 15;
 	}
 
 	@Override
 	public String getCategory() {
 		return "healthcheck-category-operation";
 	}
-	
+
 	@Activate
 	@Modified
 	protected void activate(Map<String, Object> properties) {
-		HealthcheckOperationalConfiguration config = ConfigurableUtil.createConfigurable(HealthcheckOperationalConfiguration.class, properties);
+		HealthcheckOperationalConfiguration config = ConfigurableUtil
+				.createConfigurable(HealthcheckOperationalConfiguration.class, properties);
 		acceptableMissingUpdates = config.acceptableMissingUpdates();
 		acceptableAgeInQuarters = config.acceptableAgeInQuarters();
 	}

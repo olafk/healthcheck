@@ -30,17 +30,14 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * Healthcheck for relaxed-security Demo Systems
- * Ensure that user updates don't require to be approved by clicking a link
- * that's mailed to the user. This is due to demo systems rarely having a 
- * valid mail server set up.
- *  
+ * Healthcheck for relaxed-security Demo Systems Ensure that user updates don't
+ * require to be approved by clicking a link that's mailed to the user. This is
+ * due to demo systems rarely having a valid mail server set up.
+ * 
  * @author Olaf Kock
  */
 
-@Component( 
-		service = Healthcheck.class 
-)
+@Component(service = Healthcheck.class)
 
 public class DontRequireMailForUserUpdatesHealthcheck extends HealthcheckBaseImpl {
 
@@ -51,12 +48,9 @@ public class DontRequireMailForUserUpdatesHealthcheck extends HealthcheckBaseImp
 	@Override
 	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
 		try {
-			boolean verifyStrangers = GetterUtil.getBoolean(
-					PropsUtil.get(companyLocalService.getCompany(companyId), PropsKeys.COMPANY_SECURITY_STRANGERS_VERIFY));
-			return wrap(create(! verifyStrangers, 
-					locale, 
-					LINK, 
-					verifyStrangers ? MSG_ERROR : MSG)); 
+			boolean verifyStrangers = GetterUtil.getBoolean(PropsUtil.get(companyLocalService.getCompany(companyId),
+					PropsKeys.COMPANY_SECURITY_STRANGERS_VERIFY));
+			return wrap(create(!verifyStrangers, locale, LINK, verifyStrangers ? MSG_ERROR : MSG));
 		} catch (PortalException e) {
 			return wrap(create(this, locale, e));
 		}

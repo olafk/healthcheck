@@ -10,19 +10,17 @@ import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
 
-@Component(
-		service=Healthcheck.class
-		)
+@Component(service = Healthcheck.class)
 public class VerifyPropertiesHealthcheck extends HealthcheckBaseImpl {
 
 	private static final String MSG = "healthcheck-verify-properties-success";
-	
+
 	@Override
 	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
 		String localizedCategory = lookupMessage(locale, getCategory());
-		
+
 		Collection<HealthcheckItem> items = VerifyPropertiesQ42Y2023.doVerify(localizedCategory);
-		if(items.isEmpty()) {
+		if (items.isEmpty()) {
 			// todo: Translate!
 			items.add(create(true, locale, null, MSG));
 		}

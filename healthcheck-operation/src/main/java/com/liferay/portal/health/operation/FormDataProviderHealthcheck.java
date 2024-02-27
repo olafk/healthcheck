@@ -43,15 +43,13 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
-@Component(
-		configurationPid = "com.liferay.portal.health.operation.configuration.HealthcheckOperationalConfiguration",
-		service=Healthcheck.class
-		)
+@Component(configurationPid = "com.liferay.portal.health.operation.configuration.HealthcheckOperationalConfiguration", service = Healthcheck.class)
 public class FormDataProviderHealthcheck extends HealthcheckBaseImpl {
 
 	private final static String LINK_BASE = "/group/guest/~/control_panel/manage?p_p_id=com_liferay_dynamic_data_mapping_data_provider_web_portlet_DDMDataProviderPortlet&p_p_lifecycle=0&p_p_state=maximized&p_p_mode=view&_com_liferay_dynamic_data_mapping_data_provider_web_portlet_DDMDataProviderPortlet_displayStyle=descriptive&_com_liferay_dynamic_data_mapping_data_provider_web_portlet_DDMDataProviderPortlet_mvcPath=%2Fedit_data_provider.jsp&_com_liferay_dynamic_data_mapping_data_provider_web_portlet_DDMDataProviderPortlet_dataProviderInstanceId=";
 	private final static String MSG = "healthcheck-dataprovider-detected-host-ignore-if-expected";
 	private final static String MSG_WHITELISTED = "healthcheck-dataprovider-whitelisted";
+
 	public FormDataProviderHealthcheck() {
 	}
 
@@ -61,46 +59,37 @@ public class FormDataProviderHealthcheck extends HealthcheckBaseImpl {
 		try {
 			String virtualHostname;
 			virtualHostname = companyLocalService.getCompany(companyId).getVirtualHostname();
-			List<DDMDataProviderInstance> ddmDataProviderInstances = DDMDataProviderInstanceLocalServiceUtil.getDDMDataProviderInstances(0, 1000000);
-			for (Iterator<DDMDataProviderInstance> iterator = ddmDataProviderInstances.iterator(); iterator.hasNext();) {
+			List<DDMDataProviderInstance> ddmDataProviderInstances = DDMDataProviderInstanceLocalServiceUtil
+					.getDDMDataProviderInstances(0, 1000000);
+			for (Iterator<DDMDataProviderInstance> iterator = ddmDataProviderInstances.iterator(); iterator
+					.hasNext();) {
 				DDMDataProviderInstance dataProvider = (DDMDataProviderInstance) iterator.next();
-				DataProviderData data = JSONFactoryUtil.looseDeserialize(dataProvider.getDefinition(), DataProviderData.class);
+				DataProviderData data = JSONFactoryUtil.looseDeserialize(dataProvider.getDefinition(),
+						DataProviderData.class);
 				String url = data.getUrl();
-				if(url != null) {
+				if (url != null) {
 					// create a problem indicator in any case, so that users can
-					// ignore it if the URL is expected. The ignore-key includes the 
+					// ignore it if the URL is expected. The ignore-key includes the
 					// ignored host name and the current company host name, so that
 					// any system restored under a different name (when company-virtualhost
 					// is configured correctly) will trigger new alerts.
 					// Note: There is a separate health check to validate the company
 					// virtualhost, that should make this unignorable.
 					String host = getHost(url);
-					if(hostWhitelists.contains(host)) {
-						result.add(
-							create(
-								true, 
-								this.getClass().getName() + "-" + virtualHostname + "-" + host, 
-								locale, 
-								LINK_BASE + dataProvider.getDataProviderInstanceId(), 
-								MSG_WHITELISTED, dataProvider.getName(locale), host));
+					if (hostWhitelists.contains(host)) {
+						result.add(create(true, this.getClass().getName() + "-" + virtualHostname + "-" + host, locale,
+								LINK_BASE + dataProvider.getDataProviderInstanceId(), MSG_WHITELISTED,
+								dataProvider.getName(locale), host));
 					} else {
-						result.add(
-							create(
-								false, 
-								this.getClass().getName() + "-" + virtualHostname + "-" + host, 
-								locale, 
-								LINK_BASE + dataProvider.getDataProviderInstanceId(), 
-								MSG, dataProvider.getName(locale), host));
+						result.add(create(false, this.getClass().getName() + "-" + virtualHostname + "-" + host, locale,
+								LINK_BASE + dataProvider.getDataProviderInstanceId(), MSG, dataProvider.getName(locale),
+								host));
 					}
 				}
-				
+
 			}
-			if(result.isEmpty()) {
-				result.add(create(
-						true, 
-						locale, 
-						null, 
-						"healthcheck-dataprovider-none-detected"));
+			if (result.isEmpty()) {
+				result.add(create(true, locale, null, "healthcheck-dataprovider-none-detected"));
 			}
 		} catch (PortalException e) {
 			result.add(create(this, locale, e));
@@ -109,9 +98,9 @@ public class FormDataProviderHealthcheck extends HealthcheckBaseImpl {
 	}
 
 	private String getHost(String url) {
-		if(url.startsWith("http")) {
+		if (url.startsWith("http")) {
 			int endOfHost = url.indexOf('/', 8);
-			if(endOfHost>-1) {
+			if (endOfHost > -1) {
 				return url.substring(0, endOfHost);
 			}
 		}
@@ -122,13 +111,14 @@ public class FormDataProviderHealthcheck extends HealthcheckBaseImpl {
 	public String getCategory() {
 		return "healthcheck-category-operation";
 	}
-	
+
 	@Activate
 	@Modified
 	protected void activate(Map<String, Object> properties) {
-		HealthcheckOperationalConfiguration config = ConfigurableUtil.createConfigurable(HealthcheckOperationalConfiguration.class, properties);
+		HealthcheckOperationalConfiguration config = ConfigurableUtil
+				.createConfigurable(HealthcheckOperationalConfiguration.class, properties);
 		String[] whitelist = config.dataProviderHostWhitelist();
-		if(whitelist == null) {
+		if (whitelist == null) {
 			_log.info("empty DataProvider whitelist");
 			hostWhitelists = new HashSet<String>();
 		} else {
@@ -136,34 +126,35 @@ public class FormDataProviderHealthcheck extends HealthcheckBaseImpl {
 			hostWhitelists = new HashSet<String>(Arrays.asList(whitelist));
 		}
 	}
-	
+
 	@Reference
 	protected CompanyLocalService companyLocalService;
-		
+
 	@JSON
 	public static class DataProviderData {
-		@JSON DataProviderFieldValues[] fieldValues;
+		@JSON
+		DataProviderFieldValues[] fieldValues;
 
 		public String getUrl() {
 			for (DataProviderFieldValues value : fieldValues) {
-				if("url".equals(value.fieldReference)) {
+				if ("url".equals(value.fieldReference)) {
 					return value.value;
 				}
 			}
 			return null;
 		}
 	}
-	
+
 	@JSON
-	public static class DataProviderFieldValues{
+	public static class DataProviderFieldValues {
 		@JSON
 		public String fieldReference;
 		@JSON
 		public String value;
 	}
-	
+
 	private Set<String> hostWhitelists = new HashSet<String>();
-	
+
 	static Log _log = LogFactoryUtil.getLog(FormDataProviderHealthcheck.class);
 
 }

@@ -28,18 +28,16 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * Healthcheck for relaxed-security Demo Systems
- * When an administrator resets a user's password, the default is to require
- * a user to change the password again. In demo systems, administrators and users
- * are typically the same people, so a password would need to be reset twice,
- * which just slows down a demo.
- *  
+ * Healthcheck for relaxed-security Demo Systems When an administrator resets a
+ * user's password, the default is to require a user to change the password
+ * again. In demo systems, administrators and users are typically the same
+ * people, so a password would need to be reset twice, which just slows down a
+ * demo.
+ * 
  * @author Olaf Kock
  */
 
-@Component( 
-		service = Healthcheck.class 
-)
+@Component(service = Healthcheck.class)
 public class PasswordPolicyHealthcheck extends HealthcheckBaseImpl {
 
 	private static final String LINK = "/group/control_panel/manage?p_p_id=com_liferay_password_policies_admin_web_portlet_PasswordPoliciesAdminPortlet";
@@ -51,11 +49,9 @@ public class PasswordPolicyHealthcheck extends HealthcheckBaseImpl {
 		try {
 			PasswordPolicy passwordPolicy = passwordPolicyLocalService.getDefaultPasswordPolicy(companyId);
 			boolean changeRequired = passwordPolicy.getChangeRequired();
-			return wrap(create(!changeRequired, locale, 
-					LINK + LINK_PARAM + passwordPolicy.getPasswordPolicyId(),
-					MSG));
+			return wrap(create(!changeRequired, locale, LINK + LINK_PARAM + passwordPolicy.getPasswordPolicyId(), MSG));
 		} catch (PortalException e) {
-			return wrap(create(this, locale, e)); 
+			return wrap(create(this, locale, e));
 		}
 	}
 

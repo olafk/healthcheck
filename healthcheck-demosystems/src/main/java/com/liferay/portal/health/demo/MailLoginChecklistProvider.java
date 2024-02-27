@@ -35,18 +35,15 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * Healthcheck for relaxed-security Demo Systems
- * Ensure that the login field is not prepopulated with the company mail domain.
- * This enables password managers to easily suggest known accounts. Configuration
- * can be achieved through disabling prepopulation, or through configuring login
- * through screen name.
- *  
+ * Healthcheck for relaxed-security Demo Systems Ensure that the login field is
+ * not prepopulated with the company mail domain. This enables password managers
+ * to easily suggest known accounts. Configuration can be achieved through
+ * disabling prepopulation, or through configuring login through screen name.
+ * 
  * @author Olaf Kock
  */
 
-@Component( 
-		service = Healthcheck.class 
-)
+@Component(service = Healthcheck.class)
 
 public class MailLoginChecklistProvider extends HealthcheckBaseImpl {
 
@@ -59,31 +56,24 @@ public class MailLoginChecklistProvider extends HealthcheckBaseImpl {
 		PortletPreferences preferences = PrefsPropsUtil.getPreferences(companyId);
 		try {
 			Company company = companyLocalService.getCompany(companyId);
-			boolean prepopulate = _getPrefsPropsBoolean(
-					preferences, company, PropsKeys.COMPANY_LOGIN_PREPOPULATE_DOMAIN,
-					PropsValues.COMPANY_LOGIN_PREPOPULATE_DOMAIN);;
-			String authType = _getPrefsPropsString(
-					preferences, company, PropsKeys.COMPANY_SECURITY_AUTH_TYPE,
+			boolean prepopulate = _getPrefsPropsBoolean(preferences, company,
+					PropsKeys.COMPANY_LOGIN_PREPOPULATE_DOMAIN, PropsValues.COMPANY_LOGIN_PREPOPULATE_DOMAIN);
+			;
+			String authType = _getPrefsPropsString(preferences, company, PropsKeys.COMPANY_SECURITY_AUTH_TYPE,
 					PropsValues.COMPANY_SECURITY_AUTH_TYPE);
 			prepopulate &= "emailAddress".equals(authType);
-			
-			return wrap(create(
-					!prepopulate, 
-					locale, 
-					LINK, 
-					prepopulate ? MSG_ERROR :MSG, 
+
+			return wrap(create(!prepopulate, locale, LINK, prepopulate ? MSG_ERROR : MSG,
 					"company.login.prepopulate.domain"));
 		} catch (PortalException e) {
 			return wrap(create(this, locale, e));
 		}
 	}
-	
-	private static boolean _getPrefsPropsBoolean(
-		PortletPreferences portletPreferences, Company company, String name,
-		boolean defaultValue) {
 
-		String value = portletPreferences.getValue(
-			name, PropsUtil.get(company, name));
+	private static boolean _getPrefsPropsBoolean(PortletPreferences portletPreferences, Company company, String name,
+			boolean defaultValue) {
+
+		String value = portletPreferences.getValue(name, PropsUtil.get(company, name));
 
 		if (value != null) {
 			return GetterUtil.getBoolean(value);
@@ -92,12 +82,10 @@ public class MailLoginChecklistProvider extends HealthcheckBaseImpl {
 		return defaultValue;
 	}
 
-	private static String _getPrefsPropsString(
-		PortletPreferences portletPreferences, Company company, String name,
-		String defaultValue) {
+	private static String _getPrefsPropsString(PortletPreferences portletPreferences, Company company, String name,
+			String defaultValue) {
 
-		String value = portletPreferences.getValue(
-			name, PropsUtil.get(company, name));
+		String value = portletPreferences.getValue(name, PropsUtil.get(company, name));
 
 		if (value != null) {
 			return value;

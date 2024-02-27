@@ -32,22 +32,20 @@ import org.osgi.service.component.annotations.Component;
  * 
  * @author Olaf Kock
  */
-@Component(
-		service=Healthcheck.class
-	)
+@Component(service = Healthcheck.class)
 public class GoogleFileStoreConfigurationHealthcheck extends HealthcheckBaseImpl {
 
 	private static final String LINK = "";
 	private static final String ERROR_MSG = "";
-	
+
 	@Override
 	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
 		LinkedList<HealthcheckItem> result = new LinkedList<HealthcheckItem>();
-		if(PropsValues.DL_STORE_IMPL.equals("com.liferay.portal.store.gcs.GCSStore")) {
+		if (PropsValues.DL_STORE_IMPL.equals("com.liferay.portal.store.gcs.GCSStore")) {
 			String key = PropsUtil.get("dl.store.gcs.aes256.key");
 			// base64 encoded 256bit AES keys are 44 characters long
 			// <i>could</i> test-decode to see if it's valid base64...
-			if(key == null || key.length() != 44) {
+			if (key == null || key.length() != 44) {
 				result.add(create(false, locale, LINK, ERROR_MSG));
 			}
 		}
@@ -58,5 +56,5 @@ public class GoogleFileStoreConfigurationHealthcheck extends HealthcheckBaseImpl
 	public String getCategory() {
 		return "healthcheck-category-best-practice";
 	}
-	
+
 }

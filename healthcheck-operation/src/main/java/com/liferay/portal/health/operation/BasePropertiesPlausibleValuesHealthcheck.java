@@ -32,13 +32,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-
 /**
- * This Healthcheck performs the necessary operations for typechecking values set in 
- * portal*.properties configurations due to LPS-157829.
+ * This Healthcheck performs the necessary operations for typechecking values
+ * set in portal*.properties configurations due to LPS-157829.
  * 
- * This can point out configuration errors, where the same file contains a value twice, 
- * generating an illegal (and unexpected) configuration value. 
+ * This can point out configuration errors, where the same file contains a value
+ * twice, generating an illegal (and unexpected) configuration value.
  * 
  * @author Olaf Kock
  */
@@ -48,11 +47,11 @@ public abstract class BasePropertiesPlausibleValuesHealthcheck<T> extends Health
 	private String link;
 	private String msg;
 	private String errorMsg;
-	
+
 	public interface PropertyValidator {
 		boolean isValid(String string);
 	}
-	
+
 	public BasePropertiesPlausibleValuesHealthcheck(Class<T> clazz, String link, String msg, String errorMsg, Log log) {
 		this.clazz = clazz;
 		this.link = link;
@@ -60,29 +59,31 @@ public abstract class BasePropertiesPlausibleValuesHealthcheck<T> extends Health
 		this.errorMsg = errorMsg;
 		this.log = log;
 	}
-	
 
 	public Collection<HealthcheckItem> check(long companyId, Locale locale, PropertyValidator validator) {
 		List<HealthcheckItem> result = new LinkedList<HealthcheckItem>();
 		List<String> theProperties = getProperties();
 		log.info("found " + theProperties.size() + " properties");
-		
+
 		for (String property : theProperties) {
 			String value = PropsUtil.get(property);
-			if(value != null) {
-				if(!validator.isValid(value)) {
+			if (value != null) {
+				if (!validator.isValid(value)) {
 					result.add(create(false, locale, link, errorMsg, property, value));
 				}
 			} else {
-				log.warn("null " + property /* + " is null. This is a field defined in PropsValues, but undefined in any portal*.properties file" */);
+				log.warn("null " + property /*
+											 * +
+											 * " is null. This is a field defined in PropsValues, but undefined in any portal*.properties file"
+											 */);
 			}
 		}
-		if(result.isEmpty()) {
+		if (result.isEmpty()) {
 			result.add(create(true, locale, link, msg));
 		}
-		return result;	
+		return result;
 	}
-	
+
 	@Override
 	public String getCategory() {
 		return "healthcheck-category-operation";
@@ -90,21 +91,18 @@ public abstract class BasePropertiesPlausibleValuesHealthcheck<T> extends Health
 
 	private List<String> getProperties() {
 		ArrayList<String> props = new ArrayList<String>(50);
-		
+
 		Field[] fields = PropsValues.class.getFields();
 		for (int i = 0; i < fields.length; i++) {
 			Field field = fields[i];
-			if(Modifier.isStatic(field.getModifiers()) 
-					&& field.getType().equals(clazz)
-				) {
+			if (Modifier.isStatic(field.getModifiers()) && field.getType().equals(clazz)) {
 				String property = getProperty(field.getName());
-				if(property != null) {
+				if (property != null) {
 					props.add(property);
 				}
 			}
 		}
-		
-		
+
 		return props;
 	}
 
@@ -112,20 +110,20 @@ public abstract class BasePropertiesPlausibleValuesHealthcheck<T> extends Health
 		Field field;
 		try {
 			field = PropsKeys.class.getField(fieldName);
-			if(field != null) {
-				if(Modifier.isStatic(field.getModifiers())) {
-					if(field.getType().equals(String.class)) {
+			if (field != null) {
+				if (Modifier.isStatic(field.getModifiers())) {
+					if (field.getType().equals(String.class)) {
 						return (String) field.get(null);
 					}
 				}
 			}
 		} catch (NoSuchFieldException e) {
-			if(! knownMissingProperties.contains(fieldName)) {
+			if (!knownMissingProperties.contains(fieldName)) {
 				log.error("No such field: PropsKeys." + fieldName);
 				return e.getClass().getName() + " " + e.getMessage() + " for " + fieldName;
 			}
 		} catch (SecurityException e) {
-			log.error(e); 
+			log.error(e);
 			return e.getClass().getName() + " " + e.getMessage() + " for " + fieldName;
 		} catch (IllegalArgumentException e) {
 			log.error(e);
@@ -137,22 +135,18 @@ public abstract class BasePropertiesPlausibleValuesHealthcheck<T> extends Health
 
 		return null;
 	}
-	
+
 	/**
-	 *  Fields that are present in PropsValues, but are known to not be present in PropsKeys
-	 *  for various reasons (e.g. they might be implemented without properties, or just 
-	 *  convenience lookups derived from other properties)
+	 * Fields that are present in PropsValues, but are known to not be present in
+	 * PropsKeys for various reasons (e.g. they might be implemented without
+	 * properties, or just convenience lookups derived from other properties)
 	 */
-	
-	private static final Set<String> knownMissingProperties = new HashSet<String>(Arrays.asList( new String[] {
-		"FEATURE_FLAGS_JSON",
-		"LIFERAY_WEB_PORTAL_CONTEXT_TEMPDIR",
-		"PORTLET_EVENT_DISTRIBUTION_LAYOUT",
-		"PORTLET_EVENT_DISTRIBUTION_LAYOUT_SET",
-		"PORTLET_PUBLIC_RENDER_PARAMETER_DISTRIBUTION_LAYOUT",
-		"PORTLET_PUBLIC_RENDER_PARAMETER_DISTRIBUTION_LAYOUT_SET"
-	} ));  
-	
+
+	private static final Set<String> knownMissingProperties = new HashSet<String>(Arrays.asList(new String[] {
+			"FEATURE_FLAGS_JSON", "LIFERAY_WEB_PORTAL_CONTEXT_TEMPDIR", "PORTLET_EVENT_DISTRIBUTION_LAYOUT",
+			"PORTLET_EVENT_DISTRIBUTION_LAYOUT_SET", "PORTLET_PUBLIC_RENDER_PARAMETER_DISTRIBUTION_LAYOUT",
+			"PORTLET_PUBLIC_RENDER_PARAMETER_DISTRIBUTION_LAYOUT_SET" }));
+
 	private final Log log;
-	
+
 }

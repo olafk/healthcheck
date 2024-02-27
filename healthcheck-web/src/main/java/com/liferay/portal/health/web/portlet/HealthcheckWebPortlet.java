@@ -51,31 +51,22 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 /**
  * @author Olaf Kock
  */
-@Component(
-	immediate = true,
-	property = {
-		"com.liferay.portlet.ajaxable=true",
-		"com.liferay.portlet.display-category=category.hidden",
-		"com.liferay.portlet.header-portlet-css=/css/main.css",
-		"com.liferay.portlet.instanceable=false",
-		"com.liferay.portlet.remoteable=true",
-		"javax.portlet.display-name=HealthcheckWeb",
-		"javax.portlet.init-param.template-path=/",
+@Component(immediate = true, property = { "com.liferay.portlet.ajaxable=true",
+		"com.liferay.portlet.display-category=category.hidden", "com.liferay.portlet.header-portlet-css=/css/main.css",
+		"com.liferay.portlet.instanceable=false", "com.liferay.portlet.remoteable=true",
+		"javax.portlet.display-name=HealthcheckWeb", "javax.portlet.init-param.template-path=/",
 		"javax.portlet.init-param.view-template=/view.jsp",
 		"javax.portlet.name=" + HealthcheckWebPortletKeys.HEALTHCHECK_WEB_PORTLET,
 		"javax.portlet.resource-bundle=content.Language",
-		"javax.portlet.security-role-ref=administrator"
-	},
-	service = Portlet.class
-)
+		"javax.portlet.security-role-ref=administrator" }, service = Portlet.class)
 public class HealthcheckWebPortlet extends MVCPortlet {
-	
+
 	@Override
 	public void doView(RenderRequest renderRequest, RenderResponse renderResponse)
 			throws IOException, PortletException {
 		ThemeDisplay themeDisplay = (ThemeDisplay) renderRequest.getAttribute(WebKeys.THEME_DISPLAY);
 		List<HealthcheckItem> checks = new LinkedList<HealthcheckItem>();
-		if(themeDisplay.getPermissionChecker().isCompanyAdmin(themeDisplay.getCompanyId())) {
+		if (themeDisplay.getPermissionChecker().isCompanyAdmin(themeDisplay.getCompanyId())) {
 			for (Healthcheck healthcheck : healthchecks) {
 				try {
 					checks.addAll(healthcheck.check(themeDisplay.getCompanyId(), themeDisplay.getLocale()));
@@ -85,6 +76,7 @@ public class HealthcheckWebPortlet extends MVCPortlet {
 						public String getCategory() {
 							return healthcheck.getCategory();
 						}
+
 						@Override
 						public Collection<HealthcheckItem> check(long companyId, Locale locale) {
 							// Unused in this dummy
@@ -100,7 +92,7 @@ public class HealthcheckWebPortlet extends MVCPortlet {
 				public String getCategory() {
 					return "healthcheck-category-generic";
 				}
-				
+
 				@Override
 				public Collection<HealthcheckItem> check(long companyId, Locale locale) {
 					return wrap(create(false, locale, "/", "healthcheck-need-to-be-company-administrator"));
@@ -112,15 +104,15 @@ public class HealthcheckWebPortlet extends MVCPortlet {
 
 			@Override
 			public int compare(HealthcheckItem arg0, HealthcheckItem arg1) {
-				if(arg0.isResolved() == arg1.isResolved()) {
+				if (arg0.isResolved() == arg1.isResolved()) {
 					return arg0.getCategory().compareTo(arg1.getCategory());
-				} else if(arg0.isResolved()) {
+				} else if (arg0.isResolved()) {
 					return 1;
 				} else {
 					return -1;
 				}
 			}
-			
+
 		});
 		PortletPreferences preferences = renderRequest.getPreferences();
 		String[] ignoredChecksArray = preferences.getValues("ignore", new String[] {});
@@ -131,11 +123,11 @@ public class HealthcheckWebPortlet extends MVCPortlet {
 		int ignored = 0;
 		for (Iterator<HealthcheckItem> iterator = checks.iterator(); iterator.hasNext();) {
 			HealthcheckItem check = (HealthcheckItem) iterator.next();
-			if(ignoreChecks.contains(check.getKey())) {
+			if (ignoreChecks.contains(check.getKey())) {
 				iterator.remove();
 				ignored++;
-			} else if(check.isResolved()) {
-				succeeded++; 
+			} else if (check.isResolved()) {
+				succeeded++;
 			} else {
 				failed++;
 			}
@@ -147,43 +139,38 @@ public class HealthcheckWebPortlet extends MVCPortlet {
 		renderRequest.setAttribute("the-ignored-checks", ignoreChecks);
 		super.doView(renderRequest, renderResponse);
 	}
-	
+
 	public void resetIgnore(ActionRequest actionRequest, ActionResponse actionResponse)
 			throws PortletException, IOException {
 		ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
-		if(themeDisplay.getPermissionChecker().isCompanyAdmin(themeDisplay.getCompanyId())) {
+		if (themeDisplay.getPermissionChecker().isCompanyAdmin(themeDisplay.getCompanyId())) {
 			PortletPreferences preferences = actionRequest.getPreferences();
-			preferences.setValues("ignore", new String[0] );
+			preferences.setValues("ignore", new String[0]);
 			preferences.store();
 		}
-	}	
-	
-	
+	}
+
 	public void ignoreMessage(ActionRequest actionRequest, ActionResponse actionResponse)
 			throws PortletException, IOException {
 		ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
-		if(themeDisplay.getPermissionChecker().isCompanyAdmin(themeDisplay.getCompanyId())) {
+		if (themeDisplay.getPermissionChecker().isCompanyAdmin(themeDisplay.getCompanyId())) {
 			String key = ParamUtil.getString(actionRequest, "ignore");
 			PortletPreferences preferences = actionRequest.getPreferences();
 			String[] ignoredArray = preferences.getValues("ignore", new String[] {});
 			Set<String> ignoredKeys = new HashSet<String>(Arrays.asList(ignoredArray));
-	
+
 			ignoredKeys.add(key);
-	
+
 			preferences.setValues("ignore", (String[]) ignoredKeys.toArray(new String[ignoredKeys.size()]));
 			preferences.store();
 		}
 	}
-	
-	@Reference(			
-			cardinality = ReferenceCardinality.MULTIPLE,
-		    policyOption = ReferencePolicyOption.GREEDY,
-		    unbind = "doUnregister" 
-	)
+
+	@Reference(cardinality = ReferenceCardinality.MULTIPLE, policyOption = ReferencePolicyOption.GREEDY, unbind = "doUnregister")
 	void doRegister(Healthcheck healthcheck) {
 		healthchecks.add(healthcheck);
 	}
-	
+
 	void doUnregister(Healthcheck healthcheck) {
 		healthchecks.remove(healthcheck);
 	}

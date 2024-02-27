@@ -33,16 +33,16 @@ public class CommerceHealthcheckWrapper extends HealthcheckBaseImpl {
 	public CommerceHealthcheckWrapper(CommerceHealthStatus status) {
 		this.status = status;
 	}
-	
+
 	public void setCommerceChannelLocalService(CommerceChannelLocalService commerceChannelLocalService) {
 		this.commerceChannelLocalService = commerceChannelLocalService;
 	}
-	
-	
+
 	@Override
 	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
 		List<CommerceChannel> commerceChannels = commerceChannelLocalService.getCommerceChannels(companyId);
-		_log.info("Executing Commerce Healthcheck " + getWrappee().getClass().getSimpleName() + " for " + commerceChannels.size() + " channel(s)");
+		_log.info("Executing Commerce Healthcheck " + getWrappee().getClass().getSimpleName() + " for "
+				+ commerceChannels.size() + " channel(s)");
 		ArrayList<HealthcheckItem> result = new ArrayList<HealthcheckItem>(commerceChannels.size());
 		for (CommerceChannel channel : commerceChannels) {
 			result.add(createResult(status, companyId, channel, locale));
@@ -54,12 +54,13 @@ public class CommerceHealthcheckWrapper extends HealthcheckBaseImpl {
 	public String getCategory() {
 		return "healthcheck-category-commerce";
 	}
-	
+
 	public CommerceHealthStatus getWrappee() {
 		return status;
 	}
 
-	private HealthcheckItem createResult(CommerceHealthStatus status, long companyId, CommerceChannel channel, Locale locale) {
+	private HealthcheckItem createResult(CommerceHealthStatus status, long companyId, CommerceChannel channel,
+			Locale locale) {
 		boolean resolved = false;
 		String exception = "";
 		try {
@@ -67,15 +68,17 @@ public class CommerceHealthcheckWrapper extends HealthcheckBaseImpl {
 		} catch (Exception e) {
 			exception = e.getClass().getName() + " " + e.getMessage();
 		}
-		String message = status.getName(locale) + " - " + status.getDescription(locale) + " (" + channel.getName() + ") " + exception;
+		String message = status.getName(locale) + " - " + status.getDescription(locale) + " (" + channel.getName()
+				+ ") " + exception;
 		String link = "/group/control_panel/manage?p_p_id=com_liferay_commerce_health_status_web_internal_portlet_CommerceHealthCheckPortlet";
-		
-		return new HealthcheckItemImpl(resolved, this.getClass().getName(), message, link, lookupMessage(locale, getCategory()));
+
+		return new HealthcheckItemImpl(resolved, this.getClass().getName(), message, link,
+				lookupMessage(locale, getCategory()));
 	}
 
 	private CommerceChannelLocalService commerceChannelLocalService;
 	private CommerceHealthStatus status;
-	
+
 	static Log _log = LogFactoryUtil.getLog(CommerceHealthcheckWrapper.class);
 
 }
