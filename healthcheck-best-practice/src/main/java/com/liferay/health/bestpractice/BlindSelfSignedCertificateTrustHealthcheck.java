@@ -13,8 +13,6 @@ import java.util.Locale;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
-import de.olafkock.liferay.configuration.api.GenericConfigurationLookup;
-
 @Component(
 		configurationPid = {
 				"com.liferay.portal.store.file.system.configuration.FileSystemStoreConfiguration",
@@ -51,6 +49,5 @@ public class BlindSelfSignedCertificateTrustHealthcheck extends HealthcheckBaseI
 	}
 	
 	@Reference
-	protected GenericConfigurationLookup configurationLookup;
 	private   ConfigurationProvider      configurationProvider;
 }

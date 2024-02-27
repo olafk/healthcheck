@@ -14,7 +14,6 @@
 
 package com.liferay.health.bestpractice;
 
-import com.liferay.health.bestpractice.configuration.FileSystemStoreConfiguration;
 import com.liferay.health.bestpractice.configuration.HealthcheckBestPracticeConfiguration;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
@@ -23,6 +22,8 @@ import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.settings.Settings;
+import com.liferay.portal.kernel.settings.SettingsLocatorHelper;
 import com.liferay.portal.util.PropsValues;
 
 import java.io.File;
@@ -34,8 +35,6 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
-
-import de.olafkock.liferay.configuration.api.GenericConfigurationLookup;
 /**
  * Check various conditions for proper use of the (simple) FileSystemStore.
  * It stores all files in a single directory, which might lead to performance problems. Note, that
@@ -132,33 +131,27 @@ public class SimpleFileStoreConfigurationHealthcheck extends HealthcheckBaseImpl
 	@Modified
 	protected void activate(Map<String, Object> properties) {
 		HealthcheckBestPracticeConfiguration config = ConfigurableUtil.createConfigurable(HealthcheckBestPracticeConfiguration.class, properties);
-		FileSystemStoreConfiguration fileStoreConfig = ConfigurableUtil.createConfigurable(FileSystemStoreConfiguration.class, properties);
 		maximumFiles = config.maximumSimpleStoreFiles();
 		minimumUsableSpace = config.minimumUsableSpace();
-		if(fileStoreConfig != null) {
-			String rootPath = fileStoreConfig.rootDir();
-			if(rootPath == null) {
-				rootPath = configurationLookup.getDefaultValue(
-						"com.liferay.portal.store.file.system.configuration.FileSystemStoreConfiguration", "rootDir");
-			}
-			File dir = new File(rootPath);
-			
-			if (!dir.isAbsolute()) {
-				dir = new File(PropsValues.LIFERAY_HOME, rootPath);
-			}
-			rootDir = dir;
+		Settings fileStoreSettings = settingsLocatorHelper.getConfigurationBeanSettings("com.liferay.portal.store.file.system.configuration.FileSystemStoreConfiguration");
+		String rootPath = fileStoreSettings.getValue("rootDir", null);
+		File dir = new File(rootPath);
+		
+		if (!dir.isAbsolute()) {
+			dir = new File(PropsValues.LIFERAY_HOME, rootPath);
 		}
+		rootDir = dir;
 	}
 
+	@Reference
+	private SettingsLocatorHelper settingsLocatorHelper;
+	
 	@Reference
 	protected void setConfigurationProvider(ConfigurationProvider configurationProvider) {
 	    // configuration update will actually be handled in the @Modified event,
 		// which will only be triggered in case we have a @Reference to the 
 		// ConfigurationProvider
 	}
-	
-	@Reference
-	protected GenericConfigurationLookup configurationLookup;
 	
 	private File rootDir;
 	private Long minimumUsableSpace;
