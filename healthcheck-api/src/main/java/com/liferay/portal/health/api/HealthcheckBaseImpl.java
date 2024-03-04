@@ -22,12 +22,10 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 public abstract class HealthcheckBaseImpl implements Healthcheck {
+
 	/**
 	 * 
-	 * @param healthcheck used to look up a resource bundle for messages that might
-	 *                    come with this healthcheck
 	 * @param locale      the locale that this message should be displayed in
-	 * @param state       true if healthcheck passed
 	 * @param key         the key to look up the message's translation
 	 * @param info        parameters to be embedded in the message returned
 	 * @return
@@ -44,18 +42,45 @@ public abstract class HealthcheckBaseImpl implements Healthcheck {
 		return result;
 	}
 
+	/**
+	 * 
+	 * @param state       true if healthcheck passed
+	 * @param locale      the locale that this message should be displayed in
+	 * @param link        a link to a description of the status, or the UI where a status can be changed
+	 * @param msgKey      the key to look up the message's translation
+	 * @param info        parameters to be embedded in the message returned
+	 * @return
+	 */
 	public HealthcheckItem create(boolean state, Locale locale, String link, String msgKey, Object... info) {
 		String message = lookupMessage(locale, msgKey, info);
 		return new HealthcheckItemImpl(state, this.getClass().getName(), message, link,
 				lookupMessage(locale, getCategory()));
 	}
-
+	
+	/**
+	 * 
+	 * @param state       true if healthcheck passed, false otherwise
+	 * @param baseKey     the key that describes this healthcheck uniquely (can be used to ignore it in future runs)
+	 * @param locale      the locale that this message should be displayed in
+	 * @param link        a link to a description of the status, or the UI where a status can be changed
+	 * @param msgKey      the key to look up the message's translation
+	 * @param info        parameters to be embedded in the message returned
+	 * @return
+	 */
 	public HealthcheckItem create(boolean state, String baseKey, Locale locale, String link, String msgKey,
 			Object... info) {
 		String message = lookupMessage(locale, msgKey, info);
 		return new HealthcheckItemImpl(state, baseKey, message, link, lookupMessage(locale, getCategory()));
 	}
 
+	/**
+	 * 
+	 * @param healthcheck used to look up a resource bundle for messages that might
+	 *                    come with this healthcheck
+	 * @param locale      the locale that this message should be displayed in
+	 * @param throwable   the exception to describe this healthcheck's failed status
+	 * @return
+	 */
 	public HealthcheckItem create(Healthcheck check, Locale locale, Throwable throwable) {
 		ResourceBundle bundle = ResourceBundleUtil.getBundle(locale, HealthcheckItemImpl.class);
 		String message = ResourceBundleUtil.getString(bundle, "exception-notification-for-healthcheck",
@@ -64,7 +89,12 @@ public abstract class HealthcheckBaseImpl implements Healthcheck {
 				lookupMessage(locale, getCategory()));
 	}
 
-	public Collection<HealthcheckItem> wrap(HealthcheckItem item) {
+	/**
+	 * Convenience method to turn the single healthcheck parameter into a collection
+
+	 * @return a mutable collection with the parameter item as the only element.
+	 */
+	protected Collection<HealthcheckItem> wrap(HealthcheckItem item) {
 		LinkedList<HealthcheckItem> result = new LinkedList<HealthcheckItem>();
 		result.add(item);
 		return result;
