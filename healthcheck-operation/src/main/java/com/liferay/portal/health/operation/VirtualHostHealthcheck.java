@@ -14,10 +14,10 @@
 
 package com.liferay.portal.health.operation;
 
-import com.liferay.portal.health.api.AccessedUrlRegister;
 import com.liferay.portal.health.api.Healthcheck;
 import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
+import com.liferay.portal.health.operation.auxiliary.HostNameExtractingFilter;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 
@@ -53,8 +53,7 @@ public class VirtualHostHealthcheck extends HealthcheckBaseImpl {
 		try {
 			String configuredHostname;
 			configuredHostname = companyLocalService.getCompany(companyId).getVirtualHostname();
-			AccessedUrlRegister register = (AccessedUrlRegister) filter;
-			Set<String> requestedHostnames = register.getAccessedUrls(companyId);
+			Set<String> requestedHostnames = filter.getAccessedUrls(companyId);
 			if (requestedHostnames.contains("https://" + configuredHostname)
 					|| requestedHostnames.contains("http://" + configuredHostname)) {
 				return wrap(create(true, locale, LINK, MSG, configuredHostname));
@@ -71,7 +70,11 @@ public class VirtualHostHealthcheck extends HealthcheckBaseImpl {
 	}
 
 	@Reference(target = "(servlet-filter-name=Healthcheck Hostname Extracting Filter)")
-	Filter filter;
+	public void setFilter(Filter filter) {
+		this.filter = (HostNameExtractingFilter) filter;
+	}
+
+	private HostNameExtractingFilter filter;
 
 	@Reference
 	CompanyLocalService companyLocalService;

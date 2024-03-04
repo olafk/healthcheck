@@ -14,7 +14,6 @@
 
 package com.liferay.portal.health.operation.auxiliary;
 
-import com.liferay.portal.health.api.AccessedUrlRegister;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.BaseFilter;
@@ -45,7 +44,7 @@ import org.osgi.service.component.annotations.Component;
 		// Note: servlet-filter-name is used as target expression in
 		// com.liferay.portal.health.operation.RedirectHealthcheck
 		"servlet-filter-name=Healthcheck Hostname Extracting Filter", "url-pattern=/*" }, service = Filter.class)
-public class HostNameExtractingFilter extends BaseFilter implements AccessedUrlRegister {
+public class HostNameExtractingFilter extends BaseFilter {
 
 	@Override
 	protected Log getLog() {
@@ -70,7 +69,6 @@ public class HostNameExtractingFilter extends BaseFilter implements AccessedUrlR
 		super.processFilter(httpServletRequest, httpServletResponse, filterChain);
 	}
 
-	@Override
 	public Set<String> getAccessedUrls(long companyId) {
 		return Collections.unmodifiableSet(requestedBaseUrls.get(companyId));
 	}
