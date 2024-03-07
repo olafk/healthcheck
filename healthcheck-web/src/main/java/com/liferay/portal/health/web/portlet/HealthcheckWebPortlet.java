@@ -18,9 +18,12 @@ import com.liferay.portal.health.api.Healthcheck;
 import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.health.web.constants.HealthcheckWebPortletKeys;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import java.io.IOException;
@@ -66,7 +69,10 @@ public class HealthcheckWebPortlet extends MVCPortlet {
 			throws IOException, PortletException {
 		ThemeDisplay themeDisplay = (ThemeDisplay) renderRequest.getAttribute(WebKeys.THEME_DISPLAY);
 		List<HealthcheckItem> checks = new LinkedList<HealthcheckItem>();
-		if (themeDisplay.getPermissionChecker().isCompanyAdmin(themeDisplay.getCompanyId())) {
+		String method = PortalUtil.getHttpServletRequest(renderRequest).getMethod();
+
+		if (themeDisplay.getPermissionChecker().isCompanyAdmin(themeDisplay.getCompanyId()) 
+				&& !"HEAD".equals(method)) {
 			for (Healthcheck healthcheck : healthchecks) {
 				try {
 					checks.addAll(healthcheck.check(themeDisplay.getCompanyId(), themeDisplay.getLocale()));
@@ -153,7 +159,8 @@ public class HealthcheckWebPortlet extends MVCPortlet {
 	public void ignoreMessage(ActionRequest actionRequest, ActionResponse actionResponse)
 			throws PortletException, IOException {
 		ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
-		if (themeDisplay.getPermissionChecker().isCompanyAdmin(themeDisplay.getCompanyId())) {
+		if (themeDisplay.getPermissionChecker().isCompanyAdmin(themeDisplay.getCompanyId())
+				&& actionRequest.getMethod().equals("POST")) {
 			String key = ParamUtil.getString(actionRequest, "ignore");
 			PortletPreferences preferences = actionRequest.getPreferences();
 			String[] ignoredArray = preferences.getValues("ignore", new String[] {});
@@ -176,5 +183,6 @@ public class HealthcheckWebPortlet extends MVCPortlet {
 	}
 
 	List<Healthcheck> healthchecks = new LinkedList<Healthcheck>();
-
+	
+	static Log _log = LogFactoryUtil.getLog(HealthcheckWebPortlet.class);
 }
