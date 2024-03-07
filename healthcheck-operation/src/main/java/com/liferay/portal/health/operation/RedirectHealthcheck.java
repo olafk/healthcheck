@@ -59,14 +59,12 @@ public class RedirectHealthcheck extends HealthcheckBaseImpl implements ManagedS
 	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
 		HostNameExtractingFilter f = (HostNameExtractingFilter) filter;
 		Set<String> urls = f.getAccessedUrls(companyId);
-
 		Collection<HealthcheckItem> result = new LinkedList<HealthcheckItem>();
 
 		for (String requestedUrl : urls) {
 			String url = PortalUtil.escapeRedirect(requestedUrl);
 			result.add(create(url != null, this.getClass().getName() + "-" + HtmlUtil.escapeURL(requestedUrl), locale,
-					PARTIAL_LINK + companyToRedirectConfigPid.get(companyId), "healthcheck-redirection-url-previous",
-					extractHost(requestedUrl)));
+					LINK, "healthcheck-redirection-url-previous", extractHost(requestedUrl)));
 		}
 
 		return result;
@@ -123,8 +121,8 @@ public class RedirectHealthcheck extends HealthcheckBaseImpl implements ManagedS
 	static final String PID = "com.liferay.redirect.internal.configuration.RedirectURLConfiguration";
 	private HashMap<Long, String> companyToRedirectConfigPid = new HashMap<Long, String>();
 	private static Log log = LogFactoryUtil.getLog(RedirectHealthcheck.class);
-	private static String PARTIAL_LINK = "/group/control_panel/manage?p_p_id=" + INSTANCE_SETTINGS + "&" + "_"
+	private static String LINK = "/group/control_panel/manage?p_p_id=" + INSTANCE_SETTINGS + "&" + "_"
 			+ INSTANCE_SETTINGS + "_factoryPid=" + PID + "&" + "_" + INSTANCE_SETTINGS
-			+ "_mvcRenderCommandName=%2Fconfiguration_admin%2Fedit_configuration&" + "_" + INSTANCE_SETTINGS + "_pid=";
+			+ "_mvcRenderCommandName=%2Fconfiguration_admin%2Fedit_configuration&" + "_" + INSTANCE_SETTINGS + "_pid=com.liferay.redirect.internal.configuration.RedirectURLConfiguration";
 
 }
