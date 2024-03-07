@@ -22,7 +22,7 @@ This project currently consists of:
 
 Clone this repository into a Liferay Workspace's `modules/healthcheck` directory.
 
-Created with `liferay.workspace.product=dxp-7.4-u18`, last run with U65.
+Created with `liferay.workspace.product=dxp-7.4-u18`, last run with U102.
 
 ## Reference
 
@@ -35,6 +35,7 @@ Created with `liferay.workspace.product=dxp-7.4-u18`, last run with U65.
 * Only few native health checks implemented: Contribute more, in code or just ideas
 * Assumes it only runs on System level (e.g. first virtual instance) and UI is not available on secondary instances. Even though implemented checks might be instance specific...
 * Speaking of instances: Not much thought has been given to scenarios with multiple instances that might have different - instance specific - configuration.
+* Message locale is determined at time of executing the healthcheck, not at display time. Fine for the kind of quick healthchecks that are currently implemented and can be executed immediately, but would be impractical if there were long running or a very large number of checks.
 
 ## Ideas for the UI
 
@@ -46,6 +47,9 @@ You can ignore some healthchecks (successful or unsuccessful). They'll still be 
  
 Collecting a few ideas that could go into UI features:
 
-* Run healthchecks in background (scheduled) - this enables long running processes to run as well
+* Get rid of the <table> based layout to begin with
+* Run healthchecks in background (scheduled) - this enables long running processes to run as well (see remark about locale though) 
 * Filter/Sort results by category/result
+* Activate/Deactivate certain categories (e.g. ignore demo-related healthchecks with released security) or pick individual checks to run and blacklist completely.
+* Selectively un-ignore filters (e.g. show ignored ones without unignoring them) 
 * Selectively run individual filters or categories (especially when long running checks are implemented, that are meant to run in the background)
