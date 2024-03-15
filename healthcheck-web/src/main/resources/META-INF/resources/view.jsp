@@ -60,7 +60,7 @@ List<HealthcheckItem> checks = (List<HealthcheckItem>) renderRequest.getAttribut
 			<td style="min-width: 3em; text-align: center;"><clay:icon
 					symbol="<%=symbol %>" /></td>
 			<td><%=check.getCategory() %></td>
-			<td style="word-wrap: anywhere;"><%=check.getMessage() %></td>
+			<td style="overflow-wrap: break-word;"><%=check.getMessage() %></td>
 			<td style="padding: 2px; word-wrap: normal;">
 				<%
 		if(check.getLink() != null) {
