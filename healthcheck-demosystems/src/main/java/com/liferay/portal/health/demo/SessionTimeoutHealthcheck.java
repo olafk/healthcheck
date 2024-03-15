@@ -20,7 +20,6 @@ import com.liferay.portal.util.PropsValues;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -40,7 +39,7 @@ public class SessionTimeoutHealthcheck implements Healthcheck {
 	private static final String MSG = "healthcheck-session-extension-enabled";
 
 	@Override
-	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
+	public Collection<HealthcheckItem> check(long companyId) {
 		boolean autoextend = PropsValues.SESSION_TIMEOUT_AUTO_EXTEND;
 		Object[] info = { "session.timeout.auto.extend" };
 		return Arrays.asList(new HealthcheckItem(this, autoextend, this.getClass().getName(), LINK, MSG, info));

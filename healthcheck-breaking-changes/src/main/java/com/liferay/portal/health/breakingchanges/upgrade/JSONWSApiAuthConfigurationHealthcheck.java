@@ -22,7 +22,6 @@ import com.liferay.portal.health.api.HealthcheckItem;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Activate;
@@ -46,7 +45,7 @@ public class JSONWSApiAuthConfigurationHealthcheck implements Healthcheck {
 	private List<String> urlsIncludes;
 
 	@Override
-	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
+	public Collection<HealthcheckItem> check(long companyId) {
 		boolean correctlyConfigured = urlsIncludes.contains("/api/json*") && urlsIncludes.contains("/api/jsonws*")
 				&& urlsIncludes.contains("/c/portal/json_service*");
 		Object[] info = { urlsIncludes };

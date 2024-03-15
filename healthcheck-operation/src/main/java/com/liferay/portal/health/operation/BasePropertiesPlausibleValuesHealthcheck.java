@@ -29,7 +29,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 /**
@@ -60,7 +59,7 @@ public abstract class BasePropertiesPlausibleValuesHealthcheck<T> implements Hea
 		this.log = log;
 	}
 
-	public Collection<HealthcheckItem> check(long companyId, Locale locale, PropertyValidator validator) {
+	public Collection<HealthcheckItem> check(long companyId, PropertyValidator validator) {
 		List<HealthcheckItem> result = new LinkedList<HealthcheckItem>();
 		List<String> theProperties = getProperties();
 		log.info("found " + theProperties.size() + " properties");

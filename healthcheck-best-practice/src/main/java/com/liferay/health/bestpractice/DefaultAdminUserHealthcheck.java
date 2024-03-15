@@ -24,7 +24,6 @@ import com.liferay.portal.kernel.service.UserLocalService;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -33,7 +32,7 @@ import org.osgi.service.component.annotations.Reference;
 public class DefaultAdminUserHealthcheck implements Healthcheck {
 
 	@Override
-	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
+	public Collection<HealthcheckItem> check(long companyId) {
 		try {
 			User user = userLocalService.getUserByEmailAddress(companyId, "test@liferay.com");
 			if (user != null) {

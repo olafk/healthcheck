@@ -25,7 +25,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Locale;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Activate;
@@ -38,7 +37,7 @@ public class DxpLicenseValidityHealthcheck implements Healthcheck {
 	private int warningPeriod = 90;
 
 	@Override
-	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
+	public Collection<HealthcheckItem> check(long companyId) {
 		if (ReleaseInfo.isDXP()) {
 			Map<String, String> licenseProperties = LicenseManagerUtil.getLicenseProperties("Portal");
 			long expires = Long.valueOf(licenseProperties.get("expirationDate"));

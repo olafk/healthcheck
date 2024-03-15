@@ -21,7 +21,6 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 
 import java.util.Collection;
-import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -47,8 +46,8 @@ public class IntPropertiesPlausibleValuesHealthcheck extends BasePropertiesPlaus
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
-		return check(companyId, locale,
+	public Collection<HealthcheckItem> check(long companyId) {
+		return check(companyId,
 				(value -> !(value.contains(",") || (GetterUtil.getInteger(value) == 0 && !value.equals("0")))));
 	}
 

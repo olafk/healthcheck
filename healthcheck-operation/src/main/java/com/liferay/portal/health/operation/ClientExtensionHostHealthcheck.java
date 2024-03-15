@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
@@ -53,7 +54,8 @@ public class ClientExtensionHostHealthcheck implements Healthcheck {
 	}
 
 	@Override
-	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
+	public Collection<HealthcheckItem> check(long companyId) {
+		Locale locale = getDefaultLocale(companyId);
 		LinkedList<HealthcheckItem> result = new LinkedList<HealthcheckItem>();
 		try {
 			List<ClientExtensionEntry> clientExtensionEntries = ClientExtensionEntryLocalServiceUtil
@@ -119,6 +121,14 @@ public class ClientExtensionHostHealthcheck implements Healthcheck {
 			result.add(new HealthcheckItem(this, e));
 		}
 		return result;
+	}
+
+	private Locale getDefaultLocale(long companyId) {
+		try {
+			return CompanyLocalServiceUtil.getCompany(companyId).getLocale();
+		} catch (PortalException e) {
+			return Locale.US;
+		}
 	}
 
 	private String getHost(String url) {

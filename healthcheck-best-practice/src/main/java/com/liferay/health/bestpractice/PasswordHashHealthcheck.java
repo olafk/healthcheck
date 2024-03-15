@@ -23,7 +23,6 @@ import com.liferay.portal.kernel.util.PropsUtil;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Locale;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Activate;
@@ -38,7 +37,7 @@ public class PasswordHashHealthcheck implements Healthcheck {
 	private Long owaspHashingRecommendation;
 
 	@Override
-	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
+	public Collection<HealthcheckItem> check(long companyId) {
 		String hashingAlgorithm = PropsUtil.get("passwords.encryption.algorithm");
 		if (hashingAlgorithm != null && hashingAlgorithm.startsWith("PBKDF2WithHmacSHA1")) {
 			int roundsPos = hashingAlgorithm.lastIndexOf('/');

@@ -21,7 +21,6 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryPoolMXBean;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -40,7 +39,7 @@ public class MetaspaceHealthcheck implements Healthcheck {
 	private static final String MSG = "healthcheck-max-metaspace-must-be-above-768m";
 
 	@Override
-	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
+	public Collection<HealthcheckItem> check(long companyId) {
 		for (MemoryPoolMXBean memoryMXBean : ManagementFactory.getMemoryPoolMXBeans()) {
 			if ("Metaspace".equals(memoryMXBean.getName())) {
 				long maxMetaspace = memoryMXBean.getUsage().getMax();

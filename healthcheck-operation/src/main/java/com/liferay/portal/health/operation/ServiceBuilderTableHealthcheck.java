@@ -5,7 +5,6 @@ import com.liferay.portal.health.api.HealthcheckItem;
 
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.Locale;
 
 /**
  * Suggestion by Dave Nebinger: SB creates a Table instance for each SB entity
@@ -20,7 +19,7 @@ import java.util.Locale;
 public class ServiceBuilderTableHealthcheck implements Healthcheck {
 
 	@Override
-	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
+	public Collection<HealthcheckItem> check(long companyId) {
 		return new LinkedList<HealthcheckItem>();
 	}
 

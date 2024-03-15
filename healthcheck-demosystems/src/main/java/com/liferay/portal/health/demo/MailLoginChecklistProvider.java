@@ -27,7 +27,6 @@ import com.liferay.portal.util.PropsValues;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Locale;
 
 import javax.portlet.PortletPreferences;
 
@@ -52,7 +51,7 @@ public class MailLoginChecklistProvider implements Healthcheck {
 	private static final String LINK = "/group/control_panel/manage?p_p_id=com_liferay_configuration_admin_web_portlet_InstanceSettingsPortlet&_com_liferay_configuration_admin_web_portlet_InstanceSettingsPortlet_mvcRenderCommandName=%2Fconfiguration_admin%2Fview_configuration_screen&_com_liferay_configuration_admin_web_portlet_InstanceSettingsPortlet_configurationScreenKey=general-authentication";
 
 	@Override
-	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
+	public Collection<HealthcheckItem> check(long companyId) {
 		PortletPreferences preferences = PrefsPropsUtil.getPreferences(companyId);
 		try {
 			Company company = companyLocalService.getCompany(companyId);

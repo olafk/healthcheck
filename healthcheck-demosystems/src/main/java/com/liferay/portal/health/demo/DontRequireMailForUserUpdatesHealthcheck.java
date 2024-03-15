@@ -24,7 +24,6 @@ import com.liferay.portal.util.PropsUtil;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -46,7 +45,7 @@ public class DontRequireMailForUserUpdatesHealthcheck implements Healthcheck {
 	private static final String MSG_ERROR = "healthcheck-user-change-needs-to-be-mailvalidated";
 
 	@Override
-	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
+	public Collection<HealthcheckItem> check(long companyId) {
 		try {
 			boolean verifyStrangers = GetterUtil.getBoolean(PropsUtil.get(companyLocalService.getCompany(companyId),
 					PropsKeys.COMPANY_SECURITY_STRANGERS_VERIFY));

@@ -5,7 +5,6 @@ import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.health.breakingchanges.legacy.copied.VerifyPropertiesQ42Y2023;
 
 import java.util.Collection;
-import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -15,7 +14,7 @@ public class VerifyPropertiesHealthcheck implements Healthcheck {
 	private static final String MSG = "healthcheck-verify-properties-success";
 
 	@Override
-	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
+	public Collection<HealthcheckItem> check(long companyId) {
 		Collection<HealthcheckItem> items = VerifyPropertiesQ42Y2023.doVerify(this);
 		if (items.isEmpty()) {
 			// todo: Translate!

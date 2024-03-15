@@ -28,7 +28,6 @@ import com.liferay.portal.util.PropsValues;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Locale;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Activate;
@@ -60,7 +59,7 @@ public class SimpleFileStoreConfigurationHealthcheck implements Healthcheck {
 	private final String MSG_USABLE_SPACE = "healthcheck-simple-file-store-usable-space";
 
 	@Override
-	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
+	public Collection<HealthcheckItem> check(long companyId) {
 		Collection<HealthcheckItem> result;
 		if (PropsValues.DL_STORE_IMPL.equals("com.liferay.portal.store.file.system.FileSystemStore")) {
 			if (rootDir.isDirectory()) {

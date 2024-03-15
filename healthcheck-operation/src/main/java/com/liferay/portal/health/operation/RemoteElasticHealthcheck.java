@@ -20,7 +20,6 @@ import com.liferay.portal.health.api.HealthcheckItem;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Locale;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Activate;
@@ -35,7 +34,7 @@ public class RemoteElasticHealthcheck implements Healthcheck {
 	private final static String MSG = "healthcheck-elasticsearch-sidecar-not-supported";
 
 	@Override
-	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
+	public Collection<HealthcheckItem> check(long companyId) {
 		boolean remote = false;
 		boolean configured = operationMode != null || productionModeEnabled != null;
 		if (configured) {

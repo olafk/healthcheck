@@ -35,7 +35,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 import javax.portlet.ActionRequest;
@@ -75,7 +74,7 @@ public class HealthcheckWebPortlet extends MVCPortlet {
 				&& !"HEAD".equals(method)) {
 			for (Healthcheck healthcheck : healthchecks) {
 				try {
-					checks.addAll(healthcheck.check(themeDisplay.getCompanyId(), themeDisplay.getLocale()));
+					checks.addAll(healthcheck.check(themeDisplay.getCompanyId()));
 				} catch (Exception e) {
 					checks.add(new HealthcheckItem(healthcheck, e));
 				}
@@ -88,7 +87,7 @@ public class HealthcheckWebPortlet extends MVCPortlet {
 				}
 
 				@Override
-				public Collection<HealthcheckItem> check(long companyId, Locale locale) {
+				public Collection<HealthcheckItem> check(long companyId) {
 					return null;
 				}
 			};

@@ -24,7 +24,6 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -41,7 +40,7 @@ public class RecentlyUpdatedHealthcheck implements Healthcheck {
 	private static final String QUARTERLY_PATTERN = "^(\\d{4})\\.Q(\\d)\\.(\\d)$";
 
 	@Override
-	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
+	public Collection<HealthcheckItem> check(long companyId) {
 		final String version = ReleaseInfo.getVersionDisplayName();
 		final String term;
 		String message;

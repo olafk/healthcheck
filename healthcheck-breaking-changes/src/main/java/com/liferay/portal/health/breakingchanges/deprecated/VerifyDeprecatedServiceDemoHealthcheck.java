@@ -20,7 +20,6 @@ import com.liferay.portal.health.breakingchanges.deprecated.sample.DeprecatedSam
 
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -50,7 +49,7 @@ public class VerifyDeprecatedServiceDemoHealthcheck implements Healthcheck {
 	private static final String ERROR_MESSAGE = "healthcheck-deprecated-service-demo-found";
 
 	@Override
-	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
+	public Collection<HealthcheckItem> check(long companyId) {
 		Collection<HealthcheckItem> items = new LinkedList<HealthcheckItem>();
 		if (services.isEmpty()) {
 			// todo: Translate!

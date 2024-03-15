@@ -28,7 +28,6 @@ import java.util.Collection;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -54,7 +53,7 @@ import org.osgi.service.component.annotations.Reference;
 public class RedirectHealthcheck implements Healthcheck, ManagedServiceFactory {
 
 	@Override
-	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
+	public Collection<HealthcheckItem> check(long companyId) {
 		HostNameExtractingFilter f = (HostNameExtractingFilter) filter;
 		Set<String> urls = f.getAccessedUrls(companyId);
 		Collection<HealthcheckItem> result = new LinkedList<HealthcheckItem>();

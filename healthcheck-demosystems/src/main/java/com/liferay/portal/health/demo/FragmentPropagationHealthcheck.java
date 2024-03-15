@@ -10,7 +10,6 @@ import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Locale;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Activate;
@@ -25,7 +24,7 @@ public class FragmentPropagationHealthcheck implements Healthcheck {
 	private boolean propagate = false;
 
 	@Override
-	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
+	public Collection<HealthcheckItem> check(long companyId) {
 		Object[] info = {};
 		return Arrays.asList(new HealthcheckItem(this, propagate, this.getClass().getName(), LINK, MSG, info));
 	}

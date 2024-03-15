@@ -13,7 +13,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -27,7 +26,7 @@ public class DatabaseEncodingHealthcheck implements Healthcheck {
 	private static final String LINK_DB_CONNECTION = "https://learn.liferay.com/w/dxp/installation-and-upgrades/installing-liferay/configuring-a-database";
 
 	@Override
-	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
+	public Collection<HealthcheckItem> check(long companyId) {
 		Collection<HealthcheckItem> result = new LinkedList<HealthcheckItem>();
 
 		DB db = DBManagerUtil.getDB();

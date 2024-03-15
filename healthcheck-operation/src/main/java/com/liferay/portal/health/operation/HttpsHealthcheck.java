@@ -22,7 +22,6 @@ import com.liferay.portal.kernel.util.HtmlUtil;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.Locale;
 import java.util.Set;
 
 import javax.servlet.Filter;
@@ -43,7 +42,7 @@ public class HttpsHealthcheck implements Healthcheck {
 	private static final String MSG_LOCALHOST = "healthcheck-https-localhost-in-year-x";
 
 	@Override
-	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
+	public Collection<HealthcheckItem> check(long companyId) {
 		String year = "" + Calendar.getInstance().get(Calendar.YEAR); // just for rubbing it in in the message
 		Set<String> urls = filter.getAccessedUrls(companyId);
 		Collection<HealthcheckItem> result = new LinkedList<HealthcheckItem>();

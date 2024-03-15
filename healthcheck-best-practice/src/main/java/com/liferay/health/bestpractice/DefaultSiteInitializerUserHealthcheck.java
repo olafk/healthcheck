@@ -24,7 +24,6 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -33,10 +32,10 @@ import org.osgi.service.component.annotations.Reference;
 public class DefaultSiteInitializerUserHealthcheck implements Healthcheck {
 
 	@Override
-	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
+	public Collection<HealthcheckItem> check(long companyId) {
 		Collection<HealthcheckItem> result = new LinkedList<HealthcheckItem>();
 		for (String user : KNOWN_USERS) {
-			result.addAll(checkForUser(companyId, locale, user));
+			result.addAll(checkForUser(companyId, user));
 		}
 		if (result.isEmpty()) {
 			Object[] info = {};
@@ -45,7 +44,7 @@ public class DefaultSiteInitializerUserHealthcheck implements Healthcheck {
 		return result;
 	}
 
-	private Collection<HealthcheckItem> checkForUser(long companyId, Locale locale, String mailAddress) {
+	private Collection<HealthcheckItem> checkForUser(long companyId, String mailAddress) {
 		try {
 			User user = userLocalService.getUserByEmailAddress(companyId, mailAddress);
 			if (user != null) {

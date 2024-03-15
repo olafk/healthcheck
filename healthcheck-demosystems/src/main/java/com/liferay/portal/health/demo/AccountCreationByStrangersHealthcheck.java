@@ -27,7 +27,6 @@ import com.liferay.portal.util.PropsValues;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Locale;
 
 import javax.portlet.PortletPreferences;
 
@@ -49,7 +48,7 @@ public class AccountCreationByStrangersHealthcheck implements Healthcheck {
 	private static final String MSG_ERROR = "healthcheck-strangers-can-create-accounts";
 
 	@Override
-	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
+	public Collection<HealthcheckItem> check(long companyId) {
 		PortletPreferences preferences = PrefsPropsUtil.getPreferences(companyId);
 
 		try {

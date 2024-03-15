@@ -28,7 +28,6 @@ import com.liferay.portal.search.index.IndexNameBuilder;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -48,7 +47,7 @@ public class ContentIndexedHealthcheck implements Healthcheck {
 	private static final String ERROR_MSG = "healthcheck-content-indexed-error";
 
 	@Override
-	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
+	public Collection<HealthcheckItem> check(long companyId) {
 		CountSearchRequest countSearchRequest = new CountSearchRequest();
 		countSearchRequest.setIndexNames(indexNameBuilder.getIndexName(companyId));
 		TermQuery termQuery = new TermQueryImpl(Field.ENTRY_CLASS_NAME, User.class.getName());

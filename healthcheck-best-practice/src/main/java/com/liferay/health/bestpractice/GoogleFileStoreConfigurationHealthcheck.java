@@ -21,7 +21,6 @@ import com.liferay.portal.util.PropsValues;
 
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -38,7 +37,7 @@ public class GoogleFileStoreConfigurationHealthcheck implements Healthcheck {
 	private static final String ERROR_MSG = "";
 
 	@Override
-	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
+	public Collection<HealthcheckItem> check(long companyId) {
 		LinkedList<HealthcheckItem> result = new LinkedList<HealthcheckItem>();
 		if (PropsValues.DL_STORE_IMPL.equals("com.liferay.portal.store.gcs.GCSStore")) {
 			String key = PropsUtil.get("dl.store.gcs.aes256.key");

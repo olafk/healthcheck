@@ -32,7 +32,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
@@ -53,7 +52,7 @@ public class UserPasswordPBKDF2HashHealthcheck implements Healthcheck {
 	private static final String LINK = "https://liferay.dev/blogs/-/blogs/hashing-performance";
 
 	@Override
-	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
+	public Collection<HealthcheckItem> check(long companyId) {
 		String hashingAlgorithm = PropsUtil.get(PropsKeys.PASSWORDS_ENCRYPTION_ALGORITHM);
 		if (hashingAlgorithm == null) {
 			Object[] info = {};

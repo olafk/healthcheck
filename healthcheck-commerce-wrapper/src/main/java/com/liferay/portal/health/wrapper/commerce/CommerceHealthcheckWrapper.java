@@ -19,8 +19,10 @@ import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.portal.health.api.Healthcheck;
 import com.liferay.portal.health.api.HealthcheckItem;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,7 +40,8 @@ public class CommerceHealthcheckWrapper implements Healthcheck {
 	}
 
 	@Override
-	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
+	public Collection<HealthcheckItem> check(long companyId) {
+		Locale locale = getDefaultLocale(companyId);
 		List<CommerceChannel> commerceChannels = commerceChannelLocalService.getCommerceChannels(companyId);
 		_log.info("Executing Commerce Healthcheck " + getWrappee().getClass().getSimpleName() + " for "
 				+ commerceChannels.size() + " channel(s)");
@@ -72,6 +75,14 @@ public class CommerceHealthcheckWrapper implements Healthcheck {
 		String link = "/group/control_panel/manage?p_p_id=com_liferay_commerce_health_status_web_internal_portlet_CommerceHealthCheckPortlet";
 
 		return new HealthcheckItem(this, resolved, this.getClass().getName(), link, message);
+	}
+	
+	private Locale getDefaultLocale(long companyId) {
+		try {
+			return CompanyLocalServiceUtil.getCompany(companyId).getLocale();
+		} catch (PortalException e) {
+			return Locale.US;
+		}
 	}
 
 	private CommerceChannelLocalService commerceChannelLocalService;

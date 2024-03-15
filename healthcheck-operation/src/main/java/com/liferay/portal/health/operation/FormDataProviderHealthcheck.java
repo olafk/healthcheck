@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -53,7 +54,8 @@ public class FormDataProviderHealthcheck implements Healthcheck {
 	}
 
 	@Override
-	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
+	public Collection<HealthcheckItem> check(long companyId) {
+		Locale locale = getDefaultLocale(companyId);
 		LinkedList<HealthcheckItem> result = new LinkedList<HealthcheckItem>();
 		try {
 			String virtualHostname;
@@ -124,6 +126,14 @@ public class FormDataProviderHealthcheck implements Healthcheck {
 		} else {
 			_log.info("setting up DataProvider whitelist with " + whitelist.length + " elements.");
 			hostWhitelists = new HashSet<String>(Arrays.asList(whitelist));
+		}
+	}
+	
+	private Locale getDefaultLocale(long companyId) {
+		try {
+			return CompanyLocalServiceUtil.getCompany(companyId).getLocale();
+		} catch (PortalException e) {
+			return Locale.US;
 		}
 	}
 

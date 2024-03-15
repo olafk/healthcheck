@@ -22,7 +22,6 @@ import java.text.DateFormat;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -52,11 +51,11 @@ public class AvailableLocaleConfigurationHealthcheck implements Healthcheck {
 			.map(Object::toString).collect(Collectors.toCollection(TreeSet::new));;
 
 	@Override
-	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
+	public Collection<HealthcheckItem> check(long companyId) {
 		LinkedList<HealthcheckItem> result = new LinkedList<HealthcheckItem>();
-		validateProperties(result, locale, PropsValues.LOCALES, "locales");
-		validateProperties(result, locale, PropsValues.LOCALES_ENABLED, "locales.enabled");
-		validateProperties(result, locale, PropsValues.LOCALES_BETA, "locales.beta");
+		validateProperties(result, PropsValues.LOCALES, "locales");
+		validateProperties(result, PropsValues.LOCALES_ENABLED, "locales.enabled");
+		validateProperties(result, PropsValues.LOCALES_BETA, "locales.beta");
 
 		if (result.isEmpty()) {
 			Object[] info = {};
@@ -65,7 +64,7 @@ public class AvailableLocaleConfigurationHealthcheck implements Healthcheck {
 		return result;
 	}
 
-	private void validateProperties(LinkedList<HealthcheckItem> result, Locale locale, String[] locales,
+	private void validateProperties(LinkedList<HealthcheckItem> result, String[] locales,
 			String collectionName) {
 		for (int i = 0; i < locales.length; i++) {
 			String loc = locales[i];
@@ -81,7 +80,7 @@ public class AvailableLocaleConfigurationHealthcheck implements Healthcheck {
 			}
 		}
 	}
-
+	
 	@Override
 	public String getCategory() {
 		return "healthcheck-category-best-practice";
