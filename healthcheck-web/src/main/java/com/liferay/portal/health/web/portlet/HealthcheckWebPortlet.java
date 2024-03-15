@@ -76,6 +76,7 @@ public class HealthcheckWebPortlet extends MVCPortlet {
 				try {
 					checks.addAll(healthcheck.check(themeDisplay.getCompanyId()));
 				} catch (Exception e) {
+					_log.error(e);
 					checks.add(new HealthcheckItem(healthcheck, e));
 				}
 			}

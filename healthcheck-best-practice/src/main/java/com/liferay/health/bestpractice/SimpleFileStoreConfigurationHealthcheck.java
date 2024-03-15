@@ -26,8 +26,8 @@ import com.liferay.portal.kernel.settings.SettingsLocatorHelper;
 import com.liferay.portal.util.PropsValues;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Activate;
@@ -60,26 +60,26 @@ public class SimpleFileStoreConfigurationHealthcheck implements Healthcheck {
 
 	@Override
 	public Collection<HealthcheckItem> check(long companyId) {
-		Collection<HealthcheckItem> result;
+		Collection<HealthcheckItem> result = new LinkedList<HealthcheckItem>();
 		if (PropsValues.DL_STORE_IMPL.equals("com.liferay.portal.store.file.system.FileSystemStore")) {
 			if (rootDir.isDirectory()) {
 				int files = getRecursiveMaxFiles(rootDir, 0);
 				if (files > maximumFiles) {
 					Object[] info = { files, maximumFiles, rootDir.getAbsolutePath() };
-					result = Arrays.asList(new HealthcheckItem(this, false, this.getClass().getName() + "-maxfiles", LINK, MSG_TOO_MANY_FILES, info));
+					result.add(new HealthcheckItem(this, false, this.getClass().getName() + "-maxfiles", LINK, MSG_TOO_MANY_FILES, info));
 				} else {
 					Object[] info = { files, maximumFiles, rootDir.getAbsolutePath() };
-					result = Arrays.asList(new HealthcheckItem(this, true, this.getClass().getName() + "-maxfiles", LINK, MSG, info));
+					result.add(new HealthcheckItem(this, true, this.getClass().getName() + "-maxfiles", LINK, MSG, info));
 				}
 			} else {
 				Object[] info = { rootDir.getAbsolutePath() };
-				result = Arrays.asList(new HealthcheckItem(this, false, this.getClass().getName() + "-no-directory", LINK, MSG_NO_DIR, info));
+				result.add(new HealthcheckItem(this, false, this.getClass().getName() + "-no-directory", LINK, MSG_NO_DIR, info));
 			}
 			Object[] info = { minimumUsableSpace, rootDir.getUsableSpace() };
 			result.add(new HealthcheckItem(this, rootDir.getUsableSpace() > minimumUsableSpace, this.getClass().getName() + "-diskspace", null, MSG_USABLE_SPACE, info));
 		} else {
 			Object[] info = {};
-			result = Arrays.asList(new HealthcheckItem(this, true, this.getClass().getName(), LINK, MSG_UNUSED, info));
+			result.add(new HealthcheckItem(this, true, this.getClass().getName(), LINK, MSG_UNUSED, info));
 		}
 		return result;
 	}
