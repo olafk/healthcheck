@@ -66,20 +66,21 @@ public class SimpleFileStoreConfigurationHealthcheck extends HealthcheckBaseImpl
 			if (rootDir.isDirectory()) {
 				int files = getRecursiveMaxFiles(rootDir, 0);
 				if (files > maximumFiles) {
-					result = wrap(create2(false, this.getClass().getName() + "-maxfiles", locale, LINK,
-							MSG_TOO_MANY_FILES, files, maximumFiles, rootDir.getAbsolutePath()));
+					Object[] info = { files, maximumFiles, rootDir.getAbsolutePath() };
+					result = wrap(new HealthcheckItem(this, false, this.getClass().getName() + "-maxfiles", LINK, MSG_TOO_MANY_FILES, info));
 				} else {
-					result = wrap(create2(true, this.getClass().getName() + "-maxfiles", locale, LINK, MSG, files,
-							maximumFiles, rootDir.getAbsolutePath()));
+					Object[] info = { files, maximumFiles, rootDir.getAbsolutePath() };
+					result = wrap(new HealthcheckItem(this, true, this.getClass().getName() + "-maxfiles", LINK, MSG, info));
 				}
 			} else {
-				result = wrap(create2(false, this.getClass().getName() + "-no-directory", locale, LINK, MSG_NO_DIR,
-						rootDir.getAbsolutePath()));
+				Object[] info = { rootDir.getAbsolutePath() };
+				result = wrap(new HealthcheckItem(this, false, this.getClass().getName() + "-no-directory", LINK, MSG_NO_DIR, info));
 			}
-			result.add(create2(rootDir.getUsableSpace() > minimumUsableSpace, this.getClass().getName() + "-diskspace",
-					locale, null, MSG_USABLE_SPACE, minimumUsableSpace, rootDir.getUsableSpace()));
+			Object[] info = { minimumUsableSpace, rootDir.getUsableSpace() };
+			result.add(new HealthcheckItem(this, rootDir.getUsableSpace() > minimumUsableSpace, this.getClass().getName() + "-diskspace", null, MSG_USABLE_SPACE, info));
 		} else {
-			result = wrap(create1(true, locale, LINK, MSG_UNUSED));
+			Object[] info = {};
+			result = wrap(new HealthcheckItem(this, true, this.getClass().getName(), LINK, MSG_UNUSED, info));
 		}
 		return result;
 	}

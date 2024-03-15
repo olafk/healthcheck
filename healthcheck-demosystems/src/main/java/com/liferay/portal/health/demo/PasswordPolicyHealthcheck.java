@@ -49,7 +49,7 @@ public class PasswordPolicyHealthcheck extends HealthcheckBaseImpl {
 		try {
 			PasswordPolicy passwordPolicy = passwordPolicyLocalService.getDefaultPasswordPolicy(companyId);
 			boolean changeRequired = passwordPolicy.getChangeRequired();
-			return wrap(create1(!changeRequired, locale, LINK + LINK_PARAM + passwordPolicy.getPasswordPolicyId(), MSG));
+			return wrap(new HealthcheckItem(this, !changeRequired, this.getClass().getName(), LINK + LINK_PARAM + passwordPolicy.getPasswordPolicyId(), MSG));
 		} catch (PortalException e) {
 			return wrap(create3(this, locale, e));
 		}

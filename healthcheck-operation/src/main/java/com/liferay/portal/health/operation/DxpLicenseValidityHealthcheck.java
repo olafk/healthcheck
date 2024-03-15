@@ -45,10 +45,10 @@ public class DxpLicenseValidityHealthcheck extends HealthcheckBaseImpl {
 			long now = new Date().getTime();
 			long remainingMillis = expires - now;
 			long remainingDays = remainingMillis / (1000 * 60 * 60 * 24);
+			Object[] info = { remainingDays, warningPeriod };
 
 			return wrap(
-					create2(remainingDays > warningPeriod, this.getClass().getName() + "-" + ((int) (remainingDays / 7)),
-							locale, null, "healthcheck-license-key-validity-period", remainingDays, warningPeriod));
+					new HealthcheckItem(this, remainingDays > warningPeriod, this.getClass().getName() + "-" + ((int) (remainingDays / 7)), null, "healthcheck-license-key-validity-period", info));
 		} else {
 			return Collections.emptyList();
 		}

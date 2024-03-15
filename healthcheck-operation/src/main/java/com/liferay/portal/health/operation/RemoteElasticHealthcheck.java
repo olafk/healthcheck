@@ -45,7 +45,8 @@ public class RemoteElasticHealthcheck extends HealthcheckBaseImpl {
 				remote = true;
 			}
 		}
-		return wrap(create1(remote, locale, LINK, MSG, productionModeEnabled, operationMode));
+		Object[] info = { productionModeEnabled, operationMode };
+		return wrap(new HealthcheckItem(this, remote, this.getClass().getName(), LINK, MSG, info));
 	}
 
 	@Override

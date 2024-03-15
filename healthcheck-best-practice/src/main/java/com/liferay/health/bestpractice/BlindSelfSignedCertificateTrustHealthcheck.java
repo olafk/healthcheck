@@ -22,7 +22,8 @@ public class BlindSelfSignedCertificateTrustHealthcheck extends HealthcheckBaseI
 	@Override
 	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
 		try {
-			return wrap(create1(!getTrustSetting(companyId), locale, LINK, MSG));
+			Object[] info = {};
+			return wrap(new HealthcheckItem(this, !getTrustSetting(companyId), this.getClass().getName(), LINK, MSG, info));
 		} catch (ConfigurationException e) {
 			return wrap(create3(this, locale, e));
 		}

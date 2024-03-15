@@ -44,12 +44,13 @@ public class MetaspaceHealthcheck extends HealthcheckBaseImpl {
 		for (MemoryPoolMXBean memoryMXBean : ManagementFactory.getMemoryPoolMXBeans()) {
 			if ("Metaspace".equals(memoryMXBean.getName())) {
 				long maxMetaspace = memoryMXBean.getUsage().getMax();
-				return wrap(create1(maxMetaspace >= 768 * 1024 * 1024 || maxMetaspace == -1, locale, LINK, MSG,
-						maxMetaspace));
+				Object[] info = { maxMetaspace };
+				return wrap(new HealthcheckItem(this, maxMetaspace >= 768 * 1024 * 1024 || maxMetaspace == -1, this.getClass().getName(), LINK, MSG, info));
 			}
 		}
+		Object[] info = { "undetected" };
 
-		return wrap(create1(false, locale, LINK, MSG, "undetected"));
+		return wrap(new HealthcheckItem(this, false, this.getClass().getName(), LINK, MSG, info));
 	}
 
 	@Override

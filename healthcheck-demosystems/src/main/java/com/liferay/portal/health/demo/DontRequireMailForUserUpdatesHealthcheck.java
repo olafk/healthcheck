@@ -50,7 +50,8 @@ public class DontRequireMailForUserUpdatesHealthcheck extends HealthcheckBaseImp
 		try {
 			boolean verifyStrangers = GetterUtil.getBoolean(PropsUtil.get(companyLocalService.getCompany(companyId),
 					PropsKeys.COMPANY_SECURITY_STRANGERS_VERIFY));
-			return wrap(create1(!verifyStrangers, locale, LINK, verifyStrangers ? MSG_ERROR : MSG));
+			Object[] info = {};
+			return wrap(new HealthcheckItem(this, !verifyStrangers, this.getClass().getName(), LINK, verifyStrangers ? MSG_ERROR : MSG, info));
 		} catch (PortalException e) {
 			return wrap(create3(this, locale, e));
 		}

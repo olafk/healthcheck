@@ -59,7 +59,8 @@ public class ContentIndexedHealthcheck extends HealthcheckBaseImpl {
 		long dbCount = userLocalService.getCompanyUsersCount(companyId);
 
 		boolean exists = (indexCount >= dbCount);
-		return wrap(create1(exists, locale, LINK, exists ? MSG : ERROR_MSG, indexCount, dbCount));
+		Object[] info = { indexCount, dbCount };
+		return wrap(new HealthcheckItem(this, exists, this.getClass().getName(), LINK, exists ? MSG : ERROR_MSG, info));
 	}
 
 	@Override

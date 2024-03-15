@@ -39,7 +39,8 @@ public class DefaultSiteInitializerUserHealthcheck extends HealthcheckBaseImpl {
 			result.addAll(checkForUser(companyId, locale, user));
 		}
 		if (result.isEmpty()) {
-			result.add(create1(true, locale, null, MSG));
+			Object[] info = {};
+			result.add(new HealthcheckItem(this, true, this.getClass().getName(), null, MSG, info));
 		}
 		return result;
 	}
@@ -48,7 +49,8 @@ public class DefaultSiteInitializerUserHealthcheck extends HealthcheckBaseImpl {
 		try {
 			User user = userLocalService.getUserByEmailAddress(companyId, mailAddress);
 			if (user != null) {
-				return wrap(create1(false, locale, LINK + LINK_PARAMETER + user.getUserId(), MSG_FOUND, mailAddress));
+				Object[] info = { mailAddress };
+				return wrap(new HealthcheckItem(this, false, this.getClass().getName(), LINK + LINK_PARAMETER + user.getUserId(), MSG_FOUND, info));
 			}
 		} catch (NoSuchUserException e) {
 			// ignore - this is great and exactly what we're after.

@@ -56,10 +56,11 @@ public class UserPasswordPBKDF2HashHealthcheck extends HealthcheckBaseImpl {
 	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
 		String hashingAlgorithm = PropsUtil.get(PropsKeys.PASSWORDS_ENCRYPTION_ALGORITHM);
 		if (hashingAlgorithm == null) {
-			return wrap(create1(false, locale, LINK, "healthcheck-best-practice-pbkdf2-user-unconfigured-algorithm"));
+			Object[] info = {};
+			return wrap(new HealthcheckItem(this, false, this.getClass().getName(), LINK, "healthcheck-best-practice-pbkdf2-user-unconfigured-algorithm", info));
 		} else if (!hashingAlgorithm.startsWith(PBKDF2_WITH_HMAC_SHA1)) {
-			return wrap(create1(true, locale, LINK,
-					"healthcheck-best-practice-pbkdf2-unknown-hashing-algorithm-assuming-ok", hashingAlgorithm));
+			Object[] info = { hashingAlgorithm };
+			return wrap(new HealthcheckItem(this, true, this.getClass().getName(), LINK, "healthcheck-best-practice-pbkdf2-unknown-hashing-algorithm-assuming-ok", info));
 		}
 
 		HashMap<String, Long> algorithms = new HashMap<String, Long>();
@@ -85,19 +86,17 @@ public class UserPasswordPBKDF2HashHealthcheck extends HealthcheckBaseImpl {
 		}
 
 		if (counted != usersCount) {
-			result.add(create1(false, locale, LINK, "healthcheck-best-practice-user-count-mismatch-x-uncounted",
-					"" + (usersCount - counted) + "/" + usersCount));
+			Object[] info = { "" + (usersCount - counted) + "/" + usersCount };
+			result.add(new HealthcheckItem(this, false, this.getClass().getName(), LINK, "healthcheck-best-practice-user-count-mismatch-x-uncounted", info));
 		}
 
 		for (HashMap.Entry<String, Long> entry : algorithms.entrySet()) {
 			if (entry.getKey().equalsIgnoreCase(hashingAlgorithm)) {
-				result.add(create1(true, locale, LINK,
-						"healthcheck-best-practice-pbkdf2-found-x-entries-with-default-algorithm-y",
-						"" + entry.getValue() + "/" + usersCount, hashingAlgorithm));
+				Object[] info = { "" + entry.getValue() + "/" + usersCount, hashingAlgorithm };
+				result.add(new HealthcheckItem(this, true, this.getClass().getName(), LINK, "healthcheck-best-practice-pbkdf2-found-x-entries-with-default-algorithm-y", info));
 			} else {
-				result.add(create1(false, locale, LINK,
-						"healthcheck-best-practice-pbkdf2-found-x-entries-with-nondefault-algorithm-y-looking-for-z",
-						"" + entry.getValue() + "/" + usersCount, entry.getKey(), hashingAlgorithm));
+				Object[] info = { "" + entry.getValue() + "/" + usersCount, entry.getKey(), hashingAlgorithm };
+				result.add(new HealthcheckItem(this, false, this.getClass().getName(), LINK, "healthcheck-best-practice-pbkdf2-found-x-entries-with-nondefault-algorithm-y-looking-for-z", info));
 			}
 		}
 		return result;

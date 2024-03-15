@@ -55,8 +55,9 @@ public class AccountCreationByStrangersHealthcheck extends HealthcheckBaseImpl {
 		try {
 			boolean state = !_getPrefsPropsBoolean(preferences, companyLocalService.getCompany(companyId),
 					PropsKeys.COMPANY_SECURITY_STRANGERS, PropsValues.COMPANY_SECURITY_STRANGERS);
+			Object[] info = { "company.security.strangers" };
 
-			return wrap(create1(state, locale, LINK, state ? MSG : MSG_ERROR, "company.security.strangers"));
+			return wrap(new HealthcheckItem(this, state, this.getClass().getName(), LINK, state ? MSG : MSG_ERROR, info));
 		} catch (PortalException e) {
 			return wrap(create3(this, locale, e));
 		}

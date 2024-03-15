@@ -55,7 +55,8 @@ public class VerifyDeprecatedServiceDemoHealthcheck extends HealthcheckBaseImpl 
 		Collection<HealthcheckItem> items = new LinkedList<HealthcheckItem>();
 		if (services.isEmpty()) {
 			// todo: Translate!
-			items.add(create1(true, locale, null, MSG));
+			Object[] info = {};
+			items.add(new HealthcheckItem(this, true, this.getClass().getName(), null, MSG, info));
 		} else {
 			for (@SuppressWarnings("unused")
 			DeprecatedSampleService service : services) {

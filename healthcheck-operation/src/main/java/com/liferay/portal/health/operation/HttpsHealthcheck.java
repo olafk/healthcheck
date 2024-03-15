@@ -54,10 +54,11 @@ public class HttpsHealthcheck extends HealthcheckBaseImpl {
 			String host = extractHost(requestedUrl);
 
 			if (host != null && (host.equalsIgnoreCase("localhost") || host.toLowerCase().startsWith("localhost:"))) {
-				result.add(create1(true, locale, LINK, MSG_LOCALHOST, year, scheme));
+				Object[] info = { year, scheme };
+				result.add(new HealthcheckItem(this, true, this.getClass().getName(), LINK, MSG_LOCALHOST, info));
 			} else {
-				result.add(create2(scheme != null && scheme.equalsIgnoreCase("https"),
-						this.getClass().getName() + "-" + HtmlUtil.escapeURL(requestedUrl), locale, LINK, MSG, year,
+				result.add(new HealthcheckItem(this, scheme != null && scheme.equalsIgnoreCase("https"),
+						this.getClass().getName() + "-" + HtmlUtil.escapeURL(requestedUrl), LINK, MSG, year,
 						requestedUrl));
 			}
 		}

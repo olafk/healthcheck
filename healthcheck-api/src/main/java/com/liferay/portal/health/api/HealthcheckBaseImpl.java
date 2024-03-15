@@ -14,61 +14,11 @@
 
 package com.liferay.portal.health.api;
 
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
-
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Locale;
-import java.util.ResourceBundle;
 
 public abstract class HealthcheckBaseImpl implements Healthcheck {
-
-	/**
-	 * 
-	 * @param locale      the locale that this message should be displayed in
-	 * @param key         the key to look up the message's translation
-	 * @param info        parameters to be embedded in the message returned
-	 * @return
-	 */
-	public String dontLookupMessage(Locale locale, String key, Object... info) {
-		if (locale == null || key == null) {
-			return "Internal Error: " + this.getClass().getName() + " looked up null key";
-		}
-		ResourceBundle bundle = ResourceBundleUtil.getBundle(locale, this.getClass().getClassLoader());
-		String result = ResourceBundleUtil.getString(bundle, key, info);
-		if (result == null) {
-			result = key;
-		}
-		return result;
-	}
-
-	/**
-	 * 
-	 * @param state       true if healthcheck passed
-	 * @param locale      the locale that this message should be displayed in
-	 * @param link        a link to a description of the status, or the UI where a status can be changed
-	 * @param msgKey      the key to look up the message's translation
-	 * @param info        parameters to be embedded in the message returned
-	 * @return
-	 */
-	public HealthcheckItem create1(boolean state, Locale locale, String link, String msgKey, Object... info) {
-		return new HealthcheckItem(this, state, this.getClass().getName(), link, msgKey, info);
-	}
-	
-	/**
-	 * 
-	 * @param state       true if healthcheck passed, false otherwise
-	 * @param baseKey     the key that describes this healthcheck uniquely (can be used to ignore it in future runs)
-	 * @param locale      the locale that this message should be displayed in
-	 * @param link        a link to a description of the status, or the UI where a status can be changed
-	 * @param msgKey      the key to look up the message's translation
-	 * @param info        parameters to be embedded in the message returned
-	 * @return
-	 */
-	public HealthcheckItem create2(boolean state, String baseKey, Locale locale, String link, String msgKey,
-			Object... info) {
-		return new HealthcheckItem(this, state, baseKey, link, msgKey, info);
-	}
 
 	/**
 	 * 
@@ -79,10 +29,9 @@ public abstract class HealthcheckBaseImpl implements Healthcheck {
 	 * @return
 	 */
 	public HealthcheckItem create3(Healthcheck check, Locale locale, Throwable throwable) {
-		ResourceBundle bundle = ResourceBundleUtil.getBundle(locale, HealthcheckItem.class);
-		String message = ResourceBundleUtil.getString(bundle, "exception-notification-for-healthcheck",
+		return new HealthcheckItem(this, false, this.getClass().getName() + "-exception", null, 
+				"exception-notification-for-healthcheck",
 				check.getClass().getName(), throwable.getClass().getName() + " " + throwable.getMessage());
-		return new HealthcheckItem(this, false, this.getClass().getName() + "-exception", null, message);
 	}
 
 	/**

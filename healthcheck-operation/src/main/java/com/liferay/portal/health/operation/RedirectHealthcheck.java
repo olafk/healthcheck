@@ -63,7 +63,7 @@ public class RedirectHealthcheck extends HealthcheckBaseImpl implements ManagedS
 
 		for (String requestedUrl : urls) {
 			String url = PortalUtil.escapeRedirect(requestedUrl);
-			result.add(create2(url != null, this.getClass().getName() + "-" + HtmlUtil.escapeURL(requestedUrl), locale,
+			result.add(new HealthcheckItem(this, url != null, this.getClass().getName() + "-" + HtmlUtil.escapeURL(requestedUrl),
 					LINK, "healthcheck-redirection-url-previous", extractHost(requestedUrl)));
 		}
 

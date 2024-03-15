@@ -101,7 +101,8 @@ public class HealthcheckWebPortlet extends MVCPortlet {
 
 				@Override
 				public Collection<HealthcheckItem> check(long companyId, Locale locale) {
-					return wrap(create1(false, locale, "/", "healthcheck-need-to-be-company-administrator"));
+					Object[] info = {};
+					return wrap(new HealthcheckItem(this, false, this.getClass().getName(), "/", "healthcheck-need-to-be-company-administrator", info));
 				}
 			};
 			checks.addAll(dummy.check(themeDisplay.getCompanyId(), themeDisplay.getLocale()));

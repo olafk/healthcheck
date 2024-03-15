@@ -49,7 +49,8 @@ public class JSONWSApiAuthConfigurationHealthcheck extends HealthcheckBaseImpl {
 	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
 		boolean correctlyConfigured = urlsIncludes.contains("/api/json*") && urlsIncludes.contains("/api/jsonws*")
 				&& urlsIncludes.contains("/c/portal/json_service*");
-		return wrap(create1(correctlyConfigured, locale, LINK, correctlyConfigured ? MSG : ERRORMSG, urlsIncludes));
+		Object[] info = { urlsIncludes };
+		return wrap(new HealthcheckItem(this, correctlyConfigured, this.getClass().getName(), LINK, correctlyConfigured ? MSG : ERRORMSG, info));
 	}
 
 	@Override

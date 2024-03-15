@@ -79,8 +79,8 @@ public class ClientExtensionHostHealthcheck extends HealthcheckBaseImpl {
 					String host = getHost(url);
 					if (host != null) {
 						if (hostWhitelists.contains(host)) {
-							result.add(create2(true, this.getClass().getName() + "-" + virtualHostname + "-" + host,
-									locale, LINK_BASE + clientExtensionEntry.getExternalReferenceCode(),
+							result.add(new HealthcheckItem(this, true, this.getClass().getName() + "-" + virtualHostname + "-" + host,
+									LINK_BASE + clientExtensionEntry.getExternalReferenceCode(),
 									MSG_WHITELISTED, clientExtensionEntry.getName(locale), host));
 						} else {
 							// create a problem indicator in any case, so that users can
@@ -91,18 +91,19 @@ public class ClientExtensionHostHealthcheck extends HealthcheckBaseImpl {
 							// Note: There is a separate health check to validate the company
 							// virtualhost, that should make this unignorable.
 
-							result.add(create2(false, this.getClass().getName() + "-" + virtualHostname + "-" + host,
-									locale, LINK_BASE + clientExtensionEntry.getExternalReferenceCode(), MSG,
-									clientExtensionEntry.getName(locale), host));
+							result.add(new HealthcheckItem(this, false, this.getClass().getName() + "-" + virtualHostname + "-" + host,
+									LINK_BASE + clientExtensionEntry.getExternalReferenceCode(), 
+									MSG, clientExtensionEntry.getName(locale), host));
 						}
 					} else {
 						if (url.startsWith("/document")) {
-							result.add(create2(true, this.getClass().getName() + "-" + url, locale,
+							result.add(new HealthcheckItem(this, true, this.getClass().getName() + "-" + url,
 									LINK_BASE + clientExtensionEntry.getExternalReferenceCode(),
-									"healthcheck-client-extension-local-doclib", clientExtensionEntry.getName(locale),
+									"healthcheck-client-extension-local-doclib", 
+									clientExtensionEntry.getName(locale),
 									url));
 						} else {
-							result.add(create2(false, this.getClass().getName() + "-" + url, locale,
+							result.add(new HealthcheckItem(this, false, this.getClass().getName() + "-" + url, 
 									LINK_BASE + clientExtensionEntry.getExternalReferenceCode(),
 									"healthcheck-client-extension-undetectable-host",
 									clientExtensionEntry.getName(locale), url));
@@ -111,7 +112,8 @@ public class ClientExtensionHostHealthcheck extends HealthcheckBaseImpl {
 				}
 			}
 			if (result.isEmpty()) {
-				result.add(create1(true, locale, null, "healthcheck-client-extension-none-detected"));
+				Object[] info = {};
+				result.add(new HealthcheckItem(this, true, this.getClass().getName(), null, "healthcheck-client-extension-none-detected", info));
 			}
 		} catch (PortalException e) {
 			_log.error(e);

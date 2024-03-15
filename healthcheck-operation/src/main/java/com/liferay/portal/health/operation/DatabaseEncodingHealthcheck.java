@@ -54,7 +54,8 @@ public class DatabaseEncodingHealthcheck extends HealthcheckBaseImpl {
 						}
 					}
 				} else {
-					result.add(create1(false, locale, LINK_DB_CONNECTION, MSG_SCHEMA_UNDETECTED, connectionURL));
+					Object[] info = { connectionURL };
+					result.add(new HealthcheckItem(this, false, this.getClass().getName(), LINK_DB_CONNECTION, MSG_SCHEMA_UNDETECTED, info));
 				}
 			} else if (DBType.ORACLE.equals(dbType)) {
 				// TODO
@@ -67,13 +68,16 @@ public class DatabaseEncodingHealthcheck extends HealthcheckBaseImpl {
 			} else if (DBType.SYBASE.equals(dbType)) {
 				// TODO
 			} else if (DBType.HYPERSONIC.equals(dbType)) {
-				result.add(create1(false, locale, LINK_DB_CONNECTION, MSG_HSQL));
+				Object[] info = {};
+				result.add(new HealthcheckItem(this, false, this.getClass().getName(), LINK_DB_CONNECTION, MSG_HSQL, info));
 				return result;
 			} else {
-				result.add(create1(false, locale, LINK_DB_CONNECTION, MSG_DB_UNDETECTED));
+				Object[] info = {};
+				result.add(new HealthcheckItem(this, false, this.getClass().getName(), LINK_DB_CONNECTION, MSG_DB_UNDETECTED, info));
 				return result;
 			}
-			result.add(create1(correctEncoding, locale, LINK_DB_CONNECTION, MSG, encoding, dbType, connectionURL));
+			Object[] info = { encoding, dbType, connectionURL };
+			result.add(new HealthcheckItem(this, correctEncoding, this.getClass().getName(), LINK_DB_CONNECTION, MSG, info));
 		} catch (SQLException e) {
 			result.add(create3(this, locale, e));
 		}

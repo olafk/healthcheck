@@ -95,9 +95,13 @@ public class HealthcheckItem {
 		ResourceBundle bundle = ResourceBundleUtil.getBundle(locale, healthcheck.getClass().getClassLoader());
 		String result = ResourceBundleUtil.getString(bundle, key, parameters);
 		if (result == null) {
-			LanguageUtil.format(locale, key, parameters);
-			if (result == null) {
-				result = key;
+			bundle = ResourceBundleUtil.getBundle(locale, Healthcheck.class.getClassLoader());
+			result = ResourceBundleUtil.getString(bundle, key, parameters);
+			if(result == null) {
+				result = LanguageUtil.format(locale, key, parameters);
+				if (result == null) {
+					result = key;
+				}
 			}
 		}
 		return result;
