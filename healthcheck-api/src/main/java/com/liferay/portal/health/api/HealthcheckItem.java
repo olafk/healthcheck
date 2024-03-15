@@ -23,14 +23,28 @@ import java.util.ResourceBundle;
 public class HealthcheckItem {
 
 	public HealthcheckItem(Healthcheck healthcheck, boolean resolved, String source, String link, String message, Object... info) {
+		this.healthcheck = healthcheck;
 		this.resolved = resolved;
 		this.source = source;
 		this.link = link;
 		this.message = message;
-		this.healthcheck = healthcheck;
 		this.info = info;
 	}
 
+	public HealthcheckItem(Healthcheck healthcheck, Throwable t) {
+		this.healthcheck = healthcheck;
+		this.resolved = false;
+		this.source = healthcheck.getClass().getName() + "-exception";
+		this.link = null;
+		this.message = "exception-notification-for-healthcheck";
+		this.info = new Object[] { 
+				healthcheck.getClass().getName(), 
+				t.getClass().getName() + " " + t.getMessage() 
+		};
+	}
+	
+	
+	
 	/**
 	 * signals if the healthcheck result is healthy or not
 	 * 

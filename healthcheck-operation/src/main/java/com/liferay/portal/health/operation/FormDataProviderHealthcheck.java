@@ -93,7 +93,7 @@ public class FormDataProviderHealthcheck extends HealthcheckBaseImpl {
 				result.add(new HealthcheckItem(this, true, this.getClass().getName(), null, "healthcheck-dataprovider-none-detected", info));
 			}
 		} catch (PortalException e) {
-			result.add(create3(this, locale, e));
+			result.add(new HealthcheckItem(this, e));
 		}
 		return result;
 	}

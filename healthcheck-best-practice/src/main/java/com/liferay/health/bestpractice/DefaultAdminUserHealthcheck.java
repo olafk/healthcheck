@@ -44,7 +44,7 @@ public class DefaultAdminUserHealthcheck extends HealthcheckBaseImpl {
 		} catch (NoSuchUserException e) {
 			// ignore - this is great and exactly what we're after.
 		} catch (PortalException e) {
-			return wrap(create3(this, locale, e));
+			return wrap(new HealthcheckItem(this, e));
 		}
 		Object[] info = {};
 		return wrap(new HealthcheckItem(this, true, this.getClass().getName(), LINK, MSG, info));

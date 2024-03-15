@@ -55,7 +55,7 @@ public class DefaultSiteInitializerUserHealthcheck extends HealthcheckBaseImpl {
 		} catch (NoSuchUserException e) {
 			// ignore - this is great and exactly what we're after.
 		} catch (PortalException e) {
-			return wrap(create3(this, locale, e));
+			return wrap(new HealthcheckItem(this, e));
 		}
 		return new LinkedList<HealthcheckItem>();
 	}

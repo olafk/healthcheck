@@ -79,7 +79,7 @@ public class DatabaseEncodingHealthcheck extends HealthcheckBaseImpl {
 			Object[] info = { encoding, dbType, connectionURL };
 			result.add(new HealthcheckItem(this, correctEncoding, this.getClass().getName(), LINK_DB_CONNECTION, MSG, info));
 		} catch (SQLException e) {
-			result.add(create3(this, locale, e));
+			result.add(new HealthcheckItem(this, e));
 		}
 		return result;
 	}

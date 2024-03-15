@@ -25,7 +25,7 @@ public class BlindSelfSignedCertificateTrustHealthcheck extends HealthcheckBaseI
 			Object[] info = {};
 			return wrap(new HealthcheckItem(this, !getTrustSetting(companyId), this.getClass().getName(), LINK, MSG, info));
 		} catch (ConfigurationException e) {
-			return wrap(create3(this, locale, e));
+			return wrap(new HealthcheckItem(this, e));
 		}
 	}
 

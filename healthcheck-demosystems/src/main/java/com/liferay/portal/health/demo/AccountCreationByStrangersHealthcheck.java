@@ -59,7 +59,7 @@ public class AccountCreationByStrangersHealthcheck extends HealthcheckBaseImpl {
 
 			return wrap(new HealthcheckItem(this, state, this.getClass().getName(), LINK, state ? MSG : MSG_ERROR, info));
 		} catch (PortalException e) {
-			return wrap(create3(this, locale, e));
+			return wrap(new HealthcheckItem(this, e));
 		}
 	}
 

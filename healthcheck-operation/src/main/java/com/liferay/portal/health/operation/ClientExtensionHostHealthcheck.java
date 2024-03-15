@@ -117,7 +117,7 @@ public class ClientExtensionHostHealthcheck extends HealthcheckBaseImpl {
 			}
 		} catch (PortalException e) {
 			_log.error(e);
-			result.add(create3(this, locale, e));
+			result.add(new HealthcheckItem(this, e));
 		}
 		return result;
 	}

@@ -16,27 +16,12 @@ package com.liferay.portal.health.api;
 
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.Locale;
 
 public abstract class HealthcheckBaseImpl implements Healthcheck {
 
 	/**
-	 * 
-	 * @param healthcheck used to look up a resource bundle for messages that might
-	 *                    come with this healthcheck
-	 * @param locale      the locale that this message should be displayed in
-	 * @param throwable   the exception to describe this healthcheck's failed status
-	 * @return
-	 */
-	public HealthcheckItem create3(Healthcheck check, Locale locale, Throwable throwable) {
-		return new HealthcheckItem(this, false, this.getClass().getName() + "-exception", null, 
-				"exception-notification-for-healthcheck",
-				check.getClass().getName(), throwable.getClass().getName() + " " + throwable.getMessage());
-	}
-
-	/**
 	 * Convenience method to turn the single healthcheck parameter into a collection
-
+     *
 	 * @return a mutable collection with the parameter item as the only element.
 	 */
 	protected Collection<HealthcheckItem> wrap(HealthcheckItem item) {

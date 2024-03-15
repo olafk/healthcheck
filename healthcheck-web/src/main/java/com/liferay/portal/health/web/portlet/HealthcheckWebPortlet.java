@@ -77,19 +77,7 @@ public class HealthcheckWebPortlet extends MVCPortlet {
 				try {
 					checks.addAll(healthcheck.check(themeDisplay.getCompanyId(), themeDisplay.getLocale()));
 				} catch (Exception e) {
-					HealthcheckBaseImpl b = new HealthcheckBaseImpl() {
-						@Override
-						public String getCategory() {
-							return healthcheck.getCategory();
-						}
-
-						@Override
-						public Collection<HealthcheckItem> check(long companyId, Locale locale) {
-							// Unused in this dummy
-							return null;
-						}
-					};
-					checks.add(b.create3(healthcheck, themeDisplay.getLocale(), e));
+					checks.add(new HealthcheckItem(healthcheck, e));
 				}
 			}
 		} else {

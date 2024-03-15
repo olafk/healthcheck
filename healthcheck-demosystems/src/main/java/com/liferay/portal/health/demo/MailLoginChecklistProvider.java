@@ -66,7 +66,7 @@ public class MailLoginChecklistProvider extends HealthcheckBaseImpl {
 
 			return wrap(new HealthcheckItem(this, !prepopulate, this.getClass().getName(), LINK, prepopulate ? MSG_ERROR : MSG, info));
 		} catch (PortalException e) {
-			return wrap(create3(this, locale, e));
+			return wrap(new HealthcheckItem(this, e));
 		}
 	}
 

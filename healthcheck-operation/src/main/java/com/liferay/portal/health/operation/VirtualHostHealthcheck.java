@@ -62,7 +62,7 @@ public class VirtualHostHealthcheck extends HealthcheckBaseImpl {
 			Object[] info = { configuredHostname };
 			return wrap(new HealthcheckItem(this, false, this.getClass().getName(), LINK, MSG_ERROR, info));
 		} catch (PortalException e) {
-			return wrap(create3(this, locale, e));
+			return wrap(new HealthcheckItem(this, e));
 		}
 	}
 

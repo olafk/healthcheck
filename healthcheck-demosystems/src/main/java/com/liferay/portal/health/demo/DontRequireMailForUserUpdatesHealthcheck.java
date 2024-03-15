@@ -53,7 +53,7 @@ public class DontRequireMailForUserUpdatesHealthcheck extends HealthcheckBaseImp
 			Object[] info = {};
 			return wrap(new HealthcheckItem(this, !verifyStrangers, this.getClass().getName(), LINK, verifyStrangers ? MSG_ERROR : MSG, info));
 		} catch (PortalException e) {
-			return wrap(create3(this, locale, e));
+			return wrap(new HealthcheckItem(this, e));
 		}
 	}
 
