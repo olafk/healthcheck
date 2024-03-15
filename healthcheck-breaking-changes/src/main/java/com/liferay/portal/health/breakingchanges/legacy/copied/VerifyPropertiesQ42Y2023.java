@@ -6,8 +6,8 @@
 package com.liferay.portal.health.breakingchanges.legacy.copied;
 
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.health.api.Healthcheck;
 import com.liferay.portal.health.api.HealthcheckItem;
-import com.liferay.portal.health.api.HealthcheckItemImpl;
 import com.liferay.portal.health.breakingchanges.legacy.VerifyPropertiesHealthcheck;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LoggingTimer;
@@ -29,15 +29,14 @@ import java.util.Set;
  */
 public class VerifyPropertiesQ42Y2023 {
 
-	public static List<HealthcheckItem> doVerify(String category) {
-		_log.category = category;
+	public static List<HealthcheckItem> doVerify(Healthcheck healthcheck) {
 		List<HealthcheckItem> result = null;
 		try {
 			verify();
 			result = _log.popItems();
 		} catch (Exception e) {
 			result = _log.popItems();
-			result.add(new HealthcheckItemImpl(false, VerifyPropertiesHealthcheck.class.getName() + "-exception", e.getClass().getName() + " " + e.getMessage(), null, _log.category));
+			result.add(new HealthcheckItem(false, VerifyPropertiesHealthcheck.class.getName() + "-exception", e.getClass().getName() + " " + e.getMessage(), null, healthcheck));
 		}
 		return _log.popItems();
 	}
@@ -2269,6 +2268,6 @@ public class VerifyPropertiesQ42Y2023 {
 		}
 	};
 
-	private static final LogHealthcheckWrapper _log = new LogHealthcheckWrapper("healthcheck-category-breaking-changes");
+	private static final LogHealthcheckWrapper _log = new LogHealthcheckWrapper(new VerifyPropertiesHealthcheck());
 
 }

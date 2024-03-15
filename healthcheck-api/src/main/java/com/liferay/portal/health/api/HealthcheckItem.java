@@ -14,14 +14,24 @@
 
 package com.liferay.portal.health.api;
 
-public interface HealthcheckItem {
+public class HealthcheckItem {
+
+	public HealthcheckItem(boolean resolved, String source, String message, String link, Healthcheck healthcheck) {
+		this.resolved = resolved;
+		this.source = source;
+		this.link = link;
+		this.message = message;
+		this.healthcheck = healthcheck;
+	}
 
 	/**
 	 * signals if the healthcheck result is healthy or not
 	 * 
 	 * @return true if healthy
 	 */
-	boolean isResolved();
+	public boolean isResolved() {
+		return resolved;
+	}
 
 	/**
 	 * An informative message on the tested condition, in the language that a
@@ -29,14 +39,18 @@ public interface HealthcheckItem {
 	 * 
 	 * @return human readable message
 	 */
-	String getMessage();
+	public String getMessage() {
+		return message;
+	}
 
 	/**
 	 * A link(URL) that can contain further information on the tested condition
 	 * 
 	 * @return a link URL
 	 */
-	String getLink();
+	public String getLink() {
+		return link;
+	}
 
 	/**
 	 * A human readable (localized) category for the kind of healthcheck that was
@@ -44,7 +58,9 @@ public interface HealthcheckItem {
 	 * 
 	 * @return
 	 */
-	String getCategory();
+	public String getCategory() {
+		return healthcheck.getCategory();
+	}
 
 	/**
 	 * A machine readable key that can be used to refer to a particular healthcheck
@@ -56,5 +72,13 @@ public interface HealthcheckItem {
 	 * 
 	 * @return
 	 */
-	String getKey();
+	public String getKey() {
+		return source + "-" + resolved;
+	}
+
+	private final boolean resolved;
+	private final String source;
+	private final String message;
+	private final String link;
+	private final Healthcheck healthcheck;
 }

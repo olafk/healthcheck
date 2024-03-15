@@ -14,8 +14,8 @@
 
 package com.liferay.portal.health.breakingchanges.legacy.copied;
 
+import com.liferay.portal.health.api.Healthcheck;
 import com.liferay.portal.health.api.HealthcheckItem;
-import com.liferay.portal.health.api.HealthcheckItemImpl;
 import com.liferay.portal.health.breakingchanges.legacy.VerifyPropertiesHealthcheck;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 
@@ -28,24 +28,24 @@ import java.util.ResourceBundle;
 
 public class LogHealthcheckWrapper {
 
-	String category;
+	private Healthcheck healthcheck;
 
-	public LogHealthcheckWrapper(String category) {
-		this.category = category;
+	public LogHealthcheckWrapper(Healthcheck healthcheck) {
+		this.healthcheck = healthcheck;
 	}
 
 	public void error(String msg) {
-		HealthcheckItemImpl item = new HealthcheckItemImpl(false, getSource(msg), msg,
+		HealthcheckItem item = new HealthcheckItem(false, getSource(msg), msg,
 				"https://github.com/liferay/liferay-portal/blob/master/portal-impl/src/com/liferay/portal/verify/VerifyProcess.java",
-				category);
+				healthcheck);
 		result.add(item);
 	}
 
 	public void error(String msg, Throwable throwable) {
-		HealthcheckItemImpl item = new HealthcheckItemImpl(false, getSource(msg),
+		HealthcheckItem item = new HealthcheckItem(false, getSource(msg),
 				msg + " " + throwable.getClass().getName() + " " + throwable.getMessage(),
 				"https://github.com/liferay/liferay-portal/blob/master/portal-impl/src/com/liferay/portal/verify/VerifyProcess.java",
-				category);
+				healthcheck);
 		result.add(item);
 	}
 

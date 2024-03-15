@@ -19,7 +19,6 @@ import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
-import com.liferay.portal.health.api.HealthcheckItemImpl;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
@@ -72,8 +71,7 @@ public class CommerceHealthcheckWrapper extends HealthcheckBaseImpl {
 				+ ") " + exception;
 		String link = "/group/control_panel/manage?p_p_id=com_liferay_commerce_health_status_web_internal_portlet_CommerceHealthCheckPortlet";
 
-		return new HealthcheckItemImpl(resolved, this.getClass().getName(), message, link,
-				lookupMessage(locale, getCategory()));
+		return new HealthcheckItem(resolved, this.getClass().getName(), message, link, this);
 	}
 
 	private CommerceChannelLocalService commerceChannelLocalService;

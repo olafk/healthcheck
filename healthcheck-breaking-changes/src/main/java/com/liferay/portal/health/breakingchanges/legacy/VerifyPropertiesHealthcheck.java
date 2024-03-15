@@ -17,9 +17,7 @@ public class VerifyPropertiesHealthcheck extends HealthcheckBaseImpl {
 
 	@Override
 	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
-		String localizedCategory = lookupMessage(locale, getCategory());
-
-		Collection<HealthcheckItem> items = VerifyPropertiesQ42Y2023.doVerify(localizedCategory);
+		Collection<HealthcheckItem> items = VerifyPropertiesQ42Y2023.doVerify(this);
 		if (items.isEmpty()) {
 			// todo: Translate!
 			items.add(create(true, locale, null, MSG));

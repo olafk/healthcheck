@@ -7,6 +7,7 @@ import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
 import java.util.Collection;
 import java.util.Locale;
@@ -39,6 +40,7 @@ public class FragmentPropagationHealthcheck extends HealthcheckBaseImpl {
 		FragmentServiceConfiguration config = ConfigurableUtil.createConfigurable(FragmentServiceConfiguration.class,
 				properties);
 		propagate = config.propagateContributedFragmentChanges();
+		_log.fatal(PortalUUIDUtil.generate());
 	}
 
 	static Log _log = LogFactoryUtil.getLog(FragmentPropagationHealthcheck.class);

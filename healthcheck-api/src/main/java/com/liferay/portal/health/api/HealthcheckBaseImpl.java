@@ -53,8 +53,7 @@ public abstract class HealthcheckBaseImpl implements Healthcheck {
 	 */
 	public HealthcheckItem create(boolean state, Locale locale, String link, String msgKey, Object... info) {
 		String message = lookupMessage(locale, msgKey, info);
-		return new HealthcheckItemImpl(state, this.getClass().getName(), message, link,
-				lookupMessage(locale, getCategory()));
+		return new HealthcheckItem(state, this.getClass().getName(), message, link, this);
 	}
 	
 	/**
@@ -70,7 +69,7 @@ public abstract class HealthcheckBaseImpl implements Healthcheck {
 	public HealthcheckItem create(boolean state, String baseKey, Locale locale, String link, String msgKey,
 			Object... info) {
 		String message = lookupMessage(locale, msgKey, info);
-		return new HealthcheckItemImpl(state, baseKey, message, link, lookupMessage(locale, getCategory()));
+		return new HealthcheckItem(state, baseKey, message, link, this);
 	}
 
 	/**
@@ -82,11 +81,10 @@ public abstract class HealthcheckBaseImpl implements Healthcheck {
 	 * @return
 	 */
 	public HealthcheckItem create(Healthcheck check, Locale locale, Throwable throwable) {
-		ResourceBundle bundle = ResourceBundleUtil.getBundle(locale, HealthcheckItemImpl.class);
+		ResourceBundle bundle = ResourceBundleUtil.getBundle(locale, HealthcheckItem.class);
 		String message = ResourceBundleUtil.getString(bundle, "exception-notification-for-healthcheck",
 				check.getClass().getName(), throwable.getClass().getName() + " " + throwable.getMessage());
-		return new HealthcheckItemImpl(false, this.getClass().getName() + "-exception", message, null,
-				lookupMessage(locale, getCategory()));
+		return new HealthcheckItem(false, this.getClass().getName() + "-exception", message, null, this);
 	}
 
 	/**
