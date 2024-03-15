@@ -16,7 +16,7 @@ package com.liferay.portal.health.api;
 
 public class HealthcheckItem {
 
-	public HealthcheckItem(boolean resolved, String source, String message, String link, Healthcheck healthcheck) {
+	public HealthcheckItem(Healthcheck healthcheck, boolean resolved, String source, String link, String message) {
 		this.resolved = resolved;
 		this.source = source;
 		this.link = link;

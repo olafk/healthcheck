@@ -35,17 +35,17 @@ public class LogHealthcheckWrapper {
 	}
 
 	public void error(String msg) {
-		HealthcheckItem item = new HealthcheckItem(false, getSource(msg), msg,
+		HealthcheckItem item = new HealthcheckItem(healthcheck, false, getSource(msg),
 				"https://github.com/liferay/liferay-portal/blob/master/portal-impl/src/com/liferay/portal/verify/VerifyProcess.java",
-				healthcheck);
+				msg);
 		result.add(item);
 	}
 
 	public void error(String msg, Throwable throwable) {
-		HealthcheckItem item = new HealthcheckItem(false, getSource(msg),
-				msg + " " + throwable.getClass().getName() + " " + throwable.getMessage(),
+		HealthcheckItem item = new HealthcheckItem(healthcheck, false,
+				getSource(msg),
 				"https://github.com/liferay/liferay-portal/blob/master/portal-impl/src/com/liferay/portal/verify/VerifyProcess.java",
-				healthcheck);
+				msg + " " + throwable.getClass().getName() + " " + throwable.getMessage());
 		result.add(item);
 	}
 

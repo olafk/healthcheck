@@ -36,7 +36,7 @@ public class VerifyPropertiesQ42Y2023 {
 			result = _log.popItems();
 		} catch (Exception e) {
 			result = _log.popItems();
-			result.add(new HealthcheckItem(false, VerifyPropertiesHealthcheck.class.getName() + "-exception", e.getClass().getName() + " " + e.getMessage(), null, healthcheck));
+			result.add(new HealthcheckItem(healthcheck, false, VerifyPropertiesHealthcheck.class.getName() + "-exception", null, e.getClass().getName() + " " + e.getMessage()));
 		}
 		return _log.popItems();
 	}

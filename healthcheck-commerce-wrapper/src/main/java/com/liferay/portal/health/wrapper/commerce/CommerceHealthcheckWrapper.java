@@ -71,7 +71,7 @@ public class CommerceHealthcheckWrapper extends HealthcheckBaseImpl {
 				+ ") " + exception;
 		String link = "/group/control_panel/manage?p_p_id=com_liferay_commerce_health_status_web_internal_portlet_CommerceHealthCheckPortlet";
 
-		return new HealthcheckItem(resolved, this.getClass().getName(), message, link, this);
+		return new HealthcheckItem(this, resolved, this.getClass().getName(), link, message);
 	}
 
 	private CommerceChannelLocalService commerceChannelLocalService;
