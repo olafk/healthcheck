@@ -44,12 +44,12 @@ public class MetaspaceHealthcheck extends HealthcheckBaseImpl {
 		for (MemoryPoolMXBean memoryMXBean : ManagementFactory.getMemoryPoolMXBeans()) {
 			if ("Metaspace".equals(memoryMXBean.getName())) {
 				long maxMetaspace = memoryMXBean.getUsage().getMax();
-				return wrap(create(maxMetaspace >= 768 * 1024 * 1024 || maxMetaspace == -1, locale, LINK, MSG,
+				return wrap(create1(maxMetaspace >= 768 * 1024 * 1024 || maxMetaspace == -1, locale, LINK, MSG,
 						maxMetaspace));
 			}
 		}
 
-		return wrap(create(false, locale, LINK, MSG, "undetected"));
+		return wrap(create1(false, locale, LINK, MSG, "undetected"));
 	}
 
 	@Override

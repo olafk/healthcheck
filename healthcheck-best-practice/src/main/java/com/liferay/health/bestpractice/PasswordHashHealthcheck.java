@@ -43,7 +43,7 @@ public class PasswordHashHealthcheck extends HealthcheckBaseImpl {
 		if (hashingAlgorithm != null && hashingAlgorithm.startsWith("PBKDF2WithHmacSHA1")) {
 			int roundsPos = hashingAlgorithm.lastIndexOf('/');
 			int rounds = Integer.parseInt(hashingAlgorithm.substring(roundsPos + 1));
-			return wrap(create(rounds >= owaspHashingRecommendation, locale, LINK, MSG, rounds,
+			return wrap(create1(rounds >= owaspHashingRecommendation, locale, LINK, MSG, rounds,
 					owaspHashingRecommendation));
 		}
 		return Collections.emptyList();

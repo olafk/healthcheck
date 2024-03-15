@@ -26,7 +26,7 @@ public class FragmentPropagationHealthcheck extends HealthcheckBaseImpl {
 
 	@Override
 	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
-		return wrap(create(propagate, locale, LINK, MSG));
+		return wrap(create1(propagate, locale, LINK, MSG));
 	}
 
 	@Override

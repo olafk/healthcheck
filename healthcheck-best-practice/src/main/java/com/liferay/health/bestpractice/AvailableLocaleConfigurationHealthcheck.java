@@ -60,7 +60,7 @@ public class AvailableLocaleConfigurationHealthcheck extends HealthcheckBaseImpl
 		validateProperties(result, locale, PropsValues.LOCALES_BETA, "locales.beta");
 
 		if (result.isEmpty()) {
-			result.add(create(true, locale, LINK, MSG));
+			result.add(create1(true, locale, LINK, MSG));
 		}
 		return result;
 	}
@@ -72,10 +72,10 @@ public class AvailableLocaleConfigurationHealthcheck extends HealthcheckBaseImpl
 			// some JVM naming seems to be different from ours...
 			String alternativeLoc = loc.replace("latin", "#Latn");
 			if (loc.length() < 5) {
-				result.add(create(false, locale, LINK, ERROR_MSG_LENGTH, collectionName, loc));
+				result.add(create1(false, locale, LINK, ERROR_MSG_LENGTH, collectionName, loc));
 			}
 			if (!(availableLocales.contains(loc) || availableLocales.contains(alternativeLoc))) {
-				result.add(create(false, locale, LINK, ERROR_MSG_DIFF, collectionName, loc));
+				result.add(create1(false, locale, LINK, ERROR_MSG_DIFF, collectionName, loc));
 			}
 		}
 	}

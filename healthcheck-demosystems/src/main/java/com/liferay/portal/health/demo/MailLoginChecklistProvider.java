@@ -63,10 +63,10 @@ public class MailLoginChecklistProvider extends HealthcheckBaseImpl {
 					PropsValues.COMPANY_SECURITY_AUTH_TYPE);
 			prepopulate &= "emailAddress".equals(authType);
 
-			return wrap(create(!prepopulate, locale, LINK, prepopulate ? MSG_ERROR : MSG,
+			return wrap(create1(!prepopulate, locale, LINK, prepopulate ? MSG_ERROR : MSG,
 					"company.login.prepopulate.domain"));
 		} catch (PortalException e) {
-			return wrap(create(this, locale, e));
+			return wrap(create3(this, locale, e));
 		}
 	}
 

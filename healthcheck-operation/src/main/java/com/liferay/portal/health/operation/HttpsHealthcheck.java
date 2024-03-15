@@ -54,9 +54,9 @@ public class HttpsHealthcheck extends HealthcheckBaseImpl {
 			String host = extractHost(requestedUrl);
 
 			if (host != null && (host.equalsIgnoreCase("localhost") || host.toLowerCase().startsWith("localhost:"))) {
-				result.add(create(true, locale, LINK, MSG_LOCALHOST, year, scheme));
+				result.add(create1(true, locale, LINK, MSG_LOCALHOST, year, scheme));
 			} else {
-				result.add(create(scheme != null && scheme.equalsIgnoreCase("https"),
+				result.add(create2(scheme != null && scheme.equalsIgnoreCase("https"),
 						this.getClass().getName() + "-" + HtmlUtil.escapeURL(requestedUrl), locale, LINK, MSG, year,
 						requestedUrl));
 			}

@@ -42,7 +42,7 @@ public class SessionTimeoutHealthcheck extends HealthcheckBaseImpl {
 	@Override
 	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
 		boolean autoextend = PropsValues.SESSION_TIMEOUT_AUTO_EXTEND;
-		return wrap(create(autoextend, locale, LINK, MSG, "session.timeout.auto.extend"));
+		return wrap(create1(autoextend, locale, LINK, MSG, "session.timeout.auto.extend"));
 	}
 
 	@Override

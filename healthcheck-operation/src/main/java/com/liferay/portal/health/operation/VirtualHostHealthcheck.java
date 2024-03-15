@@ -56,11 +56,11 @@ public class VirtualHostHealthcheck extends HealthcheckBaseImpl {
 			Set<String> requestedHostnames = filter.getAccessedUrls(companyId);
 			if (requestedHostnames.contains("https://" + configuredHostname)
 					|| requestedHostnames.contains("http://" + configuredHostname)) {
-				return wrap(create(true, locale, LINK, MSG, configuredHostname));
+				return wrap(create1(true, locale, LINK, MSG, configuredHostname));
 			}
-			return wrap(create(false, locale, LINK, MSG_ERROR, configuredHostname));
+			return wrap(create1(false, locale, LINK, MSG_ERROR, configuredHostname));
 		} catch (PortalException e) {
-			return wrap(create(this, locale, e));
+			return wrap(create3(this, locale, e));
 		}
 	}
 

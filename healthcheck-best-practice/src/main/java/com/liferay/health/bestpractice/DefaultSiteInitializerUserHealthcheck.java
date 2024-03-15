@@ -39,7 +39,7 @@ public class DefaultSiteInitializerUserHealthcheck extends HealthcheckBaseImpl {
 			result.addAll(checkForUser(companyId, locale, user));
 		}
 		if (result.isEmpty()) {
-			result.add(create(true, locale, null, MSG));
+			result.add(create1(true, locale, null, MSG));
 		}
 		return result;
 	}
@@ -48,12 +48,12 @@ public class DefaultSiteInitializerUserHealthcheck extends HealthcheckBaseImpl {
 		try {
 			User user = userLocalService.getUserByEmailAddress(companyId, mailAddress);
 			if (user != null) {
-				return wrap(create(false, locale, LINK + LINK_PARAMETER + user.getUserId(), MSG_FOUND, mailAddress));
+				return wrap(create1(false, locale, LINK + LINK_PARAMETER + user.getUserId(), MSG_FOUND, mailAddress));
 			}
 		} catch (NoSuchUserException e) {
 			// ignore - this is great and exactly what we're after.
 		} catch (PortalException e) {
-			return wrap(create(this, locale, e));
+			return wrap(create3(this, locale, e));
 		}
 		return new LinkedList<HealthcheckItem>();
 	}

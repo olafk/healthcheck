@@ -66,20 +66,20 @@ public class SimpleFileStoreConfigurationHealthcheck extends HealthcheckBaseImpl
 			if (rootDir.isDirectory()) {
 				int files = getRecursiveMaxFiles(rootDir, 0);
 				if (files > maximumFiles) {
-					result = wrap(create(false, this.getClass().getName() + "-maxfiles", locale, LINK,
+					result = wrap(create2(false, this.getClass().getName() + "-maxfiles", locale, LINK,
 							MSG_TOO_MANY_FILES, files, maximumFiles, rootDir.getAbsolutePath()));
 				} else {
-					result = wrap(create(true, this.getClass().getName() + "-maxfiles", locale, LINK, MSG, files,
+					result = wrap(create2(true, this.getClass().getName() + "-maxfiles", locale, LINK, MSG, files,
 							maximumFiles, rootDir.getAbsolutePath()));
 				}
 			} else {
-				result = wrap(create(false, this.getClass().getName() + "-no-directory", locale, LINK, MSG_NO_DIR,
+				result = wrap(create2(false, this.getClass().getName() + "-no-directory", locale, LINK, MSG_NO_DIR,
 						rootDir.getAbsolutePath()));
 			}
-			result.add(create(rootDir.getUsableSpace() > minimumUsableSpace, this.getClass().getName() + "-diskspace",
+			result.add(create2(rootDir.getUsableSpace() > minimumUsableSpace, this.getClass().getName() + "-diskspace",
 					locale, null, MSG_USABLE_SPACE, minimumUsableSpace, rootDir.getUsableSpace()));
 		} else {
-			result = wrap(create(true, locale, LINK, MSG_UNUSED));
+			result = wrap(create1(true, locale, LINK, MSG_UNUSED));
 		}
 		return result;
 	}

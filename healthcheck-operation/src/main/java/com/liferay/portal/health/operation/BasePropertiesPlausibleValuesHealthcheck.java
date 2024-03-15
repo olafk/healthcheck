@@ -69,7 +69,7 @@ public abstract class BasePropertiesPlausibleValuesHealthcheck<T> extends Health
 			String value = PropsUtil.get(property);
 			if (value != null) {
 				if (!validator.isValid(value)) {
-					result.add(create(false, locale, link, errorMsg, property, value));
+					result.add(create1(false, locale, link, errorMsg, property, value));
 				}
 			} else {
 				log.warn("null " + property /*
@@ -79,7 +79,7 @@ public abstract class BasePropertiesPlausibleValuesHealthcheck<T> extends Health
 			}
 		}
 		if (result.isEmpty()) {
-			result.add(create(true, locale, link, msg));
+			result.add(create1(true, locale, link, msg));
 		}
 		return result;
 	}

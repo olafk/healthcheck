@@ -14,14 +14,21 @@
 
 package com.liferay.portal.health.api;
 
+import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.util.ResourceBundleUtil;
+
+import java.util.Locale;
+import java.util.ResourceBundle;
+
 public class HealthcheckItem {
 
-	public HealthcheckItem(Healthcheck healthcheck, boolean resolved, String source, String link, String message) {
+	public HealthcheckItem(Healthcheck healthcheck, boolean resolved, String source, String link, String message, Object... info) {
 		this.resolved = resolved;
 		this.source = source;
 		this.link = link;
 		this.message = message;
 		this.healthcheck = healthcheck;
+		this.info = info;
 	}
 
 	/**
@@ -58,6 +65,10 @@ public class HealthcheckItem {
 	 * 
 	 * @return
 	 */
+	public String getCategory(Locale locale) {
+		return lookup(locale, healthcheck.getCategory());
+	}
+	
 	public String getCategory() {
 		return healthcheck.getCategory();
 	}
@@ -76,9 +87,26 @@ public class HealthcheckItem {
 		return source + "-" + resolved;
 	}
 
+	public String getMessage(Locale locale) {
+		return lookup(locale, message, info);		
+	}
+
+	private String lookup(Locale locale, String key, Object... parameters) {
+		ResourceBundle bundle = ResourceBundleUtil.getBundle(locale, healthcheck.getClass().getClassLoader());
+		String result = ResourceBundleUtil.getString(bundle, key, parameters);
+		if (result == null) {
+			LanguageUtil.format(locale, key, parameters);
+			if (result == null) {
+				result = key;
+			}
+		}
+		return result;
+	}
+	
 	private final boolean resolved;
+	private final Healthcheck healthcheck;
 	private final String source;
 	private final String message;
 	private final String link;
-	private final Healthcheck healthcheck;
+	private Object[] info;
 }

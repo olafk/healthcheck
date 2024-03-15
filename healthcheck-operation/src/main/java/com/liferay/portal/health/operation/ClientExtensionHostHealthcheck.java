@@ -79,7 +79,7 @@ public class ClientExtensionHostHealthcheck extends HealthcheckBaseImpl {
 					String host = getHost(url);
 					if (host != null) {
 						if (hostWhitelists.contains(host)) {
-							result.add(create(true, this.getClass().getName() + "-" + virtualHostname + "-" + host,
+							result.add(create2(true, this.getClass().getName() + "-" + virtualHostname + "-" + host,
 									locale, LINK_BASE + clientExtensionEntry.getExternalReferenceCode(),
 									MSG_WHITELISTED, clientExtensionEntry.getName(locale), host));
 						} else {
@@ -91,18 +91,18 @@ public class ClientExtensionHostHealthcheck extends HealthcheckBaseImpl {
 							// Note: There is a separate health check to validate the company
 							// virtualhost, that should make this unignorable.
 
-							result.add(create(false, this.getClass().getName() + "-" + virtualHostname + "-" + host,
+							result.add(create2(false, this.getClass().getName() + "-" + virtualHostname + "-" + host,
 									locale, LINK_BASE + clientExtensionEntry.getExternalReferenceCode(), MSG,
 									clientExtensionEntry.getName(locale), host));
 						}
 					} else {
 						if (url.startsWith("/document")) {
-							result.add(create(true, this.getClass().getName() + "-" + url, locale,
+							result.add(create2(true, this.getClass().getName() + "-" + url, locale,
 									LINK_BASE + clientExtensionEntry.getExternalReferenceCode(),
 									"healthcheck-client-extension-local-doclib", clientExtensionEntry.getName(locale),
 									url));
 						} else {
-							result.add(create(false, this.getClass().getName() + "-" + url, locale,
+							result.add(create2(false, this.getClass().getName() + "-" + url, locale,
 									LINK_BASE + clientExtensionEntry.getExternalReferenceCode(),
 									"healthcheck-client-extension-undetectable-host",
 									clientExtensionEntry.getName(locale), url));
@@ -111,11 +111,11 @@ public class ClientExtensionHostHealthcheck extends HealthcheckBaseImpl {
 				}
 			}
 			if (result.isEmpty()) {
-				result.add(create(true, locale, null, "healthcheck-client-extension-none-detected"));
+				result.add(create1(true, locale, null, "healthcheck-client-extension-none-detected"));
 			}
 		} catch (PortalException e) {
 			_log.error(e);
-			result.add(create(this, locale, e));
+			result.add(create3(this, locale, e));
 		}
 		return result;
 	}

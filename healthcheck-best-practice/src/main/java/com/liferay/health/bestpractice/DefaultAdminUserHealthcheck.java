@@ -38,15 +38,15 @@ public class DefaultAdminUserHealthcheck extends HealthcheckBaseImpl {
 			User user = userLocalService.getUserByEmailAddress(companyId, "test@liferay.com");
 			if (user != null) {
 				String hashedPassword = PasswordEncryptorUtil.encrypt("test", user.getPassword());
-				return wrap(create(!user.getPassword().equals(hashedPassword), locale,
+				return wrap(create1(!user.getPassword().equals(hashedPassword), locale,
 						LINK + LINK_PARAMETER + user.getUserId(), MSG));
 			}
 		} catch (NoSuchUserException e) {
 			// ignore - this is great and exactly what we're after.
 		} catch (PortalException e) {
-			return wrap(create(this, locale, e));
+			return wrap(create3(this, locale, e));
 		}
-		return wrap(create(true, locale, LINK, MSG));
+		return wrap(create1(true, locale, LINK, MSG));
 	}
 
 	@Override

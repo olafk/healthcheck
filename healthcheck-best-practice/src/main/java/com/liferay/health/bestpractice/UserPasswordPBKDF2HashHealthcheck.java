@@ -56,9 +56,9 @@ public class UserPasswordPBKDF2HashHealthcheck extends HealthcheckBaseImpl {
 	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
 		String hashingAlgorithm = PropsUtil.get(PropsKeys.PASSWORDS_ENCRYPTION_ALGORITHM);
 		if (hashingAlgorithm == null) {
-			return wrap(create(false, locale, LINK, "healthcheck-best-practice-pbkdf2-user-unconfigured-algorithm"));
+			return wrap(create1(false, locale, LINK, "healthcheck-best-practice-pbkdf2-user-unconfigured-algorithm"));
 		} else if (!hashingAlgorithm.startsWith(PBKDF2_WITH_HMAC_SHA1)) {
-			return wrap(create(true, locale, LINK,
+			return wrap(create1(true, locale, LINK,
 					"healthcheck-best-practice-pbkdf2-unknown-hashing-algorithm-assuming-ok", hashingAlgorithm));
 		}
 
@@ -85,17 +85,17 @@ public class UserPasswordPBKDF2HashHealthcheck extends HealthcheckBaseImpl {
 		}
 
 		if (counted != usersCount) {
-			result.add(create(false, locale, LINK, "healthcheck-best-practice-user-count-mismatch-x-uncounted",
+			result.add(create1(false, locale, LINK, "healthcheck-best-practice-user-count-mismatch-x-uncounted",
 					"" + (usersCount - counted) + "/" + usersCount));
 		}
 
 		for (HashMap.Entry<String, Long> entry : algorithms.entrySet()) {
 			if (entry.getKey().equalsIgnoreCase(hashingAlgorithm)) {
-				result.add(create(true, locale, LINK,
+				result.add(create1(true, locale, LINK,
 						"healthcheck-best-practice-pbkdf2-found-x-entries-with-default-algorithm-y",
 						"" + entry.getValue() + "/" + usersCount, hashingAlgorithm));
 			} else {
-				result.add(create(false, locale, LINK,
+				result.add(create1(false, locale, LINK,
 						"healthcheck-best-practice-pbkdf2-found-x-entries-with-nondefault-algorithm-y-looking-for-z",
 						"" + entry.getValue() + "/" + usersCount, entry.getKey(), hashingAlgorithm));
 			}

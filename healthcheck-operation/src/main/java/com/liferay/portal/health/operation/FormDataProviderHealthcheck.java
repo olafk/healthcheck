@@ -77,11 +77,11 @@ public class FormDataProviderHealthcheck extends HealthcheckBaseImpl {
 					// virtualhost, that should make this unignorable.
 					String host = getHost(url);
 					if (hostWhitelists.contains(host)) {
-						result.add(create(true, this.getClass().getName() + "-" + virtualHostname + "-" + host, locale,
+						result.add(create2(true, this.getClass().getName() + "-" + virtualHostname + "-" + host, locale,
 								LINK_BASE + dataProvider.getDataProviderInstanceId(), MSG_WHITELISTED,
 								dataProvider.getName(locale), host));
 					} else {
-						result.add(create(false, this.getClass().getName() + "-" + virtualHostname + "-" + host, locale,
+						result.add(create2(false, this.getClass().getName() + "-" + virtualHostname + "-" + host, locale,
 								LINK_BASE + dataProvider.getDataProviderInstanceId(), MSG, dataProvider.getName(locale),
 								host));
 					}
@@ -89,10 +89,10 @@ public class FormDataProviderHealthcheck extends HealthcheckBaseImpl {
 
 			}
 			if (result.isEmpty()) {
-				result.add(create(true, locale, null, "healthcheck-dataprovider-none-detected"));
+				result.add(create1(true, locale, null, "healthcheck-dataprovider-none-detected"));
 			}
 		} catch (PortalException e) {
-			result.add(create(this, locale, e));
+			result.add(create3(this, locale, e));
 		}
 		return result;
 	}

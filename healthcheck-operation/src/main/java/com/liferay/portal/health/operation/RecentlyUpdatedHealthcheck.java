@@ -58,7 +58,7 @@ public class RecentlyUpdatedHealthcheck extends HealthcheckBaseImpl {
 			int update = Integer.parseInt(version.substring(updatePos + (term.length())));
 			int currentExpectedUpdate = guessCurrentlyExpectedUpdate();
 			int expectedActualUpdate = currentExpectedUpdate - acceptableMissingUpdates;
-			return wrap(create(update > expectedActualUpdate, this.getClass().getName() + "-" + expectedActualUpdate,
+			return wrap(create2(update > expectedActualUpdate, this.getClass().getName() + "-" + expectedActualUpdate,
 					locale, null, message, update, expectedActualUpdate));
 		} else {
 			// might be a quarterly release, e.g. "2023.Q4.1"
@@ -71,10 +71,10 @@ public class RecentlyUpdatedHealthcheck extends HealthcheckBaseImpl {
 				message = "healthcheck-recent-quarterly-dxp";
 
 				int ageInQuarters = getAgeInQuarters(year, quarter, patch);
-				return wrap(create(ageInQuarters <= acceptableAgeInQuarters, locale, null, message, version,
+				return wrap(create1(ageInQuarters <= acceptableAgeInQuarters, locale, null, message, version,
 						acceptableAgeInQuarters, ageInQuarters));
 			} else {
-				return wrap(create(false, locale, null, "healthcheck-recently-updated-couldnt-compute", version));
+				return wrap(create1(false, locale, null, "healthcheck-recently-updated-couldnt-compute", version));
 
 			}
 		}

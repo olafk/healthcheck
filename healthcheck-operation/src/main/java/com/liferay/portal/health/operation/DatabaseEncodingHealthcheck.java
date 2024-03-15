@@ -54,7 +54,7 @@ public class DatabaseEncodingHealthcheck extends HealthcheckBaseImpl {
 						}
 					}
 				} else {
-					result.add(create(false, locale, LINK_DB_CONNECTION, MSG_SCHEMA_UNDETECTED, connectionURL));
+					result.add(create1(false, locale, LINK_DB_CONNECTION, MSG_SCHEMA_UNDETECTED, connectionURL));
 				}
 			} else if (DBType.ORACLE.equals(dbType)) {
 				// TODO
@@ -67,15 +67,15 @@ public class DatabaseEncodingHealthcheck extends HealthcheckBaseImpl {
 			} else if (DBType.SYBASE.equals(dbType)) {
 				// TODO
 			} else if (DBType.HYPERSONIC.equals(dbType)) {
-				result.add(create(false, locale, LINK_DB_CONNECTION, MSG_HSQL));
+				result.add(create1(false, locale, LINK_DB_CONNECTION, MSG_HSQL));
 				return result;
 			} else {
-				result.add(create(false, locale, LINK_DB_CONNECTION, MSG_DB_UNDETECTED));
+				result.add(create1(false, locale, LINK_DB_CONNECTION, MSG_DB_UNDETECTED));
 				return result;
 			}
-			result.add(create(correctEncoding, locale, LINK_DB_CONNECTION, MSG, encoding, dbType, connectionURL));
+			result.add(create1(correctEncoding, locale, LINK_DB_CONNECTION, MSG, encoding, dbType, connectionURL));
 		} catch (SQLException e) {
-			result.add(create(this, locale, e));
+			result.add(create3(this, locale, e));
 		}
 		return result;
 	}

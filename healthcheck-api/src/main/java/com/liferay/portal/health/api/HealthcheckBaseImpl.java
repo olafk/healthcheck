@@ -30,7 +30,7 @@ public abstract class HealthcheckBaseImpl implements Healthcheck {
 	 * @param info        parameters to be embedded in the message returned
 	 * @return
 	 */
-	public String lookupMessage(Locale locale, String key, Object... info) {
+	public String dontLookupMessage(Locale locale, String key, Object... info) {
 		if (locale == null || key == null) {
 			return "Internal Error: " + this.getClass().getName() + " looked up null key";
 		}
@@ -51,9 +51,8 @@ public abstract class HealthcheckBaseImpl implements Healthcheck {
 	 * @param info        parameters to be embedded in the message returned
 	 * @return
 	 */
-	public HealthcheckItem create(boolean state, Locale locale, String link, String msgKey, Object... info) {
-		String message = lookupMessage(locale, msgKey, info);
-		return new HealthcheckItem(this, state, this.getClass().getName(), link, message);
+	public HealthcheckItem create1(boolean state, Locale locale, String link, String msgKey, Object... info) {
+		return new HealthcheckItem(this, state, this.getClass().getName(), link, msgKey, info);
 	}
 	
 	/**
@@ -66,10 +65,9 @@ public abstract class HealthcheckBaseImpl implements Healthcheck {
 	 * @param info        parameters to be embedded in the message returned
 	 * @return
 	 */
-	public HealthcheckItem create(boolean state, String baseKey, Locale locale, String link, String msgKey,
+	public HealthcheckItem create2(boolean state, String baseKey, Locale locale, String link, String msgKey,
 			Object... info) {
-		String message = lookupMessage(locale, msgKey, info);
-		return new HealthcheckItem(this, state, baseKey, link, message);
+		return new HealthcheckItem(this, state, baseKey, link, msgKey, info);
 	}
 
 	/**
@@ -80,7 +78,7 @@ public abstract class HealthcheckBaseImpl implements Healthcheck {
 	 * @param throwable   the exception to describe this healthcheck's failed status
 	 * @return
 	 */
-	public HealthcheckItem create(Healthcheck check, Locale locale, Throwable throwable) {
+	public HealthcheckItem create3(Healthcheck check, Locale locale, Throwable throwable) {
 		ResourceBundle bundle = ResourceBundleUtil.getBundle(locale, HealthcheckItem.class);
 		String message = ResourceBundleUtil.getString(bundle, "exception-notification-for-healthcheck",
 				check.getClass().getName(), throwable.getClass().getName() + " " + throwable.getMessage());

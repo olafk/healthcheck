@@ -22,9 +22,9 @@ public class BlindSelfSignedCertificateTrustHealthcheck extends HealthcheckBaseI
 	@Override
 	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
 		try {
-			return wrap(create(!getTrustSetting(companyId), locale, LINK, MSG));
+			return wrap(create1(!getTrustSetting(companyId), locale, LINK, MSG));
 		} catch (ConfigurationException e) {
-			return wrap(create(this, locale, e));
+			return wrap(create3(this, locale, e));
 		}
 	}
 

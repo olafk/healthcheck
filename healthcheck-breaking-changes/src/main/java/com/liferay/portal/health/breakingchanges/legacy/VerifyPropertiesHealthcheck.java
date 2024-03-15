@@ -20,7 +20,7 @@ public class VerifyPropertiesHealthcheck extends HealthcheckBaseImpl {
 		Collection<HealthcheckItem> items = VerifyPropertiesQ42Y2023.doVerify(this);
 		if (items.isEmpty()) {
 			// todo: Translate!
-			items.add(create(true, locale, null, MSG));
+			items.add(create1(true, locale, null, MSG));
 		}
 		return items;
 	}

@@ -46,7 +46,7 @@ public class GoogleFileStoreConfigurationHealthcheck extends HealthcheckBaseImpl
 			// base64 encoded 256bit AES keys are 44 characters long
 			// <i>could</i> test-decode to see if it's valid base64...
 			if (key == null || key.length() != 44) {
-				result.add(create(false, locale, LINK, ERROR_MSG));
+				result.add(create1(false, locale, LINK, ERROR_MSG));
 			}
 		}
 		return result;

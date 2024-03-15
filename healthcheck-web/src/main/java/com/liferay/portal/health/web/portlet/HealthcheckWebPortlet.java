@@ -89,7 +89,7 @@ public class HealthcheckWebPortlet extends MVCPortlet {
 							return null;
 						}
 					};
-					checks.add(b.create(healthcheck, themeDisplay.getLocale(), e));
+					checks.add(b.create3(healthcheck, themeDisplay.getLocale(), e));
 				}
 			}
 		} else {
@@ -101,7 +101,7 @@ public class HealthcheckWebPortlet extends MVCPortlet {
 
 				@Override
 				public Collection<HealthcheckItem> check(long companyId, Locale locale) {
-					return wrap(create(false, locale, "/", "healthcheck-need-to-be-company-administrator"));
+					return wrap(create1(false, locale, "/", "healthcheck-need-to-be-company-administrator"));
 				}
 			};
 			checks.addAll(dummy.check(themeDisplay.getCompanyId(), themeDisplay.getLocale()));
