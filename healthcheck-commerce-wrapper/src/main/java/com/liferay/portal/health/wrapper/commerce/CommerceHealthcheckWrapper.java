@@ -17,7 +17,7 @@ package com.liferay.portal.health.wrapper.commerce;
 import com.liferay.commerce.health.status.CommerceHealthStatus;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
-import com.liferay.portal.health.api.HealthcheckBaseImpl;
+import com.liferay.portal.health.api.Healthcheck;
 import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -27,7 +27,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
-public class CommerceHealthcheckWrapper extends HealthcheckBaseImpl {
+public class CommerceHealthcheckWrapper implements Healthcheck {
 
 	public CommerceHealthcheckWrapper(CommerceHealthStatus status) {
 		this.status = status;

@@ -15,7 +15,6 @@
 package com.liferay.portal.health.demo;
 
 import com.liferay.portal.health.api.Healthcheck;
-import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Company;
@@ -26,6 +25,7 @@ import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.util.PropsUtil;
 import com.liferay.portal.util.PropsValues;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Locale;
 
@@ -45,7 +45,7 @@ import org.osgi.service.component.annotations.Reference;
 
 @Component(service = Healthcheck.class)
 
-public class MailLoginChecklistProvider extends HealthcheckBaseImpl {
+public class MailLoginChecklistProvider implements Healthcheck {
 
 	private static final String MSG = "healthcheck-login-is-not-prepopulated";
 	private static final String MSG_ERROR = "healthcheck-login-is-prepopulated";
@@ -64,9 +64,9 @@ public class MailLoginChecklistProvider extends HealthcheckBaseImpl {
 			prepopulate &= "emailAddress".equals(authType);
 			Object[] info = { "company.login.prepopulate.domain" };
 
-			return wrap(new HealthcheckItem(this, !prepopulate, this.getClass().getName(), LINK, prepopulate ? MSG_ERROR : MSG, info));
+			return Arrays.asList(new HealthcheckItem(this, !prepopulate, this.getClass().getName(), LINK, prepopulate ? MSG_ERROR : MSG, info));
 		} catch (PortalException e) {
-			return wrap(new HealthcheckItem(this, e));
+			return Arrays.asList(new HealthcheckItem(this, e));
 		}
 	}
 

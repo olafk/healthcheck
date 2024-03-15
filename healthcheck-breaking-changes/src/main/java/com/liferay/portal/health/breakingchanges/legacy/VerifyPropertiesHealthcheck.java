@@ -1,7 +1,6 @@
 package com.liferay.portal.health.breakingchanges.legacy;
 
 import com.liferay.portal.health.api.Healthcheck;
-import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.health.breakingchanges.legacy.copied.VerifyPropertiesQ42Y2023;
 
@@ -11,7 +10,7 @@ import java.util.Locale;
 import org.osgi.service.component.annotations.Component;
 
 @Component(service = Healthcheck.class)
-public class VerifyPropertiesHealthcheck extends HealthcheckBaseImpl {
+public class VerifyPropertiesHealthcheck implements Healthcheck {
 
 	private static final String MSG = "healthcheck-verify-properties-success";
 

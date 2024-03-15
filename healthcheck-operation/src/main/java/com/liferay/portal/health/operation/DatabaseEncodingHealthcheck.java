@@ -1,7 +1,6 @@
 package com.liferay.portal.health.operation;
 
 import com.liferay.portal.health.api.Healthcheck;
-import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
@@ -19,7 +18,7 @@ import java.util.Locale;
 import org.osgi.service.component.annotations.Component;
 
 @Component(service = Healthcheck.class)
-public class DatabaseEncodingHealthcheck extends HealthcheckBaseImpl {
+public class DatabaseEncodingHealthcheck implements Healthcheck {
 
 	private static final String MSG = "healthcheck-database-encoding";
 	private static final String MSG_SCHEMA_UNDETECTED = "healthcheck-database-schema-undetected";

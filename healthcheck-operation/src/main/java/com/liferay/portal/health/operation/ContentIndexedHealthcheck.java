@@ -15,7 +15,6 @@
 package com.liferay.portal.health.operation;
 
 import com.liferay.portal.health.api.Healthcheck;
-import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
@@ -27,6 +26,7 @@ import com.liferay.portal.search.engine.adapter.search.CountSearchRequest;
 import com.liferay.portal.search.engine.adapter.search.CountSearchResponse;
 import com.liferay.portal.search.index.IndexNameBuilder;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Locale;
 
@@ -42,7 +42,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 
 @Component(service = Healthcheck.class)
-public class ContentIndexedHealthcheck extends HealthcheckBaseImpl {
+public class ContentIndexedHealthcheck implements Healthcheck {
 	private static final String LINK = "/group/control_panel/manage?p_p_id=com_liferay_portal_search_admin_web_portlet_SearchAdminPortlet&_com_liferay_portal_search_admin_web_portlet_SearchAdminPortlet_tabs1=index-actions";
 	private static final String MSG = "healthcheck-content-indexed";
 	private static final String ERROR_MSG = "healthcheck-content-indexed-error";
@@ -60,7 +60,7 @@ public class ContentIndexedHealthcheck extends HealthcheckBaseImpl {
 
 		boolean exists = (indexCount >= dbCount);
 		Object[] info = { indexCount, dbCount };
-		return wrap(new HealthcheckItem(this, exists, this.getClass().getName(), LINK, exists ? MSG : ERROR_MSG, info));
+		return Arrays.asList(new HealthcheckItem(this, exists, this.getClass().getName(), LINK, exists ? MSG : ERROR_MSG, info));
 	}
 
 	@Override

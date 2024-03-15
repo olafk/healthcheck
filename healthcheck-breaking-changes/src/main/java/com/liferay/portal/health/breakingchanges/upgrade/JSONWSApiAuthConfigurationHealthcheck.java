@@ -17,9 +17,9 @@ package com.liferay.portal.health.breakingchanges.upgrade;
 import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.health.api.Healthcheck;
-import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
@@ -38,7 +38,7 @@ import org.osgi.service.component.annotations.Reference;
  *
  */
 @Component(configurationPid = "com.liferay.portal.security.auth.verifier.internal.portal.session.configuration.PortalSessionAuthVerifierConfiguration", service = Healthcheck.class)
-public class JSONWSApiAuthConfigurationHealthcheck extends HealthcheckBaseImpl {
+public class JSONWSApiAuthConfigurationHealthcheck implements Healthcheck {
 	private static final String LINK = "https://issues.liferay.com/browse/LPS-159746";
 	private static final String MSG = "healthcheck-verify-jsonws-configuration";
 	private static final String ERRORMSG = "healthcheck-verify-jsonws-configuration-missing";
@@ -50,7 +50,7 @@ public class JSONWSApiAuthConfigurationHealthcheck extends HealthcheckBaseImpl {
 		boolean correctlyConfigured = urlsIncludes.contains("/api/json*") && urlsIncludes.contains("/api/jsonws*")
 				&& urlsIncludes.contains("/c/portal/json_service*");
 		Object[] info = { urlsIncludes };
-		return wrap(new HealthcheckItem(this, correctlyConfigured, this.getClass().getName(), LINK, correctlyConfigured ? MSG : ERRORMSG, info));
+		return Arrays.asList(new HealthcheckItem(this, correctlyConfigured, this.getClass().getName(), LINK, correctlyConfigured ? MSG : ERRORMSG, info));
 	}
 
 	@Override

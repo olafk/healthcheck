@@ -18,7 +18,6 @@ import com.liferay.health.bestpractice.configuration.HealthcheckBestPracticeConf
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.health.api.Healthcheck;
-import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -27,6 +26,7 @@ import com.liferay.portal.kernel.settings.SettingsLocatorHelper;
 import com.liferay.portal.util.PropsValues;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
@@ -50,7 +50,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(configurationPid = { "com.liferay.portal.store.file.system.configuration.FileSystemStoreConfiguration",
 		"com.liferay.health.bestpractice.configuration.HealthcheckBestPracticeConfiguration" }, service = Healthcheck.class)
-public class SimpleFileStoreConfigurationHealthcheck extends HealthcheckBaseImpl {
+public class SimpleFileStoreConfigurationHealthcheck implements Healthcheck {
 
 	private final String LINK = "https://docs.liferay.com/portal/7.4-latest/propertiesdoc/portal.properties.html#Document%20Library%20Service";
 	private final String MSG = "healthcheck-simple-file-store-ok";
@@ -67,20 +67,20 @@ public class SimpleFileStoreConfigurationHealthcheck extends HealthcheckBaseImpl
 				int files = getRecursiveMaxFiles(rootDir, 0);
 				if (files > maximumFiles) {
 					Object[] info = { files, maximumFiles, rootDir.getAbsolutePath() };
-					result = wrap(new HealthcheckItem(this, false, this.getClass().getName() + "-maxfiles", LINK, MSG_TOO_MANY_FILES, info));
+					result = Arrays.asList(new HealthcheckItem(this, false, this.getClass().getName() + "-maxfiles", LINK, MSG_TOO_MANY_FILES, info));
 				} else {
 					Object[] info = { files, maximumFiles, rootDir.getAbsolutePath() };
-					result = wrap(new HealthcheckItem(this, true, this.getClass().getName() + "-maxfiles", LINK, MSG, info));
+					result = Arrays.asList(new HealthcheckItem(this, true, this.getClass().getName() + "-maxfiles", LINK, MSG, info));
 				}
 			} else {
 				Object[] info = { rootDir.getAbsolutePath() };
-				result = wrap(new HealthcheckItem(this, false, this.getClass().getName() + "-no-directory", LINK, MSG_NO_DIR, info));
+				result = Arrays.asList(new HealthcheckItem(this, false, this.getClass().getName() + "-no-directory", LINK, MSG_NO_DIR, info));
 			}
 			Object[] info = { minimumUsableSpace, rootDir.getUsableSpace() };
 			result.add(new HealthcheckItem(this, rootDir.getUsableSpace() > minimumUsableSpace, this.getClass().getName() + "-diskspace", null, MSG_USABLE_SPACE, info));
 		} else {
 			Object[] info = {};
-			result = wrap(new HealthcheckItem(this, true, this.getClass().getName(), LINK, MSG_UNUSED, info));
+			result = Arrays.asList(new HealthcheckItem(this, true, this.getClass().getName(), LINK, MSG_UNUSED, info));
 		}
 		return result;
 	}

@@ -15,11 +15,11 @@
 package com.liferay.portal.health.operation;
 
 import com.liferay.portal.health.api.Healthcheck;
-import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryPoolMXBean;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Locale;
 
@@ -35,7 +35,7 @@ import org.osgi.service.component.annotations.Component;
  */
 
 @Component(service = Healthcheck.class)
-public class MetaspaceHealthcheck extends HealthcheckBaseImpl {
+public class MetaspaceHealthcheck implements Healthcheck {
 	private static final String LINK = null;
 	private static final String MSG = "healthcheck-max-metaspace-must-be-above-768m";
 
@@ -45,12 +45,12 @@ public class MetaspaceHealthcheck extends HealthcheckBaseImpl {
 			if ("Metaspace".equals(memoryMXBean.getName())) {
 				long maxMetaspace = memoryMXBean.getUsage().getMax();
 				Object[] info = { maxMetaspace };
-				return wrap(new HealthcheckItem(this, maxMetaspace >= 768 * 1024 * 1024 || maxMetaspace == -1, this.getClass().getName(), LINK, MSG, info));
+				return Arrays.asList(new HealthcheckItem(this, maxMetaspace >= 768 * 1024 * 1024 || maxMetaspace == -1, this.getClass().getName(), LINK, MSG, info));
 			}
 		}
 		Object[] info = { "undetected" };
 
-		return wrap(new HealthcheckItem(this, false, this.getClass().getName(), LINK, MSG, info));
+		return Arrays.asList(new HealthcheckItem(this, false, this.getClass().getName(), LINK, MSG, info));
 	}
 
 	@Override

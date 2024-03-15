@@ -18,7 +18,6 @@ import com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance;
 import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceLocalServiceUtil;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.health.api.Healthcheck;
-import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.health.operation.configuration.HealthcheckOperationalConfiguration;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -44,7 +43,7 @@ import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 @Component(configurationPid = "com.liferay.portal.health.operation.configuration.HealthcheckOperationalConfiguration", service = Healthcheck.class)
-public class FormDataProviderHealthcheck extends HealthcheckBaseImpl {
+public class FormDataProviderHealthcheck implements Healthcheck {
 
 	private final static String LINK_BASE = "/group/guest/~/control_panel/manage?p_p_id=com_liferay_dynamic_data_mapping_data_provider_web_portlet_DDMDataProviderPortlet&p_p_lifecycle=0&p_p_state=maximized&p_p_mode=view&_com_liferay_dynamic_data_mapping_data_provider_web_portlet_DDMDataProviderPortlet_displayStyle=descriptive&_com_liferay_dynamic_data_mapping_data_provider_web_portlet_DDMDataProviderPortlet_mvcPath=%2Fedit_data_provider.jsp&_com_liferay_dynamic_data_mapping_data_provider_web_portlet_DDMDataProviderPortlet_dataProviderInstanceId=";
 	private final static String MSG = "healthcheck-dataprovider-detected-host-ignore-if-expected";

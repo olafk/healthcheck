@@ -18,7 +18,6 @@ import com.liferay.client.extension.model.ClientExtensionEntry;
 import com.liferay.client.extension.service.ClientExtensionEntryLocalServiceUtil;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.health.api.Healthcheck;
-import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.health.operation.configuration.HealthcheckOperationalConfiguration;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -44,7 +43,7 @@ import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 @Component(configurationPid = "com.liferay.portal.health.operation.configuration.HealthcheckOperationalConfiguration", service = Healthcheck.class)
-public class ClientExtensionHostHealthcheck extends HealthcheckBaseImpl {
+public class ClientExtensionHostHealthcheck implements Healthcheck {
 
 	private final static String LINK_BASE = "/group/guest/~/control_panel/manage?p_p_id=com_liferay_client_extension_web_internal_portlet_ClientExtensionAdminPortlet&p_p_lifecycle=0&_com_liferay_client_extension_web_internal_portlet_ClientExtensionAdminPortlet_mvcRenderCommandName=%2Fclient_extension_admin%2Fedit_client_extension_entry&_com_liferay_client_extension_web_internal_portlet_ClientExtensionAdminPortlet_externalReferenceCode=";
 	private final static String MSG = "healthcheck-client-extension-host";

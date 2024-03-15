@@ -15,9 +15,9 @@
 package com.liferay.portal.health.web.portlet;
 
 import com.liferay.portal.health.api.Healthcheck;
-import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.health.web.constants.HealthcheckWebPortletKeys;
+import com.liferay.portal.kernel.exception.RolePermissionsException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
@@ -81,7 +81,7 @@ public class HealthcheckWebPortlet extends MVCPortlet {
 				}
 			}
 		} else {
-			Healthcheck dummy = new HealthcheckBaseImpl() {
+			Healthcheck dummy = new Healthcheck() {
 				@Override
 				public String getCategory() {
 					return "healthcheck-category-generic";
@@ -89,11 +89,10 @@ public class HealthcheckWebPortlet extends MVCPortlet {
 
 				@Override
 				public Collection<HealthcheckItem> check(long companyId, Locale locale) {
-					Object[] info = {};
-					return wrap(new HealthcheckItem(this, false, this.getClass().getName(), "/", "healthcheck-need-to-be-company-administrator", info));
+					return null;
 				}
 			};
-			checks.addAll(dummy.check(themeDisplay.getCompanyId(), themeDisplay.getLocale()));
+			checks.add(new HealthcheckItem(dummy, new RolePermissionsException()));
 		}
 		Collections.sort(checks, new Comparator<HealthcheckItem>() {
 

@@ -15,7 +15,6 @@
 package com.liferay.portal.health.breakingchanges.deprecated;
 
 import com.liferay.portal.health.api.Healthcheck;
-import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.health.breakingchanges.deprecated.sample.DeprecatedSampleService;
 
@@ -44,7 +43,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
  */
 
 @Component(service = Healthcheck.class)
-public class VerifyDeprecatedServiceDemoHealthcheck extends HealthcheckBaseImpl {
+public class VerifyDeprecatedServiceDemoHealthcheck implements Healthcheck {
 
 	private static final String MSG = "healthcheck-deprecated-service-demo";
 	@SuppressWarnings("unused")

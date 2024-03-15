@@ -15,7 +15,6 @@
 package com.liferay.portal.health.demo;
 
 import com.liferay.portal.health.api.Healthcheck;
-import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Company;
@@ -26,6 +25,7 @@ import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.util.PropsUtil;
 import com.liferay.portal.util.PropsValues;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Locale;
 
@@ -42,7 +42,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(service = Healthcheck.class)
 
-public class AccountCreationByStrangersHealthcheck extends HealthcheckBaseImpl {
+public class AccountCreationByStrangersHealthcheck implements Healthcheck {
 
 	private static final String LINK = "/group/control_panel/manage?p_p_id=com_liferay_configuration_admin_web_portlet_InstanceSettingsPortlet&_com_liferay_configuration_admin_web_portlet_InstanceSettingsPortlet_mvcRenderCommandName=%2Fconfiguration_admin%2Fview_configuration_screen&_com_liferay_configuration_admin_web_portlet_InstanceSettingsPortlet_configurationScreenKey=general-authentication";
 	private static final String MSG = "healthcheck-strangers-can-not-create-accounts";
@@ -57,9 +57,9 @@ public class AccountCreationByStrangersHealthcheck extends HealthcheckBaseImpl {
 					PropsKeys.COMPANY_SECURITY_STRANGERS, PropsValues.COMPANY_SECURITY_STRANGERS);
 			Object[] info = { "company.security.strangers" };
 
-			return wrap(new HealthcheckItem(this, state, this.getClass().getName(), LINK, state ? MSG : MSG_ERROR, info));
+			return Arrays.asList(new HealthcheckItem(this, state, this.getClass().getName(), LINK, state ? MSG : MSG_ERROR, info));
 		} catch (PortalException e) {
-			return wrap(new HealthcheckItem(this, e));
+			return Arrays.asList(new HealthcheckItem(this, e));
 		}
 	}
 

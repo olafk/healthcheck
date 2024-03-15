@@ -14,7 +14,7 @@
 
 package com.liferay.portal.health.operation;
 
-import com.liferay.portal.health.api.HealthcheckBaseImpl;
+import com.liferay.portal.health.api.Healthcheck;
 import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.util.PropsKeys;
@@ -42,7 +42,7 @@ import java.util.Set;
  * @author Olaf Kock
  */
 
-public abstract class BasePropertiesPlausibleValuesHealthcheck<T> extends HealthcheckBaseImpl {
+public abstract class BasePropertiesPlausibleValuesHealthcheck<T> implements Healthcheck {
 	private Class<T> clazz;
 	private String link;
 	private String msg;

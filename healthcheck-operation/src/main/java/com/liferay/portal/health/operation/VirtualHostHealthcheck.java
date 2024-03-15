@@ -15,12 +15,12 @@
 package com.liferay.portal.health.operation;
 
 import com.liferay.portal.health.api.Healthcheck;
-import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.health.operation.auxiliary.HostNameExtractingFilter;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.Set;
@@ -42,7 +42,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 
 @Component(service = Healthcheck.class)
-public class VirtualHostHealthcheck extends HealthcheckBaseImpl {
+public class VirtualHostHealthcheck implements Healthcheck {
 
 	private static final String MSG = "healthcheck-configured-virtualhost-has-been-accessed";
 	private static final String MSG_ERROR = "healthcheck-configured-virtualhost-has-not-been-accessed-yet-check-company-virtual-host";
@@ -57,12 +57,12 @@ public class VirtualHostHealthcheck extends HealthcheckBaseImpl {
 			if (requestedHostnames.contains("https://" + configuredHostname)
 					|| requestedHostnames.contains("http://" + configuredHostname)) {
 				Object[] info = { configuredHostname };
-				return wrap(new HealthcheckItem(this, true, this.getClass().getName(), LINK, MSG, info));
+				return Arrays.asList(new HealthcheckItem(this, true, this.getClass().getName(), LINK, MSG, info));
 			}
 			Object[] info = { configuredHostname };
-			return wrap(new HealthcheckItem(this, false, this.getClass().getName(), LINK, MSG_ERROR, info));
+			return Arrays.asList(new HealthcheckItem(this, false, this.getClass().getName(), LINK, MSG_ERROR, info));
 		} catch (PortalException e) {
-			return wrap(new HealthcheckItem(this, e));
+			return Arrays.asList(new HealthcheckItem(this, e));
 		}
 	}
 

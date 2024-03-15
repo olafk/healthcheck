@@ -15,7 +15,6 @@
 package com.liferay.health.bestpractice;
 
 import com.liferay.portal.health.api.Healthcheck;
-import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.util.PropsValues;
@@ -33,7 +32,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Olaf Kock
  */
 @Component(service = Healthcheck.class)
-public class GoogleFileStoreConfigurationHealthcheck extends HealthcheckBaseImpl {
+public class GoogleFileStoreConfigurationHealthcheck implements Healthcheck {
 
 	private static final String LINK = "";
 	private static final String ERROR_MSG = "";

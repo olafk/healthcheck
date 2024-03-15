@@ -16,12 +16,12 @@ package com.liferay.portal.health.operation;
 
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.health.api.Healthcheck;
-import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.health.operation.configuration.HealthcheckOperationalConfiguration;
 import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.portal.kernel.util.ReleaseInfo;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -33,7 +33,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
 
 @Component(configurationPid = "com.liferay.portal.health.operation.configuration.HealthcheckOperationalConfiguration", service = Healthcheck.class)
-public class DxpLicenseValidityHealthcheck extends HealthcheckBaseImpl {
+public class DxpLicenseValidityHealthcheck implements Healthcheck {
 
 	private int warningPeriod = 90;
 
@@ -47,8 +47,7 @@ public class DxpLicenseValidityHealthcheck extends HealthcheckBaseImpl {
 			long remainingDays = remainingMillis / (1000 * 60 * 60 * 24);
 			Object[] info = { remainingDays, warningPeriod };
 
-			return wrap(
-					new HealthcheckItem(this, remainingDays > warningPeriod, this.getClass().getName() + "-" + ((int) (remainingDays / 7)), null, "healthcheck-license-key-validity-period", info));
+			return Arrays.asList(new HealthcheckItem(this, remainingDays > warningPeriod, this.getClass().getName() + "-" + ((int) (remainingDays / 7)), null, "healthcheck-license-key-validity-period", info));
 		} else {
 			return Collections.emptyList();
 		}

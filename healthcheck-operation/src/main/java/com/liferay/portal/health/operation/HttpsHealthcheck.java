@@ -15,7 +15,6 @@
 package com.liferay.portal.health.operation;
 
 import com.liferay.portal.health.api.Healthcheck;
-import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.health.operation.auxiliary.HostNameExtractingFilter;
 import com.liferay.portal.kernel.util.HtmlUtil;
@@ -38,7 +37,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Olaf Kock
  */
 @Component(service = Healthcheck.class)
-public class HttpsHealthcheck extends HealthcheckBaseImpl {
+public class HttpsHealthcheck implements Healthcheck {
 	private static final String LINK = null;
 	private static final String MSG = "healthcheck-https-in-year-x";
 	private static final String MSG_LOCALHOST = "healthcheck-https-localhost-in-year-x";

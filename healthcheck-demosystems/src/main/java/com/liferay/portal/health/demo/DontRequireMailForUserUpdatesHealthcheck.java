@@ -15,7 +15,6 @@
 package com.liferay.portal.health.demo;
 
 import com.liferay.portal.health.api.Healthcheck;
-import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.service.CompanyLocalService;
@@ -23,6 +22,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.util.PropsUtil;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Locale;
 
@@ -39,7 +39,7 @@ import org.osgi.service.component.annotations.Reference;
 
 @Component(service = Healthcheck.class)
 
-public class DontRequireMailForUserUpdatesHealthcheck extends HealthcheckBaseImpl {
+public class DontRequireMailForUserUpdatesHealthcheck implements Healthcheck {
 
 	private static final String LINK = "https://docs.liferay.com/portal/7.4-latest/propertiesdoc/portal.properties.html#Company";
 	private static final String MSG = "healthcheck-user-change-does-not-need-to-be-mailvalidated";
@@ -51,9 +51,9 @@ public class DontRequireMailForUserUpdatesHealthcheck extends HealthcheckBaseImp
 			boolean verifyStrangers = GetterUtil.getBoolean(PropsUtil.get(companyLocalService.getCompany(companyId),
 					PropsKeys.COMPANY_SECURITY_STRANGERS_VERIFY));
 			Object[] info = {};
-			return wrap(new HealthcheckItem(this, !verifyStrangers, this.getClass().getName(), LINK, verifyStrangers ? MSG_ERROR : MSG, info));
+			return Arrays.asList(new HealthcheckItem(this, !verifyStrangers, this.getClass().getName(), LINK, verifyStrangers ? MSG_ERROR : MSG, info));
 		} catch (PortalException e) {
-			return wrap(new HealthcheckItem(this, e));
+			return Arrays.asList(new HealthcheckItem(this, e));
 		}
 	}
 

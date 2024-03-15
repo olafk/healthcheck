@@ -16,13 +16,13 @@ package com.liferay.portal.health.operation;
 
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.health.api.Healthcheck;
-import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.health.operation.configuration.HealthcheckOperationalConfiguration;
 import com.liferay.portal.kernel.util.ReleaseInfo;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
@@ -34,7 +34,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
 
 @Component(configurationPid = "com.liferay.portal.health.operation.configuration.HealthcheckOperationalConfiguration", service = Healthcheck.class)
-public class RecentlyUpdatedHealthcheck extends HealthcheckBaseImpl {
+public class RecentlyUpdatedHealthcheck implements Healthcheck {
 
 	private int acceptableMissingUpdates;
 	private int acceptableAgeInQuarters;
@@ -59,7 +59,7 @@ public class RecentlyUpdatedHealthcheck extends HealthcheckBaseImpl {
 			int currentExpectedUpdate = guessCurrentlyExpectedUpdate();
 			int expectedActualUpdate = currentExpectedUpdate - acceptableMissingUpdates;
 			Object[] info = { update, expectedActualUpdate };
-			return wrap(new HealthcheckItem(this, update > expectedActualUpdate, this.getClass().getName() + "-" + expectedActualUpdate, null, message, info));
+			return Arrays.asList(new HealthcheckItem(this, update > expectedActualUpdate, this.getClass().getName() + "-" + expectedActualUpdate, null, message, info));
 		} else {
 			// might be a quarterly release, e.g. "2023.Q4.1"
 			Pattern pattern = Pattern.compile(QUARTERLY_PATTERN);
@@ -72,10 +72,10 @@ public class RecentlyUpdatedHealthcheck extends HealthcheckBaseImpl {
 
 				int ageInQuarters = getAgeInQuarters(year, quarter, patch);
 				Object[] info = { version, acceptableAgeInQuarters, ageInQuarters };
-				return wrap(new HealthcheckItem(this, ageInQuarters <= acceptableAgeInQuarters, this.getClass().getName(), null, message, info));
+				return Arrays.asList(new HealthcheckItem(this, ageInQuarters <= acceptableAgeInQuarters, this.getClass().getName(), null, message, info));
 			} else {
 				Object[] info = { version };
-				return wrap(new HealthcheckItem(this, false, this.getClass().getName(), null, "healthcheck-recently-updated-couldnt-compute", info));
+				return Arrays.asList(new HealthcheckItem(this, false, this.getClass().getName(), null, "healthcheck-recently-updated-couldnt-compute", info));
 
 			}
 		}

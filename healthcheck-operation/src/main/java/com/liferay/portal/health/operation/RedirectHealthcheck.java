@@ -17,7 +17,6 @@ package com.liferay.portal.health.operation;
 import static com.liferay.configuration.admin.constants.ConfigurationAdminPortletKeys.INSTANCE_SETTINGS;
 
 import com.liferay.portal.health.api.Healthcheck;
-import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.health.operation.auxiliary.HostNameExtractingFilter;
 import com.liferay.portal.kernel.log.Log;
@@ -51,9 +50,8 @@ import org.osgi.service.component.annotations.Reference;
 
 @Component(immediate = true, configurationPid = RedirectHealthcheck.PID, property = Constants.SERVICE_PID + "="
 		+ RedirectHealthcheck.PID + ".scoped", service = { Healthcheck.class, ManagedServiceFactory.class }
-
 )
-public class RedirectHealthcheck extends HealthcheckBaseImpl implements ManagedServiceFactory {
+public class RedirectHealthcheck implements Healthcheck, ManagedServiceFactory {
 
 	@Override
 	public Collection<HealthcheckItem> check(long companyId, Locale locale) {

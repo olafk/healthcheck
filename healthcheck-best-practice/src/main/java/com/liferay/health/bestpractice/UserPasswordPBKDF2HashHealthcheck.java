@@ -15,7 +15,6 @@
 package com.liferay.health.bestpractice;
 
 import com.liferay.portal.health.api.Healthcheck;
-import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.kernel.exception.PwdEncryptorException;
 import com.liferay.portal.kernel.model.User;
@@ -28,6 +27,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -47,7 +47,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Olaf Kock
  */
 @Component(service = Healthcheck.class)
-public class UserPasswordPBKDF2HashHealthcheck extends HealthcheckBaseImpl {
+public class UserPasswordPBKDF2HashHealthcheck implements Healthcheck {
 
 	private static final String PBKDF2_WITH_HMAC_SHA1 = "PBKDF2WithHmacSHA1";
 	private static final String LINK = "https://liferay.dev/blogs/-/blogs/hashing-performance";
@@ -57,10 +57,10 @@ public class UserPasswordPBKDF2HashHealthcheck extends HealthcheckBaseImpl {
 		String hashingAlgorithm = PropsUtil.get(PropsKeys.PASSWORDS_ENCRYPTION_ALGORITHM);
 		if (hashingAlgorithm == null) {
 			Object[] info = {};
-			return wrap(new HealthcheckItem(this, false, this.getClass().getName(), LINK, "healthcheck-best-practice-pbkdf2-user-unconfigured-algorithm", info));
+			return Arrays.asList(new HealthcheckItem(this, false, this.getClass().getName(), LINK, "healthcheck-best-practice-pbkdf2-user-unconfigured-algorithm", info));
 		} else if (!hashingAlgorithm.startsWith(PBKDF2_WITH_HMAC_SHA1)) {
 			Object[] info = { hashingAlgorithm };
-			return wrap(new HealthcheckItem(this, true, this.getClass().getName(), LINK, "healthcheck-best-practice-pbkdf2-unknown-hashing-algorithm-assuming-ok", info));
+			return Arrays.asList(new HealthcheckItem(this, true, this.getClass().getName(), LINK, "healthcheck-best-practice-pbkdf2-unknown-hashing-algorithm-assuming-ok", info));
 		}
 
 		HashMap<String, Long> algorithms = new HashMap<String, Long>();

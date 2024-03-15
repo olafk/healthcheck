@@ -15,12 +15,12 @@
 package com.liferay.portal.health.demo;
 
 import com.liferay.portal.health.api.Healthcheck;
-import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.PasswordPolicy;
 import com.liferay.portal.kernel.service.PasswordPolicyLocalService;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Locale;
 
@@ -38,7 +38,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 
 @Component(service = Healthcheck.class)
-public class PasswordPolicyHealthcheck extends HealthcheckBaseImpl {
+public class PasswordPolicyHealthcheck implements Healthcheck {
 
 	private static final String LINK = "/group/control_panel/manage?p_p_id=com_liferay_password_policies_admin_web_portlet_PasswordPoliciesAdminPortlet";
 	private static final String MSG = "healthcheck-password-policy-change-required";
@@ -49,9 +49,9 @@ public class PasswordPolicyHealthcheck extends HealthcheckBaseImpl {
 		try {
 			PasswordPolicy passwordPolicy = passwordPolicyLocalService.getDefaultPasswordPolicy(companyId);
 			boolean changeRequired = passwordPolicy.getChangeRequired();
-			return wrap(new HealthcheckItem(this, !changeRequired, this.getClass().getName(), LINK + LINK_PARAM + passwordPolicy.getPasswordPolicyId(), MSG));
+			return Arrays.asList(new HealthcheckItem(this, !changeRequired, this.getClass().getName(), LINK + LINK_PARAM + passwordPolicy.getPasswordPolicyId(), MSG));
 		} catch (PortalException e) {
-			return wrap(new HealthcheckItem(this, e));
+			return Arrays.asList(new HealthcheckItem(this, e));
 		}
 	}
 

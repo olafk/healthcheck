@@ -1,6 +1,6 @@
 package com.liferay.portal.health.operation;
 
-import com.liferay.portal.health.api.HealthcheckBaseImpl;
+import com.liferay.portal.health.api.Healthcheck;
 import com.liferay.portal.health.api.HealthcheckItem;
 
 import java.util.Collection;
@@ -17,7 +17,7 @@ import java.util.Locale;
  * @author Olaf Kock
  */
 
-public class ServiceBuilderTableHealthcheck extends HealthcheckBaseImpl {
+public class ServiceBuilderTableHealthcheck implements Healthcheck {
 
 	@Override
 	public Collection<HealthcheckItem> check(long companyId, Locale locale) {

@@ -16,9 +16,9 @@ package com.liferay.portal.health.operation;
 
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.health.api.Healthcheck;
-import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
@@ -29,7 +29,7 @@ import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 @Component(configurationPid = "com.liferay.portal.search.elasticsearch7.configuration.ElasticsearchConfiguration", service = Healthcheck.class)
-public class RemoteElasticHealthcheck extends HealthcheckBaseImpl {
+public class RemoteElasticHealthcheck implements Healthcheck {
 
 	private final static String LINK = "https://learn.liferay.com/dxp/latest/en/using-search/installing-and-upgrading-a-search-engine/elasticsearch/connecting-to-elasticsearch.html";
 	private final static String MSG = "healthcheck-elasticsearch-sidecar-not-supported";
@@ -46,7 +46,7 @@ public class RemoteElasticHealthcheck extends HealthcheckBaseImpl {
 			}
 		}
 		Object[] info = { productionModeEnabled, operationMode };
-		return wrap(new HealthcheckItem(this, remote, this.getClass().getName(), LINK, MSG, info));
+		return Arrays.asList(new HealthcheckItem(this, remote, this.getClass().getName(), LINK, MSG, info));
 	}
 
 	@Override

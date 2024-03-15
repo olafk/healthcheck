@@ -15,10 +15,10 @@
 package com.liferay.portal.health.demo;
 
 import com.liferay.portal.health.api.Healthcheck;
-import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.util.PropsValues;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Locale;
 
@@ -34,7 +34,7 @@ import org.osgi.service.component.annotations.Component;
 @Component(immediate = true, property = {
 		// TODO enter required service properties
 }, service = Healthcheck.class)
-public class SessionTimeoutHealthcheck extends HealthcheckBaseImpl {
+public class SessionTimeoutHealthcheck implements Healthcheck {
 
 	private static final String LINK = "https://docs.liferay.com/portal/7.3-latest/propertiesdoc/portal.properties.html#Session";
 	private static final String MSG = "healthcheck-session-extension-enabled";
@@ -43,7 +43,7 @@ public class SessionTimeoutHealthcheck extends HealthcheckBaseImpl {
 	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
 		boolean autoextend = PropsValues.SESSION_TIMEOUT_AUTO_EXTEND;
 		Object[] info = { "session.timeout.auto.extend" };
-		return wrap(new HealthcheckItem(this, autoextend, this.getClass().getName(), LINK, MSG, info));
+		return Arrays.asList(new HealthcheckItem(this, autoextend, this.getClass().getName(), LINK, MSG, info));
 	}
 
 	@Override

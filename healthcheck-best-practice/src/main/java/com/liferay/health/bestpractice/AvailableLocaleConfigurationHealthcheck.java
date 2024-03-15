@@ -15,7 +15,6 @@
 package com.liferay.health.bestpractice;
 
 import com.liferay.portal.health.api.Healthcheck;
-import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.util.PropsValues;
 
@@ -43,7 +42,7 @@ import org.osgi.service.component.annotations.Component;
  */
 
 @Component(service = Healthcheck.class)
-public class AvailableLocaleConfigurationHealthcheck extends HealthcheckBaseImpl {
+public class AvailableLocaleConfigurationHealthcheck implements Healthcheck {
 
 	private static final String LINK = "https://docs.liferay.com/portal/7.4-latest/propertiesdoc/portal.properties.html#Languages%20and%20Time%20Zones";
 	private static final String MSG = "healthcheck-locale-properties";

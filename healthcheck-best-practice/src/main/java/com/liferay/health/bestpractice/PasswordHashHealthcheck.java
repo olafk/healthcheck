@@ -17,10 +17,10 @@ package com.liferay.health.bestpractice;
 import com.liferay.health.bestpractice.configuration.HealthcheckBestPracticeConfiguration;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.health.api.Healthcheck;
-import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.kernel.util.PropsUtil;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Locale;
@@ -31,7 +31,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
 
 @Component(configurationPid = "com.liferay.health.bestpractice.configuration.HealthcheckBestPracticeConfiguration", service = Healthcheck.class)
-public class PasswordHashHealthcheck extends HealthcheckBaseImpl {
+public class PasswordHashHealthcheck implements Healthcheck {
 
 	private static final String LINK = "https://learn.liferay.com/reference/latest/en/dxp/propertiesdoc/portal.properties.html#Passwords";
 	private static final String MSG = "healthcheck-password-hashing-rounds-owasp-recommendation";
@@ -44,7 +44,7 @@ public class PasswordHashHealthcheck extends HealthcheckBaseImpl {
 			int roundsPos = hashingAlgorithm.lastIndexOf('/');
 			int rounds = Integer.parseInt(hashingAlgorithm.substring(roundsPos + 1));
 			Object[] info = { rounds, owaspHashingRecommendation };
-			return wrap(new HealthcheckItem(this, rounds >= owaspHashingRecommendation, this.getClass().getName(), LINK, MSG, info));
+			return Arrays.asList(new HealthcheckItem(this, rounds >= owaspHashingRecommendation, this.getClass().getName(), LINK, MSG, info));
 		}
 		return Collections.emptyList();
 	}

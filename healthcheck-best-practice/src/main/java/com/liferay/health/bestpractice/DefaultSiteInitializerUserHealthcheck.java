@@ -15,13 +15,13 @@
 package com.liferay.health.bestpractice;
 
 import com.liferay.portal.health.api.Healthcheck;
-import com.liferay.portal.health.api.HealthcheckBaseImpl;
 import com.liferay.portal.health.api.HealthcheckItem;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserLocalService;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Locale;
@@ -30,7 +30,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 @Component(service = Healthcheck.class)
-public class DefaultSiteInitializerUserHealthcheck extends HealthcheckBaseImpl {
+public class DefaultSiteInitializerUserHealthcheck implements Healthcheck {
 
 	@Override
 	public Collection<HealthcheckItem> check(long companyId, Locale locale) {
@@ -50,12 +50,12 @@ public class DefaultSiteInitializerUserHealthcheck extends HealthcheckBaseImpl {
 			User user = userLocalService.getUserByEmailAddress(companyId, mailAddress);
 			if (user != null) {
 				Object[] info = { mailAddress };
-				return wrap(new HealthcheckItem(this, false, this.getClass().getName(), LINK + LINK_PARAMETER + user.getUserId(), MSG_FOUND, info));
+				return Arrays.asList(new HealthcheckItem(this, false, this.getClass().getName(), LINK + LINK_PARAMETER + user.getUserId(), MSG_FOUND, info));
 			}
 		} catch (NoSuchUserException e) {
 			// ignore - this is great and exactly what we're after.
 		} catch (PortalException e) {
-			return wrap(new HealthcheckItem(this, e));
+			return Arrays.asList(new HealthcheckItem(this, e));
 		}
 		return new LinkedList<HealthcheckItem>();
 	}
